@@ -65,7 +65,6 @@ function LoginApp() {
                             onChangeText={(text:string) => setPassword(text)}
                         />
 
-
                         <View style={styles.AddtionTextWrapper}>
                             <Link href='/(tabs)'>
                                 <ThemedText style={styles.AdditionText}>忘记密码</ThemedText>
@@ -91,7 +90,6 @@ function LoginApp() {
                             </Link>
 
                             <Link href='/(tabs)'>
-
                                 <View style={styles.RegisterButton}>
                                     <ThemedText style={{
                                         textDecorationLine: "underline",
@@ -101,13 +99,8 @@ function LoginApp() {
                                         注册
                                     </ThemedText>
                                 </View>
-
-
                             </Link>
                         </View>
-
-
-
                     </View>
                 </ThemedView>
             </ThemedView>

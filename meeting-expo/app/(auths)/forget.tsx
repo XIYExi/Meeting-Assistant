@@ -21,10 +21,18 @@ interface IForageAuthEmailAppProps {
 function ForgetApp(props: IForageAuthEmailAppProps) {
     const navigation = useNavigation();
     const [email, setEmail] = useState<string>('');
-
+    const [errors, setErrors] = useState<any>([]);
+    const hasErrors = (key: any) => (errors.includes(key) ? styles.hasErrors : null);
 
     const handlePressToVerifyEmail = () => {
-
+        if (email.length === 0) {
+            // todo 先看页面
+            // return;
+            setErrors(['email']);
+            return;
+        }
+        // @ts-ignore
+        navigation.navigate('otp')
     }
 
     return (
@@ -32,6 +40,8 @@ function ForgetApp(props: IForageAuthEmailAppProps) {
             <SafeAreaView style={{flex: 1}}>
                 <ThemedView style={{flex: 1}}>
                     <HeaderComponent
+                        useRedirect
+                        redirect={'index'}
                         backHref={'/(auths)'}
                         page='忘记密码'
                     />
@@ -42,11 +52,10 @@ function ForgetApp(props: IForageAuthEmailAppProps) {
                             请输入您的电子邮件，我们将在下一步发送OTP代码以重置您的密码。
                         </ThemedText>
 
-
                         <ThemedView style={{marginTop: 20}}>
                             <InputComponent
                                 label='邮箱'
-                                error={false}
+                                error={hasErrors('email')}
                                 style={[styles.input]}
                                 onChangeText={(text:string) => setEmail(text)}
                             />
@@ -83,7 +92,13 @@ const styles = StyleSheet.create({
         letterSpacing: 0.2,
     },
     input: {
-
+        borderRadius: 0,
+        borderWidth: 0,
+        borderBottomColor: "#C5CCD6",
+        borderBottomWidth: StyleSheet.hairlineWidth
+    },
+    hasErrors: {
+        borderBottomColor: "#F3534A",
     },
 });
 

@@ -22,7 +22,8 @@ export default function AuthLayout() {
                 >
                     <Stack.Screen name='forget' options={{headerShown: false}} />
                     <Stack.Screen name='index' options={{headerShown: false}}/>
-
+                    <Stack.Screen name='otp' options={{headerShown: false}}/>
+                    <Stack.Screen name='reset' options={{headerShown: false}}/>
                 </Stack>
             </ThemedView>
         </KeyboardAvoidingView>

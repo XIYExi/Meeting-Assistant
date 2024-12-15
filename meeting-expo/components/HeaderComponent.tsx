@@ -1,8 +1,9 @@
 import React, {ReactNode} from "react";
 import {ThemedView} from "@/components/ThemedView";
-import {Dimensions, Image, StyleSheet, View} from "react-native";
+import {Dimensions, Image, Pressable, StyleSheet, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
 import {Link} from "expo-router";
+import {CommonActions, useNavigation} from "@react-navigation/native";
 
 /**
  @name: Header组件
@@ -14,19 +15,45 @@ interface IHeaderProps {
     backHref: string,
     page?: string,
     rightComponent?: ReactNode
+    useRedirect: boolean
+    redirect: string
 }
 
 const {width, height} = Dimensions.get("window");
 function HeaderComponent(props: IHeaderProps) {
 
+    const navigation = useNavigation();
+    const handleBackRedirect = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [{name: props.redirect}],
+            })
+        )
+    }
+
     return (
         <React.Fragment>
             <ThemedView style={styles.headerContainer}>
                 <ThemedView style={styles.leftContainer}>
-                    {/*@ts-ignore*/}
-                    <Link href={props.backHref}>
-                        <Image source={require('../assets/components/back.png')} style={styles.backIcon}/>
-                    </Link>
+
+                    {
+                        props.useRedirect ? (
+                            <>
+                            <Pressable onPress={handleBackRedirect}>
+                                <Image source={require('../assets/components/back.png')} style={styles.backIcon}/>
+                            </Pressable>
+                            </>
+                        ) : (
+                            <>
+                                {/*@ts-ignore*/}
+                                <Link href={props.backHref}>
+                                    <Image source={require('../assets/components/back.png')} style={styles.backIcon}/>
+                                </Link>
+                            </>
+                        )
+                    }
+
                 </ThemedView>
                 <View style={styles.centerContainer}>
                     <ThemedText style={styles.pageTitle}>{props.page && props.page || ''}</ThemedText>
