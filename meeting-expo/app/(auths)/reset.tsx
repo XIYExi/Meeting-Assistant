@@ -9,7 +9,12 @@ import ButtonComponent from "@/components/ButtonComponent";
 import {CommonActions, useNavigation} from "@react-navigation/native";
 
 
-
+/**
+ @name:重设密码页面
+ @description:重设密码和确认密码
+ @author: xiye.Cayon
+ @time: 2024-12-15 22:53:31
+ */
 interface IResetProps {
 
 }

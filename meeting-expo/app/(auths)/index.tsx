@@ -19,14 +19,10 @@ function LoginApp() {
 
     const [email, setEmail] = useState<string>(_email);
     const [password, setPassword] = useState<string>(_password);
-
     const [loading, setLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<any>([]);
-
     const hasErrors = (key: any) => (errors.includes(key) ? styles.hasErrors : null);
-
     const colorScheme = useColorScheme();
-
 
     return (
         <React.Fragment>
@@ -66,13 +62,13 @@ function LoginApp() {
                         />
 
                         <View style={styles.AddtionTextWrapper}>
-                            <Link href='/(tabs)'>
+                            <Link href='/(auths)/forget'>
                                 <ThemedText style={styles.AdditionText}>忘记密码</ThemedText>
                             </Link>
                         </View>
 
                         <View style={styles.ButtonWrapper}>
-                            <Link href='/(auths)/forget'>
+                            <Link href='/(tabs)'>
                                 <ThemedView style={[styles.LoginButton, {
                                     borderColor: colorScheme === 'dark' ? 'white' : 'black'
                                 }]}>
