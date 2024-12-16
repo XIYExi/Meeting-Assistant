@@ -1,10 +1,11 @@
 import React, {useState} from "react";
-import {ActivityIndicator, Button, Dimensions, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, Button, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
 import {ThemedView} from "@/components/ThemedView";
 import InputComponent from '@/components/InputComponent';
 import {Link} from "expo-router";
 import {useColorScheme} from "@/hooks/useColorScheme";
+import {DrawerActions, useNavigation} from "@react-navigation/native";
 
 /**
  @name:LoginApp
@@ -24,6 +25,11 @@ function LoginApp() {
     const hasErrors = (key: any) => (errors.includes(key) ? styles.hasErrors : null);
     const colorScheme = useColorScheme();
 
+    const navigation = useNavigation();
+    const handle = () => {
+        navigation
+    }
+
     return (
         <React.Fragment>
             <ThemedView style={styles.loginContainer}>
@@ -31,9 +37,12 @@ function LoginApp() {
                 <ThemedView style={styles.ImageWrapper}>
                     <ThemedView style={styles.TextInnerWrapper}>
                         <ThemedText style={styles.title}>Meeting Assistant</ThemedText>
-                        <ThemedText style={styles.subTitle}>
-                            西湖论剑大会AI+会议助手智能体应用.
-                        </ThemedText>
+                        <TouchableOpacity onPress={handle}>
+                            <ThemedText style={styles.subTitle}>
+                                西湖论剑大会AI+会议助手智能体应用.
+                            </ThemedText>
+                        </TouchableOpacity>
+
                         <ThemedText style={styles.descTitle}>
                             请输入您的电子邮箱和密码以登录
                         </ThemedText>

@@ -1,11 +1,25 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {Image, StyleSheet, Platform, TouchableOpacity} from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import {useCallback} from "react";
+import {useDrawerStatus} from "@react-navigation/drawer";
+import {useNavigation} from "expo-router";
+import {CommonActions, DrawerActions} from "@react-navigation/native";
 
 export default function HomeScreen() {
+
+    const navigation = useNavigation();
+    const handleOpenDrawer = useCallback(() => {
+        console.log(DrawerActions.openDrawer())
+
+        navigation.getParent()?.dispatch(
+            DrawerActions.toggleDrawer()
+        )
+    }, []);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -16,7 +30,11 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+
+          <TouchableOpacity onPress={handleOpenDrawer}>
+              <ThemedText type="title">Welcome!</ThemedText>
+          </TouchableOpacity>
+
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>

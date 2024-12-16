@@ -13,7 +13,7 @@ export default function SettingLayout() {
 
     return (
         <KeyboardAvoidingView style={{flex: 1}}>
-            <Stack screenOptions={{
+            <Drawer screenOptions={{
                 headerStyle: {
                     backgroundColor: '#f4511e',
                 },
@@ -22,8 +22,8 @@ export default function SettingLayout() {
                     fontWeight: 'bold',
                 },
             }}>
-                <Stack.Screen name='index' options={{headerShown: false}} />
-            </Stack>
+                <Drawer.Screen name='index' options={{headerShown: false}} />
+            </Drawer>
         </KeyboardAvoidingView>
     )
 }
