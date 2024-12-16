@@ -13,6 +13,17 @@ function SettingApp() {
         <React.Fragment>
             <ThemedView style={{flex: 1}}>
                 <ThemedText>hello</ThemedText>
+
+
+                <ThemedText>hello</ThemedText>
+                <ThemedText>hello</ThemedText>
+                <ThemedText>hello</ThemedText>
+                <ThemedText>hello</ThemedText>
+                <ThemedText>hello</ThemedText>
+
+
+
+
             </ThemedView>
         </React.Fragment>
     )

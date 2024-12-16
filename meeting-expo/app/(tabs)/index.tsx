@@ -1,78 +1,58 @@
-import {Image, StyleSheet, Platform, TouchableOpacity} from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import {Image, StyleSheet, Platform, TouchableOpacity, Dimensions } from 'react-native';
+import React, {useContext} from "react";
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import {useCallback} from "react";
-import {useDrawerStatus} from "@react-navigation/drawer";
-import {useNavigation} from "expo-router";
-import {CommonActions, DrawerActions} from "@react-navigation/native";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
+import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
+import SettingContext from "@/components/SettingComponentContext";
+
+const {width, height} = Dimensions.get('window');
+
 
 export default function HomeScreen() {
 
-    const navigation = useNavigation();
-    const handleOpenDrawer = useCallback(() => {
-        console.log(DrawerActions.openDrawer())
 
-        navigation.getParent()?.dispatch(
-            DrawerActions.toggleDrawer()
-        )
-    }, []);
 
+    const ctx = useContext(SettingContext);
+
+
+
+    const insets = useSafeAreaInsets();
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
+      <React.Fragment>
 
-          <TouchableOpacity onPress={handleOpenDrawer}>
-              <ThemedText type="title">Welcome!</ThemedText>
-          </TouchableOpacity>
+          <Animated.View style={[styles.container]}>
+              <ThemedView style={{paddingTop: insets.top * 2}}>
+                  <ThemedText>Home</ThemedText>
 
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+                  <ThemedView style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderWidth: 1,
+                  }}>
+                      <TouchableOpacity onPress={() => {
+                          ctx.drawerActive()
+                      }}>
+                          <ThemedText style={{
+                              alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>Click</ThemedText>
+                      </TouchableOpacity>
+                  </ThemedView>
+              </ThemedView>
+          </Animated.View>
+
+
+      </React.Fragment>
   );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+
+
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -89,4 +69,9 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+    sideMenuStyle: {
+        width: width * 0.75,
+        margin: 0,
+        zIndex: 1000,
+    }
 });

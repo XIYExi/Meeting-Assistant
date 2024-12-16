@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     },
     tabbarItem: {
         flex: 1,
+        zIndex: 777,
         justifyContent: 'center',
         alignItems: 'center'
     }

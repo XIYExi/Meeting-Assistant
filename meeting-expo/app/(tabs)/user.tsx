@@ -14,14 +14,6 @@ import {ThemedText} from "@/components/ThemedText";
  */
 export default function UserAppScreen() {
 
-    const sheetRef = useRef<BottomSheet>(null);
-    const [isOpen, setIsOpen] = useState<boolean>(true);
-
-    const snapPoints = ["40%"];
-    const handleSnapPress = useCallback((index: number) => {
-        sheetRef.current?.snapToIndex(index);
-        setIsOpen(true);
-    }, []);
 
     return (
         <ThemedView
@@ -32,29 +24,27 @@ export default function UserAppScreen() {
                justifyContent: 'center'
            }}
         >
-            <View style={styles.image}>
-                <Image style={[styles.image, {opacity: isOpen ? .2 : 1}]} source={{uri: ''}} />
-            </View>
+
+            <ThemedText>hello</ThemedText>
 
 
-            <TouchableOpacity onPress={() => handleSnapPress(0)}>
-                <ThemedText style={styles.bottom}>
-                    GET
-                </ThemedText>
-            </TouchableOpacity>
+            <ThemedText>个人介绍</ThemedText>
+            <ThemedText>浏览记录</ThemedText>
+            <ThemedText>点赞记录</ThemedText>
+            <ThemedText>收藏记录</ThemedText>
+
+            <ThemedText>语言收藏</ThemedText>
+            <ThemedText></ThemedText>
 
 
-            {/* todo 测试组件*/}
-            <BottomSheet
-                ref={sheetRef}
-                snapPoints={snapPoints}
-                enablePanDownToClose={true}
-                onClose={() => setIsOpen(false)}
-            >
-                <BottomSheetView>
-                    <Text>Hello</Text>
-                </BottomSheetView>
-            </BottomSheet>
+
+
+            <ThemedText style={styles.bottom}>
+                GET
+            </ThemedText>
+
+
+
 
         </ThemedView>
     );
