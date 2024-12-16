@@ -7,6 +7,9 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {GestureHandlerRootView} from "react-native-gesture-handler";
+import {Drawer} from "expo-router/drawer";
+
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -28,15 +31,18 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName={'(auths)'}>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name='(auths)' options={{headerShown: false}}/>
+            <Stack.Screen name='(tabs)' options={{headerShown: false}}/>
+            <Stack.Screen name="+not-found" options={{headerShown: false}}/>
+            <Stack.Screen name="(setting)" options={{headerShown: false}}/>
+          </Stack>
 
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-
-        <Stack.Screen name='(auths)' options={{headerShown: false}}/>
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </GestureHandlerRootView>
   );
 }
+

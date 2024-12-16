@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
         shadowOffset: {width: 0, height: 10},
         shadowOpacity: .1,
-
+        zIndex: 888,
     },
     tabbarItem: {
         flex: 1,
