@@ -1,36 +1,51 @@
-import React, {forwardRef} from "react";
-import {Dimensions, SafeAreaView, StyleSheet, View} from "react-native";
+import React, {forwardRef, useContext} from "react";
+import {Button, Dimensions, SafeAreaView, StyleSheet, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
 import {ThemedView} from "@/components/ThemedView";
+import {useColorScheme} from "@/hooks/useColorScheme";
+import {useNavigation} from "@react-navigation/native";
+import SettingContext from "@/components/SettingComponentContext";
 
 
 const DrawerComponent = forwardRef((props: any, ref: any) => {
+
+    const colorSchema = useColorScheme();
 
     const drawerStyles = {
         drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3},
         main: {paddingLeft: 3},
     }
+    const ctx = useContext(SettingContext);
+    const navigation = useNavigation();
+    const handleGotoExplore = () => {
+        ctx.drawerClose();
+        // @ts-ignore
+        navigation.navigate('user')
+    }
 
     return (
-        <View style={styles.safeAreaView}>
-            <ThemedView style={styles.container}>
-                <ThemedText style={styles.title}>Timeline</ThemedText>
+        <ThemedView style={[styles.container, {
+            backgroundColor: colorSchema === 'dark' ? '#212121' : '#fff'
+        }]}>
+            <View style={styles.contentContainer}>
+                <View style={styles.containerProfile}>
+                    <ThemedText type='title' style={styles.system}>System</ThemedText>
+                </View>
+            </View>
 
-                <ThemedView>
-                    <ThemedView style={styles.swithBlock}>
-                        <ThemedText style={styles.switchText}>
-                            Ratings with reviews only
-                        </ThemedText>
-                    </ThemedView>
-                    <ThemedText style={styles.description}>
-                        When enabled, on your timeline we will only show ratings with reviews.
-                    </ThemedText>
-                </ThemedView>
-            </ThemedView>
-            <ThemedView>
-                <ThemedText style={styles.link}>Press to call parent function</ThemedText>
-            </ThemedView>
-        </View>
+            <View style={{maxWidth: 100, marginBottom: 20}}>
+                <Button title={"hello"} onPress={handleGotoExplore}/>
+            </View>
+            <View style={{maxWidth: 100, marginBottom: 20}}>
+                <Button title={"hello"} />
+            </View>
+            <View style={{maxWidth: 100, marginBottom: 20}}>
+                <Button title={"hello"} />
+            </View>
+            <View style={{maxWidth: 100, marginBottom: 20}}>
+                <Button title={"hello"} />
+            </View>
+        </ThemedView>
     )
 
 })
@@ -38,39 +53,22 @@ const DrawerComponent = forwardRef((props: any, ref: any) => {
 const {width, height} = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-    safeAreaView: {
-        flex: 1,
-        backgroundColor: '#fff',
-        zIndex: 999
-    },
     container: {
-        margin: 12,
-        flex: 1,
+        ...StyleSheet.absoluteFillObject,
+        zIndex: -99,
     },
-    title: {
-        marginTop: 15,
-        marginBottom: 10,
-        color: '#444',
-        fontSize: 14
+    contentContainer: {
+        paddingTop: 120,
+        marginHorizontal: 30,
+        maxWidth: 180
     },
-    swithBlock: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+    containerProfile: {
+        gap: 14,
+        height: 60
     },
-    switchText: {
-        fontSize: 14,
-        color: '#222'
-    },
-    link: {
-        padding: 5,
-        color: '#892853'
-    },
-    description: {
-        fontSize: 13,
-        color: '#555',
-        marginTop: 12,
-        marginBottom: 6
+    system: {
+        marginTop: 10,
+        fontWeight: "500"
     }
 });
 
