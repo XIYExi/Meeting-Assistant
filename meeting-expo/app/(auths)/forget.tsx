@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {useNavigation} from "expo-router";
 import HeaderComponent from "@/components/HeaderComponent";
 import {Pressable, SafeAreaView, StyleSheet} from "react-native";
 import {ThemedView} from "@/components/ThemedView";
@@ -7,6 +6,7 @@ import {ThemedText} from "@/components/ThemedText";
 import PageComponent from "@/components/PageComponent";
 import InputComponent from "@/components/InputComponent";
 import ButtonComponent from "@/components/ButtonComponent";
+import {useNavigation} from "@react-navigation/native";
 
 /**
  @name:忘记密码页面1 - 验证邮箱
@@ -41,8 +41,7 @@ function ForgetApp(props: IForageAuthEmailAppProps) {
                 <ThemedView style={{flex: 1}}>
                     <HeaderComponent
                         useRedirect
-                        redirect={'index'}
-                        backHref={'/(auths)'}
+                        backHref={'login'}
                         page='忘记密码'
                     />
 

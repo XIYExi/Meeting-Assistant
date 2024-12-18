@@ -1,6 +1,5 @@
-import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
+import {DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
-import {Stack} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
 import {useEffect} from 'react';
@@ -19,10 +18,19 @@ import Animated, {
 import SettingContext from "@/components/SettingComponentContext";
 import OverlayComponent from "@/components/OverlayComponent";
 import DrawerComponent from "@/components/DrawerComponent";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
 
+import AuthsRouter from '@/app/(auths)/_layout';
+import NotFoundScreen from "@/app/+not-found";
+import TabsRouter from "@/app/(tabs)/_layout";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+
+const RootStack = createNativeStackNavigator();
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -74,11 +82,15 @@ export default function RootLayout() {
           <DrawerComponent />
             <Animated.View style={[{flex: 1}, animatedStyle]}>
               <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <Stack>
-                  <Stack.Screen name='(auths)' options={{headerShown: false}}/>
-                  <Stack.Screen name='(tabs)' options={{headerShown: false}}/>
-                  <Stack.Screen name="+not-found" options={{headerShown: false}}/>
-                </Stack>
+                <BottomSheetModalProvider>
+
+                    <RootStack.Navigator initialRouteName={'auths'}>
+                      <RootStack.Screen name='tabs' component={TabsRouter} options={{headerShown: false}}/>
+                      <RootStack.Screen name='auths' component={AuthsRouter} options={{headerShown: false}}/>
+                      <RootStack.Screen name="+not-found" component={NotFoundScreen} options={{headerShown: false}}/>
+                    </RootStack.Navigator>
+
+                </BottomSheetModalProvider>
                 <StatusBar style="auto" />
               </ThemeProvider>
               <OverlayComponent active={active} />
@@ -87,4 +99,3 @@ export default function RootLayout() {
       </GestureHandlerRootView>
   );
 }
-

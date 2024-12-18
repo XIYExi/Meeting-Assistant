@@ -10,11 +10,7 @@ import SettingContext from "@/components/SettingComponentContext";
 const DrawerComponent = forwardRef((props: any, ref: any) => {
 
     const colorSchema = useColorScheme();
-
-    const drawerStyles = {
-        drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3},
-        main: {paddingLeft: 3},
-    }
+    
     const ctx = useContext(SettingContext);
     const navigation = useNavigation();
     const handleGotoExplore = () => {
@@ -56,11 +52,12 @@ const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
         zIndex: -99,
+        borderWidth: 1,
     },
     contentContainer: {
         paddingTop: 120,
         marginHorizontal: 30,
-        maxWidth: 180
+        maxWidth: 180,
     },
     containerProfile: {
         gap: 14,

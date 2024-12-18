@@ -6,7 +6,7 @@ import PageComponent from "@/components/PageComponent";
 import {ThemedText} from "@/components/ThemedText";
 import ButtonComponent from "@/components/ButtonComponent";
 import CodeInputComponent from "@/components/CodeInputComponent";
-import {useNavigation} from "expo-router";
+import {useNavigation} from "@react-navigation/native";
 
 
 interface IOtpAuthAppProps {
@@ -17,8 +17,6 @@ function OtpAuthApp(props: IOtpAuthAppProps) {
     const [value, setValue] = useState<string>('');
     const navigation = useNavigation();
     const handleCheck = () => {
-        console.log('value is: -> ', value)
-
         // todo 校验otp code是否正确
 
         // todo 验证邮箱是否正确
@@ -33,8 +31,7 @@ function OtpAuthApp(props: IOtpAuthAppProps) {
                 <ThemedView style={{flex: 1}}>
                     <HeaderComponent
                         useRedirect
-                        redirect={'index'}
-                        backHref={'(auths)'}
+                        backHref={'login'}
                         page='忘记密码'
                     />
 

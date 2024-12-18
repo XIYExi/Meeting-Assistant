@@ -2,8 +2,7 @@ import React, {ReactNode} from "react";
 import {ThemedView} from "@/components/ThemedView";
 import {Dimensions, Image, Pressable, StyleSheet, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
-import {Link} from "expo-router";
-import {CommonActions, useNavigation} from "@react-navigation/native";
+import {CommonActions, Link, useNavigation} from "@react-navigation/native";
 
 /**
  @name: Header组件
@@ -16,7 +15,6 @@ interface IHeaderProps {
     page?: string,
     rightComponent?: ReactNode
     useRedirect: boolean
-    redirect: string
 }
 
 const {width, height} = Dimensions.get("window");
@@ -27,7 +25,7 @@ function HeaderComponent(props: IHeaderProps) {
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
-                routes: [{name: props.redirect}],
+                routes: [{name: props.backHref}],
             })
         )
     }
@@ -47,7 +45,7 @@ function HeaderComponent(props: IHeaderProps) {
                         ) : (
                             <>
                                 {/*@ts-ignore*/}
-                                <Link href={props.backHref}>
+                                <Link screen={props.backHref}>
                                     <Image source={require('../assets/components/back.png')} style={styles.backIcon}/>
                                 </Link>
                             </>

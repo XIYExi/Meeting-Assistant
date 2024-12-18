@@ -1,8 +1,5 @@
 import React, {useCallback, useRef,useState} from "react";
 import {StyleSheet, Image, Platform, Text, TouchableOpacity, View} from 'react-native';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import BottomSheet, {BottomSheetView} from "@gorhom/bottom-sheet";
 import {ThemedView} from "@/components/ThemedView";
 import {ThemedText} from "@/components/ThemedText";
 

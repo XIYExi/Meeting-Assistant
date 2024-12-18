@@ -33,7 +33,7 @@ function ResetPasswordApp(props: IResetProps) {
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
-                routes: [{name: 'index'}],
+                routes: [{name: 'login'}],
             })
         );
     }
@@ -45,9 +45,8 @@ function ResetPasswordApp(props: IResetProps) {
                 <ThemedView style={{flex: 1}}>
 
                     <HeaderComponent
-                        backHref={'/(auths)'}
+                        backHref={'login'}
                         useRedirect={true}
-                        redirect={'index'}
                         page='忘记密码'
                     />
 

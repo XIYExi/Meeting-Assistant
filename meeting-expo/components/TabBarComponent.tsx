@@ -13,7 +13,7 @@ const TabBarComponent = ({state, descriptors, navigation}: any) => {
     const greyColor = '#737373';
 
     const icons = {
-        index: (props: any) => <AntDesign name={'home'} size={20} color={greyColor} {...props} />,
+        home: (props: any) => <AntDesign name={'home'} size={20} color={greyColor} {...props} />,
         explore: (props: any) => <AntDesign name={'pluscircleo'} size={20} color={greyColor} {...props} />,
         user: (props: any) => <AntDesign name={'user'} size={20} color={greyColor} {...props} />,
     }

@@ -1,11 +1,10 @@
 import React, {useState} from "react";
-import {ActivityIndicator, Button, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, Dimensions, StyleSheet, TouchableOpacity, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
 import {ThemedView} from "@/components/ThemedView";
 import InputComponent from '@/components/InputComponent';
-import {Link} from "expo-router";
 import {useColorScheme} from "@/hooks/useColorScheme";
-import {DrawerActions, useNavigation} from "@react-navigation/native";
+import {DrawerActions, Link, useNavigation} from "@react-navigation/native";
 
 /**
  @name:LoginApp
@@ -71,13 +70,13 @@ function LoginApp() {
                         />
 
                         <View style={styles.AddtionTextWrapper}>
-                            <Link href='/(auths)/forget'>
+                            <Link screen='forget'>
                                 <ThemedText style={styles.AdditionText}>忘记密码</ThemedText>
                             </Link>
                         </View>
 
                         <View style={styles.ButtonWrapper}>
-                            <Link href='/(tabs)'>
+                            <Link screen='tabs'>
                                 <ThemedView style={[styles.LoginButton, {
                                     borderColor: colorScheme === 'dark' ? 'white' : 'black'
                                 }]}>
@@ -94,7 +93,7 @@ function LoginApp() {
                                 </ThemedView>
                             </Link>
 
-                            <Link href='/(tabs)'>
+                            <Link screen=''>
                                 <View style={styles.RegisterButton}>
                                     <ThemedText style={{
                                         textDecorationLine: "underline",
