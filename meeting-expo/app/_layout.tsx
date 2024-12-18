@@ -84,7 +84,7 @@ export default function RootLayout() {
               <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <BottomSheetModalProvider>
 
-                    <RootStack.Navigator initialRouteName={'auths'}>
+                    <RootStack.Navigator initialRouteName={'tabs'}>
                       <RootStack.Screen name='tabs' component={TabsRouter} options={{headerShown: false}}/>
                       <RootStack.Screen name='auths' component={AuthsRouter} options={{headerShown: false}}/>
                       <RootStack.Screen name="+not-found" component={NotFoundScreen} options={{headerShown: false}}/>
