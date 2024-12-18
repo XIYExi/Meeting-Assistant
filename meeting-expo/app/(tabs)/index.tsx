@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Platform, TouchableOpacity, Dimensions, View, Pressable, FlatList} from 'react-native';
+import {Image, StyleSheet, Platform, TouchableOpacity, Dimensions, View, Pressable, FlatList, ScrollView} from 'react-native';
 import React, {useCallback, useContext} from "react";
 import {ThemedText} from '@/components/ThemedText';
 import {ThemedView} from '@/components/ThemedView';
@@ -6,16 +6,16 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 import SettingContext from "@/components/SettingComponentContext";
 import PageComponent from "@/components/PageComponent";
-import SettingImage from '@/assets/components/tabs/setting_icon.png';
-import AgentImage from '@/assets/components/tabs/agent.png';
 import {HelloWave} from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import {Collapsible} from "@/components/Collapsible";
-import {ExternalLink} from "@/components/ExternalLink";
 import EventsCardComponent from "@/components/EventsCardComponent";
+import RecommendationCardComponent from "@/components/RecommendationCardComponent";
+//@ts-ignore
+import SettingImage from '@/assets/components/tabs/setting_icon.png';
+//@ts-ignore
+import AgentImage from '@/assets/components/tabs/agent.png';
 
 const {width, height} = Dimensions.get('window');
-
 
 export default function HomeScreen() {
 
@@ -31,7 +31,7 @@ export default function HomeScreen() {
             <ParallaxScrollView
                 style={{padding: 0}}
                 headerImage={
-                <ThemedView style={{paddingTop: insets.top * 2}}>
+                <ThemedView style={{paddingTop: Platform.OS === 'android' ? insets.top * 2 : insets.top * 1.3}}>
                     <View style={[styles.header]}>
                         <View style={styles.introWrapper}>
                             <ThemedText style={styles.intro}>会议助手</ThemedText>
@@ -64,13 +64,39 @@ export default function HomeScreen() {
             >
                 <View style={styles.restWrapper}>
                     <View style={styles.events}>
+                        {/* 活动页面 */}
+                        <ThemedText style={styles.eventsTitle}>Events</ThemedText>
+                        <ScrollView
+                            style={{paddingBottom: 10}}
+                            horizontal
+                            showsHorizontalScrollIndicator={false} // 隐藏水平滚动条
+                        >
+                            <EventsCardComponent />
+                            <EventsCardComponent />
+                            <EventsCardComponent />
+                            <EventsCardComponent />
+                            <EventsCardComponent />
+                        </ScrollView>
 
-                        <EventsCardComponent />
+                        {/* 活动推荐页面 */}
+                        <ThemedText style={styles.eventsTitle}>Recommendations</ThemedText>
+                        <View style={styles.recWrapper}>
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                            <RecommendationCardComponent />
+                        </View>
                     </View>
 
-                    <View style={styles.notices}>
-
-                    </View>
+                    <View style={{
+                        height: Platform.OS === 'android' ? 140 : 80
+                    }} />
                 </View>
             </ParallaxScrollView>
 
@@ -79,18 +105,22 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+    recWrapper: {
+        marginHorizontal: 20
+    },
     restWrapper: {
-        backgroundColor: '#fcfcfc',
+        backgroundColor: '#f4efef',
         width: '100%',
         minHeight: 1000,
     },
     events: {
 
     },
-    notices: {
-
+    eventsTitle: {
+        padding: 20,
+        fontSize: 18,
+        fontWeight: '500',
     },
-
 
     container: {
         flex: 1
