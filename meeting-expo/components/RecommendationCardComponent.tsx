@@ -42,13 +42,13 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         width: '100%',
-        height: 76,
+        height: 72,
         borderRadius: 20,
         // borderWidth: 1,
-        paddingVertical: 6,
+        paddingVertical: 4,
         paddingHorizontal: 6,
         position: 'relative',
-        marginVertical: 8,
+        marginVertical: 6,
     },
     imageWrapper: {
         width: 64,
@@ -62,18 +62,21 @@ const styles = StyleSheet.create({
     },
     msgWrapper: {
         marginLeft: 5,
-        paddingVertical: 6
+        paddingVertical: 7,
     },
     detailsWrapper: {
         position: 'absolute',
         right: 10,
-        top: 6,
+        top: 8,
+        borderLeftWidth: 0.8,
+        paddingLeft: 15,
+        borderLeftColor: '#cdcbcb'
     },
     detailsButton: {
         // borderWidth: 1,
-        borderRadius: 20,
-        width: 64,
-        height: 64,
+        borderRadius: 12,
+        width: 60,
+        height: 56,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f76b10',
@@ -83,14 +86,14 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     msgTitle: {
-        fontSize: 18,
-        fontWeight: '700',
+        fontSize: 19,
+        fontWeight: 'bold',
         letterSpacing: 0.1,
+        marginTop: 3,
     },
     metaWrapper: {
         flexDirection: 'row',
         width: '100%',
-        marginTop: 3,
     },
     meta: {
         fontSize: 15,
