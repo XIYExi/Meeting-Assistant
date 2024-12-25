@@ -87,6 +87,23 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
+  },
+
+  {
+    path: '/meeting/agenda/:id(\\d+)',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/',
+        component: () => import('@/views/meeting/agenda/index'),
+        name: 'Agenda',
+        noRedirect: true,
+        meta: {
+          title: '子议程'
+        }
+      }
+    ]
   }
 ]
 
@@ -161,7 +178,7 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
 ]
 
 // 防止连续点击多次路由报错
