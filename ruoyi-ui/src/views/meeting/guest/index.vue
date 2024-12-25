@@ -17,38 +17,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="查看统计" prop="views">
-        <el-input
-          v-model="queryParams.views"
-          placeholder="请输入查看统计"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="点赞统计" prop="likes">
-        <el-input
-          v-model="queryParams.likes"
-          placeholder="请输入点赞统计"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="嘉宾头像" prop="avatar">
-        <el-input
-          v-model="queryParams.avatar"
-          placeholder="请输入嘉宾头像"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="嘉宾海报" prop="url">
-        <el-input
-          v-model="queryParams.url"
-          placeholder="请输入嘉宾海报"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -103,7 +71,6 @@
 
     <el-table v-loading="loading" :data="guestList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="嘉宾表id" align="center" prop="id" />
       <el-table-column label="嘉宾姓名" align="center" prop="name" />
       <el-table-column label="嘉宾头衔" align="center" prop="title" />
       <el-table-column label="嘉宾主讲内容" align="center" prop="content" />
@@ -111,7 +78,6 @@
       <el-table-column label="点赞统计" align="center" prop="likes" />
       <el-table-column label="嘉宾头像" align="center" prop="avatar" />
       <el-table-column label="嘉宾海报" align="center" prop="url" />
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -131,7 +97,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -150,25 +116,13 @@
           <el-input v-model="form.title" placeholder="请输入嘉宾头衔" />
         </el-form-item>
         <el-form-item label="嘉宾主讲内容">
-          <editor v-model="form.content" :min-height="192"/>
-        </el-form-item>
-        <el-form-item label="查看统计" prop="views">
-          <el-input v-model="form.views" placeholder="请输入查看统计" />
-        </el-form-item>
-        <el-form-item label="点赞统计" prop="likes">
-          <el-input v-model="form.likes" placeholder="请输入点赞统计" />
+          <el-input v-model="form.content" placeholder="请输入主讲内容"/>
         </el-form-item>
         <el-form-item label="嘉宾头像" prop="avatar">
           <el-input v-model="form.avatar" placeholder="请输入嘉宾头像" />
         </el-form-item>
         <el-form-item label="嘉宾海报" prop="url">
           <el-input v-model="form.url" placeholder="请输入嘉宾海报" />
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
