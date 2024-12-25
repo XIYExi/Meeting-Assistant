@@ -1,7 +1,7 @@
 import React from "react";
 import {ThemedView} from "@/components/ThemedView";
 import {ThemedText} from "@/components/ThemedText";
-import {View, StyleSheet, Image, Pressable, Text, TouchableOpacity} from "react-native";
+import {View, StyleSheet, Image, Text, TouchableOpacity} from "react-native";
 // @ts-ignore
 import RecPreviewImage from '@/assets/components/tabs/rec-preview.png';
 

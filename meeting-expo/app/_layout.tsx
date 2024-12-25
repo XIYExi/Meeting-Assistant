@@ -1,4 +1,4 @@
-import {DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider} from '@react-navigation/native';
+import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import {StatusBar} from 'expo-status-bar';
@@ -83,13 +83,11 @@ export default function RootLayout() {
             <Animated.View style={[{flex: 1}, animatedStyle]}>
               <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <BottomSheetModalProvider>
-
-                    <RootStack.Navigator initialRouteName={'tabs'}>
-                      <RootStack.Screen name='tabs' component={TabsRouter} options={{headerShown: false}}/>
-                      <RootStack.Screen name='auths' component={AuthsRouter} options={{headerShown: false}}/>
-                      <RootStack.Screen name="+not-found" component={NotFoundScreen} options={{headerShown: false}}/>
-                    </RootStack.Navigator>
-
+                  <RootStack.Navigator initialRouteName={'auths'}>
+                    <RootStack.Screen name='tabs' component={TabsRouter} options={{headerShown: false}}/>
+                    <RootStack.Screen name='auths' component={AuthsRouter} options={{headerShown: false}}/>
+                    <RootStack.Screen name="+not-found" component={NotFoundScreen} options={{headerShown: false}}/>
+                  </RootStack.Navigator>
                 </BottomSheetModalProvider>
                 <StatusBar style="auto" />
               </ThemeProvider>
