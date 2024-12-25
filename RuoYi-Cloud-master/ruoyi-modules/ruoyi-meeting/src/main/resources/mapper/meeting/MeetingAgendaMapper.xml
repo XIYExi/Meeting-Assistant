@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.meeting.mapper.MeetingAgendaMapper">
+    
+    <resultMap type="MeetingAgenda" id="MeetingAgendaResult">
+        <result property="id"    column="id"    />
+        <result property="meetingId"    column="meeting_id"    />
+        <result property="beginTime"    column="begin_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="content"    column="content"    />
+        <result property="meta"    column="meta"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMeetingAgendaVo">
+        select id, meeting_id, begin_time, end_time, content, meta, del_flag, create_by, create_time, update_by, update_time, remark from meeting_agenda
+    </sql>
+
+    <select id="selectMeetingAgendaList" parameterType="MeetingAgenda" resultMap="MeetingAgendaResult">
+        <include refid="selectMeetingAgendaVo"/>
+        <where>  
+            <if test="meetingId != null "> and meeting_id = #{meetingId}</if>
+            <if test="beginTime != null "> and begin_time = #{beginTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="meta != null  and meta != ''"> and meta = #{meta}</if>
+        </where>
+    </select>
+    
+    <select id="selectMeetingAgendaById" parameterType="Long" resultMap="MeetingAgendaResult">
+        <include refid="selectMeetingAgendaVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMeetingAgenda" parameterType="MeetingAgenda" useGeneratedKeys="true" keyProperty="id">
+        insert into meeting_agenda
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="meetingId != null">meeting_id,</if>
+            <if test="beginTime != null">begin_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="meta != null">meta,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="meetingId != null">#{meetingId},</if>
+            <if test="beginTime != null">#{beginTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="meta != null">#{meta},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMeetingAgenda" parameterType="MeetingAgenda">
+        update meeting_agenda
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="meetingId != null">meeting_id = #{meetingId},</if>
+            <if test="beginTime != null">begin_time = #{beginTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="meta != null">meta = #{meta},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMeetingAgendaById" parameterType="Long">
+        delete from meeting_agenda where id = #{id}
+    </delete>
+
+    <delete id="deleteMeetingAgendaByIds" parameterType="String">
+        delete from meeting_agenda where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.meeting.mapper.MeetingGuestMapper">
+    
+    <resultMap type="MeetingGuest" id="MeetingGuestResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="views"    column="views"    />
+        <result property="likes"    column="likes"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="url"    column="url"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMeetingGuestVo">
+        select id, name, title, content, views, likes, avatar, url, del_flag, create_by, create_time, update_by, update_time, remark from meeting_guest
+    </sql>
+
+    <select id="selectMeetingGuestList" parameterType="MeetingGuest" resultMap="MeetingGuestResult">
+        <include refid="selectMeetingGuestVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="views != null "> and views = #{views}</if>
+            <if test="likes != null "> and likes = #{likes}</if>
+            <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+        </where>
+    </select>
+    
+    <select id="selectMeetingGuestById" parameterType="Long" resultMap="MeetingGuestResult">
+        <include refid="selectMeetingGuestVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMeetingGuest" parameterType="MeetingGuest" useGeneratedKeys="true" keyProperty="id">
+        insert into meeting_guest
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="views != null">views,</if>
+            <if test="likes != null">likes,</if>
+            <if test="avatar != null and avatar != ''">avatar,</if>
+            <if test="url != null and url != ''">url,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="views != null">#{views},</if>
+            <if test="likes != null">#{likes},</if>
+            <if test="avatar != null and avatar != ''">#{avatar},</if>
+            <if test="url != null and url != ''">#{url},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMeetingGuest" parameterType="MeetingGuest">
+        update meeting_guest
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="views != null">views = #{views},</if>
+            <if test="likes != null">likes = #{likes},</if>
+            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+            <if test="url != null and url != ''">url = #{url},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMeetingGuestById" parameterType="Long">
+        delete from meeting_guest where id = #{id}
+    </delete>
+
+    <delete id="deleteMeetingGuestByIds" parameterType="String">
+        delete from meeting_guest where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
