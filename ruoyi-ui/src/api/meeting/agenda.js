@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import {parseTime} from "../../utils/ruoyi";
 
 // 查询会议议程列表
 export function listAgenda(query) {
@@ -18,7 +19,11 @@ export function getAgenda(id) {
 }
 
 // 新增会议议程
-export function addAgenda(data) {
+export function addAgenda(data, meetingId) {
+  data['meetingId'] = parseInt(meetingId);
+  // 这是element ui最唐的地方
+  data['beginTime'] = parseTime(data['beginTime']);
+  data['endTime'] = parseTime(data['endTime']);
   return request({
     url: '/meeting/agenda',
     method: 'post',
@@ -28,6 +33,8 @@ export function addAgenda(data) {
 
 // 修改会议议程
 export function updateAgenda(data) {
+  data['beginTime'] = parseTime(data['beginTime']);
+  data['endTime'] = parseTime(data['endTime']);
   return request({
     url: '/meeting/agenda',
     method: 'put',

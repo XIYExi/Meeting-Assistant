@@ -119,7 +119,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            @click="handleEditAgenda(scope.row)"
             v-hasPermi="['meeting:meeting:edit']"
           >议程</el-button>
           <el-button
@@ -244,6 +244,12 @@ export default {
     this.getList();
   },
   methods: {
+    handleEditAgenda(row) {
+      this.$router.push({path: `/meeting/agenda/${row.id}`})
+    },
+
+
+
     parseTime,
     /** 查询会议列表 */
     getList() {

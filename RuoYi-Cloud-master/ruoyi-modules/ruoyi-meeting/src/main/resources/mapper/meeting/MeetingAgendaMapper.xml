@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="meetingId != null "> and meeting_id = #{meetingId}</if>
             <if test="beginTime != null "> and begin_time = #{beginTime}</if>
             <if test="endTime != null "> and end_time = #{endTime}</if>
-            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="content != null  and content != ''"> and content like "%"#{content}"%"</if>
             <if test="meta != null  and meta != ''"> and meta = #{meta}</if>
         </where>
     </select>

@@ -1,27 +1,27 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="会议论坛id" prop="meetingId">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+      <el-form-item label="会议内容" prop="content">
         <el-input
-          v-model="queryParams.meetingId"
-          placeholder="请输入会议论坛id"
+          v-model="queryParams.content"
+          placeholder="请输入会议内容"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="子议程开始时间" prop="beginTime">
+      <el-form-item label="开始时间" prop="beginTime">
         <el-date-picker clearable
           v-model="queryParams.beginTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择子议程开始时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="子议程结束时间" prop="endTime">
+      <el-form-item label="结束时间" prop="endTime">
         <el-date-picker clearable
           v-model="queryParams.endTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择子议程结束时间">
         </el-date-picker>
       </el-form-item>
@@ -79,21 +79,38 @@
 
     <el-table v-loading="loading" :data="agendaList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="子议程id" align="center" prop="id" />
-      <el-table-column label="会议论坛id" align="center" prop="meetingId" />
+<!--      <el-table-column label="子议程id" align="center" prop="id" />-->
+<!--      <el-table-column label="会议论坛id" align="center" prop="meetingId" />-->
+      <el-table-column label="子议程内容" align="center" prop="content" />
       <el-table-column label="子议程开始时间" align="center" prop="beginTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.beginTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ scope.row.beginTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="子议程结束时间" align="center" prop="endTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="子议程内容" align="center" prop="content" />
-      <el-table-column label="主讲人信息" align="center" prop="meta" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="主讲人信息" align="center" prop="meta" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.meta !== null">
+            <div
+              v-if="scope.row.meta.length > 0"
+              v-for="(item, idx) in scope.row.meta.split(',')"
+              :key="idx"
+              style="display: flex;justify-content: center;align-items: center;"
+            >
+              <span style="margin-right: 10px;">{{ item.split('-')[0] }}</span>
+              <span>{{ item.split('-')[1] }}</span>
+            </div>
+          </div>
+          <div v-else>
+            <span>无</span>
+          </div>
+        </template>
+      </el-table-column>
+<!--      <el-table-column label="备注" align="center" prop="remark" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -113,7 +130,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -124,37 +141,26 @@
 
     <!-- 添加或修改会议议程对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="会议论坛id" prop="meetingId">
-          <el-input v-model="form.meetingId" placeholder="请输入会议论坛id" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-form-item label="子议程内容">
+          <el-input v-model="form.content"/>
         </el-form-item>
-        <el-form-item label="子议程开始时间" prop="beginTime">
+        <el-form-item label="开始时间" prop="beginTime">
           <el-date-picker clearable
             v-model="form.beginTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
             placeholder="请选择子议程开始时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="子议程结束时间" prop="endTime">
+        <el-form-item label="结束时间" prop="endTime">
           <el-date-picker clearable
             v-model="form.endTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
             placeholder="请选择子议程结束时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="子议程内容">
-          <editor v-model="form.content" :min-height="192"/>
-        </el-form-item>
         <el-form-item label="主讲人信息" prop="meta">
           <el-input v-model="form.meta" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -167,6 +173,7 @@
 
 <script>
 import { listAgenda, getAgenda, delAgenda, addAgenda, updateAgenda } from "@/api/meeting/agenda";
+import {parseTime} from "../../../utils/ruoyi";
 
 export default {
   name: "Agenda",
@@ -216,13 +223,20 @@ export default {
         content: [
           { required: true, message: "子议程内容不能为空", trigger: "blur" }
         ],
-      }
+      },
+
+
+      meetingId: '',
     };
   },
   created() {
     this.getList();
   },
+  mounted() {
+    this.meetingId = this.$route.params.id;
+  },
   methods: {
+    parseTime,
     /** 查询会议议程列表 */
     getList() {
       this.loading = true;
@@ -298,7 +312,7 @@ export default {
               this.getList();
             });
           } else {
-            addAgenda(this.form).then(response => {
+            addAgenda(this.form, this.meetingId).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
