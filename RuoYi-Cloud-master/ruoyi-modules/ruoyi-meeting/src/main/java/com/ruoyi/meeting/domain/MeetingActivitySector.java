@@ -22,6 +22,9 @@ public class MeetingActivitySector extends BaseEntity
     @Excel(name = "板块标题")
     private String title;
 
+    @Excel(name = "板块图片")
+    private String url;
+
     /** 板块内容 */
     @Excel(name = "板块内容")
     private String description;
@@ -66,11 +69,20 @@ public class MeetingActivitySector extends BaseEntity
         return delFlag;
     }
 
+     public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("title", getTitle())
+            .append("url", getUrl())
             .append("description", getDescription())
             .append("delFlag", getDelFlag())
             .append("createBy", getCreateBy())

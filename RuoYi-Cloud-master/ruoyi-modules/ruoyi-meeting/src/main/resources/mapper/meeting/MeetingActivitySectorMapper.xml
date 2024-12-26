@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="MeetingActivitySector" id="MeetingActivitySectorResult">
         <result property="id"    column="id"    />
         <result property="title"    column="title"    />
+        <result property="url" column="url" />
         <result property="description"    column="description"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createBy"    column="create_by"    />
@@ -17,14 +18,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMeetingActivitySectorVo">
-        select id, title, description, del_flag, create_by, create_time, update_by, update_time, remark from meeting_activity_sector
+        select id, title, url, description, del_flag, create_by, create_time, update_by, update_time, remark from meeting_activity_sector
     </sql>
 
     <select id="selectMeetingActivitySectorList" parameterType="MeetingActivitySector" resultMap="MeetingActivitySectorResult">
         <include refid="selectMeetingActivitySectorVo"/>
         <where>  
-            <if test="title != null  and title != ''"> and title = #{title}</if>
-            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="title != null  and title != ''"> and title like "%"#{title}"%"</if>
         </where>
     </select>
     
@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into meeting_activity_sector
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null and title != ''">title,</if>
+            <if test="url != null and url != ''">url,</if>
             <if test="description != null and description != ''">description,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
@@ -47,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="title != null and title != ''">#{title},</if>
+            <if test="url != null and url != ''">#{url},</if>
             <if test="description != null and description != ''">#{description},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -61,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update meeting_activity_sector
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null and title != ''">title = #{title},</if>
+            <if test="url != null and url != ''">url = #{url},</if>
             <if test="description != null and description != ''">description = #{description},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

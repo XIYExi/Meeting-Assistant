@@ -18,7 +18,8 @@ export function getActivity(id) {
 }
 
 // 新增会议活动
-export function addActivity(data) {
+export function addActivity(data, sectorId) {
+  data['sectorId'] = sectorId;
   return request({
     url: '/meeting/activity',
     method: 'post',

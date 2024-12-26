@@ -1,14 +1,6 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="板块id" prop="sectorId">
-        <el-input
-          v-model="queryParams.sectorId"
-          placeholder="请输入板块id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="活动标题" prop="title">
         <el-input
           v-model="queryParams.title"
@@ -24,14 +16,6 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择活动时间">
         </el-date-picker>
-      </el-form-item>
-      <el-form-item label="活动封面海报" prop="url">
-        <el-input
-          v-model="queryParams.url"
-          placeholder="请输入活动封面海报"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -87,8 +71,6 @@
 
     <el-table v-loading="loading" :data="activityList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="板块活动id" align="center" prop="id" />
-      <el-table-column label="板块id" align="center" prop="sectorId" />
       <el-table-column label="活动标题" align="center" prop="title" />
       <el-table-column label="活动时间" align="center" prop="time" width="180">
         <template slot-scope="scope">
@@ -96,9 +78,30 @@
         </template>
       </el-table-column>
       <el-table-column label="活动封面海报" align="center" prop="url" />
-      <el-table-column label="活动类型" align="center" prop="type" />
-      <el-table-column label="内容" align="center" prop="content" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="活动类型" align="center" prop="type" >
+        <template slot-scope="scope">
+          <span>
+            {{ scope.row.type === 1 ? '链接会议' : '会议推文' }}
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="内容" align="center" prop="content" >
+        <template slot-scope="scope">
+          <span v-if="scope.row.type !== 1">
+             <a>查看</a>
+          </span>
+          <span v-else>~</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="链接" align="center" prop="redirect" >
+        <template slot-scope="scope">
+          <span v-if="scope.row.type === 1">{{ scope.row.redirect }}</span>
+          <span v-else>~</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -118,7 +121,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -130,9 +133,6 @@
     <!-- 添加或修改会议活动对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="板块id" prop="sectorId">
-          <el-input v-model="form.sectorId" placeholder="请输入板块id" />
-        </el-form-item>
         <el-form-item label="活动标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入活动标题" />
         </el-form-item>
@@ -144,17 +144,18 @@
             placeholder="请选择活动时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="活动封面海报" prop="url">
+        <el-form-item label="活动海报" prop="url">
           <el-input v-model="form.url" placeholder="请输入活动封面海报" />
         </el-form-item>
-        <el-form-item label="内容">
-          <editor v-model="form.content" :min-height="192"/>
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="类型">
+          <el-select v-model="form.type" placeholder="请选择活动类型">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -167,11 +168,21 @@
 
 <script>
 import { listActivity, getActivity, delActivity, addActivity, updateActivity } from "@/api/meeting/activity";
+import {parseTime} from "../../../utils/ruoyi";
+import {listAgenda} from "../../../api/meeting/agenda";
 
 export default {
   name: "Activity",
   data() {
     return {
+
+      sectorId: 0,
+      options: [
+        {value: 1, label: "会议"},
+        {value: 2, label: "推文"},
+      ],
+      subList: [],
+
       // 遮罩层
       loading: true,
       // 选中数组
@@ -205,9 +216,6 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        sectorId: [
-          { required: true, message: "板块id不能为空", trigger: "blur" }
-        ],
         title: [
           { required: true, message: "活动标题不能为空", trigger: "blur" }
         ],
@@ -223,7 +231,14 @@ export default {
   created() {
     this.getList();
   },
+  mounted() {
+    this.sectorId = parseInt(this.$route.params.id);
+    listAgenda().then(response => {
+      this.subList = response.rows;
+    });
+  },
   methods: {
+    parseTime,
     /** 查询会议活动列表 */
     getList() {
       this.loading = true;
@@ -300,7 +315,7 @@ export default {
               this.getList();
             });
           } else {
-            addActivity(this.form).then(response => {
+            addActivity(this.form, this.sectorId).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
