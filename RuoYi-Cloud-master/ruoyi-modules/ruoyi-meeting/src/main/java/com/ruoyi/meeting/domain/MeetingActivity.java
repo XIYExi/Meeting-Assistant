@@ -41,6 +41,9 @@ public class MeetingActivity extends BaseEntity
     @Excel(name = "活动类型")
     private Long type;
 
+    @Excel(name = "跳转页面")
+    private Long redirect;
+
     /** 内容 */
     @Excel(name = "内容")
     private String content;

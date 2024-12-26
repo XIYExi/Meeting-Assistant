@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="time"    column="time"    />
         <result property="url"    column="url"    />
         <result property="type"    column="type"    />
+        <result property="redirect"    column="redirect"    />
         <result property="content"    column="content"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createBy"    column="create_by"    />
@@ -21,18 +22,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMeetingActivityVo">
-        select id, sector_id, title, time, url, type, content, del_flag, create_by, create_time, update_by, update_time, remark from meeting_activity
+        select id, sector_id, title, time, url, type, redirect, content, del_flag, create_by, create_time, update_by, update_time, remark from meeting_activity
     </sql>
 
     <select id="selectMeetingActivityList" parameterType="MeetingActivity" resultMap="MeetingActivityResult">
         <include refid="selectMeetingActivityVo"/>
-        <where>  
-            <if test="sectorId != null "> and sector_id = #{sectorId}</if>
-            <if test="title != null  and title != ''"> and title = #{title}</if>
+        <where>
+            <if test="title != null  and title != ''"> and title like "%"#{title}"%"</if>
             <if test="time != null "> and time = #{time}</if>
-            <if test="url != null  and url != ''"> and url = #{url}</if>
-            <if test="type != null "> and type = #{type}</if>
-            <if test="content != null  and content != ''"> and content = #{content}</if>
         </where>
     </select>
     
@@ -49,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">time,</if>
             <if test="url != null and url != ''">url,</if>
             <if test="type != null">type,</if>
+            <if test="redirect != null">redirect,</if>
             <if test="content != null">content,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
@@ -63,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">#{time},</if>
             <if test="url != null and url != ''">#{url},</if>
             <if test="type != null">#{type},</if>
+             <if test="redirect != null">#{redirect},</if>
             <if test="content != null">#{content},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -81,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">time = #{time},</if>
             <if test="url != null and url != ''">url = #{url},</if>
             <if test="type != null">type = #{type},</if>
+             <if test="redirect != null">redirect = #{redirect},</if>
             <if test="content != null">content = #{content},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
