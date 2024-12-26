@@ -104,6 +104,22 @@ export const constantRoutes = [
         }
       }
     ]
+  },
+  {
+    path: '/meeting/activity/:id(\\d+)',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/',
+        component: () => import('@/views/meeting/activity/index'),
+        name: 'Activity',
+        noRedirect: true,
+        meta: {
+          title: '板块内容'
+        }
+      }
+    ]
   }
 ]
 

@@ -65,8 +65,8 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="活动板块id" align="center" prop="id" />
       <el-table-column label="板块标题" align="center" prop="title" />
+      <el-table-column label="板块图片" align="center" prop="url" />
       <el-table-column label="板块内容" align="center" prop="description" />
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -79,6 +79,13 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-edit"
+            @click="handleEditSectorContent(scope.row)"
+            v-hasPermi="['meeting:activity:edit']"
+          >子板块内容</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['meeting:sector:remove']"
@@ -86,7 +93,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -101,14 +108,11 @@
         <el-form-item label="板块标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入板块标题" />
         </el-form-item>
+        <el-form-item label="板块图片" prop="url">
+          <el-input v-model="form.url" placeholder="请输入板块图片" />
+        </el-form-item>
         <el-form-item label="板块内容" prop="description">
           <el-input v-model="form.description" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -158,6 +162,9 @@ export default {
         title: [
           { required: true, message: "板块标题不能为空", trigger: "blur" }
         ],
+        url: [
+          { required: true, message: "板块图片不能为空", trigger: "blur" }
+        ],
         description: [
           { required: true, message: "板块内容不能为空", trigger: "blur" }
         ],
@@ -168,6 +175,13 @@ export default {
     this.getList();
   },
   methods: {
+
+    handleEditSectorContent(row) {
+      const id = row.id;
+      this.$router.push({path: `/meeting/activity/${id}`});
+    },
+
+
     /** 查询会议活动板块列表 */
     getList() {
       this.loading = true;
