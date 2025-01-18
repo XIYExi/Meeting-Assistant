@@ -1,0 +1,4 @@
+
+# agent对话
+
+http://localhost:9604/agent/chat?question=你好

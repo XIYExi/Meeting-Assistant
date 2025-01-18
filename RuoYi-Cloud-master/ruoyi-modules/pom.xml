@@ -15,6 +15,7 @@
         <module>ruoyi-file</module>
         <module>ruoyi-meeting</module>
         <module>ruoyi-cos</module>
+        <module>ruoyi-agent</module>
     </modules>
 
     <artifactId>ruoyi-modules</artifactId>
