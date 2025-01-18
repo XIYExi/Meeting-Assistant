@@ -1,4 +1,8 @@
 
-# agent对话
+### agent对话
 
-http://localhost:9604/agent/chat?question=你好
+http://localhost:9604/agent/chat?question=告诉我出席会议的嘉宾
+
+### stream对话
+
+http://localhost:9604/agent/stream?question=告诉我出席会议的嘉宾

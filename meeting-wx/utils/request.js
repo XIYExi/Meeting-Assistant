@@ -4,7 +4,7 @@ import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
 import { toast, showConfirm, tansParams } from '@/utils/common'
 
-let timeout = 10000
+let timeout = 100000
 const baseUrl = config.baseUrl
 
 const request = config => {
