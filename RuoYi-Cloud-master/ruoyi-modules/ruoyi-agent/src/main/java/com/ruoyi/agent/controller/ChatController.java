@@ -5,7 +5,6 @@ import com.ruoyi.agent.constant.AgentRequestPath;
 import com.ruoyi.agent.utils.SignUtils;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

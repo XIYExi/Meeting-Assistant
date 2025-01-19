@@ -23,3 +23,16 @@ spring:
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+
+# cos桶存储
+cos:
+  secretId: AKIDGaqwss3ShleJrgUJ0TlEB3vhWEjEnXEr
+  secretKey: YwPks3CRYhp181iOxHMTSOB0LqS6W4fB
+  bucketName: jn-1306384632
+  # ??
+  region: ap-nanjing
+  durationSeconds: 1800
+  url: https://jn-1306384632.cos.ap-nanjing.myqcloud.com
+  # ?????????????????
+  filepath: E:/file/aigc/
