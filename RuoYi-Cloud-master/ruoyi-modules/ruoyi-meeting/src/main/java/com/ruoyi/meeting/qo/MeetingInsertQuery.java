@@ -1,9 +1,7 @@
 package com.ruoyi.meeting.qo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
-import com.ruoyi.meeting.domain.Meeting;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;

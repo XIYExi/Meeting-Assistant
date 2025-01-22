@@ -2,6 +2,7 @@ package com.ruoyi.meeting.mapper;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.Meeting;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 会议Mapper接口
@@ -9,6 +10,7 @@ import com.ruoyi.meeting.domain.Meeting;
  * @author xiye
  * @date 2024-12-25
  */
+@Mapper
 public interface MeetingMapper 
 {
     /**

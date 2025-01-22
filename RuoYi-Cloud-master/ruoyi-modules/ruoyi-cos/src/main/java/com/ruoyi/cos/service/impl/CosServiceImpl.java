@@ -4,6 +4,7 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.exception.CosClientException;
 import com.qcloud.cos.model.DeleteObjectRequest;
 import com.qcloud.cos.model.PutObjectRequest;
+import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.cos.config.CosConfig;
 import com.ruoyi.cos.constant.CosType;
 import com.ruoyi.cos.domain.Image;
@@ -73,6 +74,7 @@ public class CosServiceImpl implements CosService {
                     .type(type.name())
                     .extend(extend)
                     .build();
+            image.setCreateTime(DateUtils.getNowDate());
             imageMapper.insertImage(image);
         } catch (CosClientException e) {
             throw new RuntimeException("文件上传失败");

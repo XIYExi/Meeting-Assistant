@@ -1,7 +1,9 @@
 package com.ruoyi.meeting.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
+import com.ruoyi.cos.api.RemoteCosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.MeetingMapper;
@@ -19,6 +21,8 @@ public class MeetingServiceImpl implements IMeetingService
 {
     @Autowired
     private MeetingMapper meetingMapper;
+    @Autowired
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询会议
@@ -79,6 +83,13 @@ public class MeetingServiceImpl implements IMeetingService
     @Override
     public int deleteMeetingByIds(Long[] ids)
     {
+        Arrays.stream(ids).forEach(meetingId -> {
+            Meeting meeting = meetingMapper.selectMeetingById(meetingId);
+            String url = meeting.getUrl();
+            if (!url.equals("null")) {
+                remoteCosService.removeImage(url);
+            }
+        });
         return meetingMapper.deleteMeetingByIds(ids);
     }
 
@@ -91,6 +102,11 @@ public class MeetingServiceImpl implements IMeetingService
     @Override
     public int deleteMeetingById(Long id)
     {
+        Meeting meeting = meetingMapper.selectMeetingById(id);
+        String url = meeting.getUrl();
+        if (!url.equals("null")) {
+            remoteCosService.removeImage(url);
+        }
         return meetingMapper.deleteMeetingById(id);
     }
 }
