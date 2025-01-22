@@ -25,14 +25,6 @@
           placeholder="请选择会议结束时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="封面海报图" prop="url">
-        <el-input
-          v-model="queryParams.url"
-          placeholder="请输入会议封面海报图"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -167,7 +159,22 @@
           <el-input v-model="form.location" placeholder="请输入会议地点" />
         </el-form-item>
         <el-form-item label="封面海报图" prop="url">
-          <el-input v-model="form.url" placeholder="请输入会议封面海报图" />
+<!--          <el-input v-model="form.url" placeholder="请输入会议封面海报图" />-->
+          <el-upload
+            ref="uploadMeetingRef"
+            drag
+            action=""
+            class="upload-demo"
+            :http-request="httpRequest"
+            :multiple="false"
+            :limit="1"
+            :auto-upload="false"
+            :file-list="form.file"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -181,6 +188,7 @@
 <script>
 import { listMeeting, getMeeting, delMeeting, addMeeting, updateMeeting } from "@/api/meeting/meeting";
 import {parseTime} from "../../../utils/ruoyi";
+import { uuid } from '@/utils/uuid'
 
 export default {
   name: "Meeting",
@@ -247,8 +255,9 @@ export default {
     handleEditAgenda(row) {
       this.$router.push({path: `/meeting/agenda/${row.id}`})
     },
-
-
+    httpRequest(param) {
+      this.form.file = param.file
+    },
 
     parseTime,
     /** 查询会议列表 */
@@ -283,7 +292,9 @@ export default {
         createTime: null,
         updateBy: null,
         updateTime: null,
-        remark: null
+        remark: null,
+        imageId: null,
+        file: null,
       };
       this.resetForm("form");
     },
@@ -321,6 +332,10 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+
+        this.$refs.uploadMeetingRef.submit();
+        this.form.imageId = uuid(8, 16);
+
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {

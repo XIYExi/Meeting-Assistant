@@ -1,8 +1,10 @@
 
 drop table if exists image;
 create table image (
-    id bigint(20) not null auto_increment comment '图片编号',
+    id bigint(20) not null  comment '图片编号',
     url varchar(255) not null comment '图片链接',
+    type varchar(50) not null comment '图片类型',
+    extend varchar(50) not null comment '图片后缀（类型）',
     del_flag     char(1)      default '0' comment '删除标志（0代表存在 2代表删除）',
     create_by    varchar(64)  default '' comment '创建者',
     create_time  datetime comment '创建时间',

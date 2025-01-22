@@ -3,6 +3,9 @@ package com.ruoyi.meeting.controller;
 import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.meeting.qo.MeetingInsertQuery;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +24,7 @@ import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 会议Controller
@@ -86,10 +90,17 @@ public class MeetingController extends BaseController
      */
     @RequiresPermissions("meeting:meeting:edit")
     @Log(title = "会议", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody Meeting meeting)
+    @PostMapping("/edit")
+    public AjaxResult edit(MeetingInsertQuery meetingEditQuery)
     {
-        return toAjax(meetingService.updateMeeting(meeting));
+        System.err.println(meetingEditQuery);
+        Meeting meeting = new Meeting();
+        BeanUtils.copyProperties(meetingEditQuery, meeting);
+        System.err.println(meeting);
+        int updateMeeting = meetingService.updateMeeting(meeting);
+        int updateImage = 1;
+
+        return toAjax(updateMeeting == updateImage);
     }
 
     /**

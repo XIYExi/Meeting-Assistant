@@ -35,4 +35,4 @@ cos:
   durationSeconds: 1800
   url: https://jn-1306384632.cos.ap-nanjing.myqcloud.com
   # ?????????????????
-  filepath: E:/file/aigc/
+  filepath: D:/file/aigc/

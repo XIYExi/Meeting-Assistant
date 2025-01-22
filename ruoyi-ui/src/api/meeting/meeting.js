@@ -28,10 +28,24 @@ export function addMeeting(data) {
 
 // 修改会议
 export function updateMeeting(data) {
+  console.log(data)
+  const fd = new FormData();
+  Object.keys(data).forEach(key => {
+    if (data[key] instanceof Array) {
+      // 如果是数组就循环加入表单，key保持相同即可，这就是表达单的数组
+      data[key].forEach(item => {
+        console.log(key, item)
+        fd.append(key, item)
+      })
+    } else {
+      // 如果不是数组就直接追加进去
+      fd.append(key, data[key])
+    }
+  });
   return request({
-    url: '/meeting/meeting',
-    method: 'put',
-    data: data
+    url: '/meeting/meeting/edit',
+    method: 'post',
+    data: fd
   })
 }
 
