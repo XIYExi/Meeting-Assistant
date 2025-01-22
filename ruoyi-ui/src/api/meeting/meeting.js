@@ -19,10 +19,33 @@ export function getMeeting(id) {
 
 // 新增会议
 export function addMeeting(data) {
+  const fd = new FormData();
+  Object.keys(data).forEach(key => {
+    if (data[key] instanceof Array) {
+      // 如果是数组就循环加入表单，key保持相同即可，这就是表达单的数组
+      data[key].forEach(item => {
+        console.log(key, item)
+        fd.append(key, item)
+      })
+    } else {
+      // 如果不是数组就直接追加进去
+      fd.append(key, data[key])
+    }
+  });
   return request({
-    url: '/meeting/meeting',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    url: '/meeting/meeting/addImage',
     method: 'post',
-    data: data
+    data: fd
+  }).then(response => {
+    data['url'] = response.msg ? response.msg : 'null';
+    request({
+      url: '/meeting/meeting/add',
+      method: 'post',
+      data: data
+    })
   })
 }
 

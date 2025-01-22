@@ -94,7 +94,7 @@
       <el-table-column label="会议地点" align="center" prop="location" />
       <el-table-column label="会议封面海报图" align="center" prop="url" >
         <template slot-scope="scope">
-          <img :src="scope.row.url" style="width: 80px;height: 60px;"/>
+          <img loading="lazy" :src="scope.row.url" style="width: 80px;height: 60px;"/>
         </template>
       </el-table-column>
       <el-table-column label="查看次数" align="center" prop="views" />
@@ -146,16 +146,18 @@
         <el-form-item label="开始时间" prop="beginTime">
           <el-date-picker clearable
             v-model="form.beginTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择会议开始时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="结束时间" prop="endTime">
           <el-date-picker clearable
             v-model="form.endTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择会议结束时间">
           </el-date-picker>
         </el-form-item>
@@ -351,9 +353,8 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-
-        this.$refs.uploadMeetingRef.submit();
-        this.form.imageId = uuid(8, 16);
+      this.$refs.uploadMeetingRef.submit();
+      this.form.imageId = uuid(8, 16);
 
       this.$refs["form"].validate(valid => {
         if (valid) {
