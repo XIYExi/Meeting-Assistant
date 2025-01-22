@@ -2,8 +2,8 @@ package com.ruoyi.cos.mapper;
 
 import java.util.List;
 
-import com.ruoyi.common.datasource.annotation.Master;
 import com.ruoyi.cos.domain.Image;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 图片cosMapper接口
@@ -11,7 +11,7 @@ import com.ruoyi.cos.domain.Image;
  * @author xiye
  * @date 2025-01-19
  */
-@Master
+@Mapper
 public interface ImageMapper 
 {
     /**

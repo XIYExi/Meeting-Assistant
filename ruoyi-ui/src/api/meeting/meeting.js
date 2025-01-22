@@ -43,6 +43,9 @@ export function updateMeeting(data) {
     }
   });
   return request({
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
     url: '/meeting/meeting/edit',
     method: 'post',
     data: fd

@@ -92,7 +92,11 @@
         </template>
       </el-table-column>
       <el-table-column label="会议地点" align="center" prop="location" />
-      <el-table-column label="会议封面海报图" align="center" prop="url" />
+      <el-table-column label="会议封面海报图" align="center" prop="url" >
+        <template slot-scope="scope">
+          <img :src="scope.row.url" style="width: 80px;height: 60px;"/>
+        </template>
+      </el-table-column>
       <el-table-column label="查看次数" align="center" prop="views" />
       <el-table-column label="会议类型" align="center" prop="type" />
       <el-table-column label="会议状态" align="center" prop="status" />
@@ -159,7 +163,6 @@
           <el-input v-model="form.location" placeholder="请输入会议地点" />
         </el-form-item>
         <el-form-item label="封面海报图" prop="url">
-<!--          <el-input v-model="form.url" placeholder="请输入会议封面海报图" />-->
           <el-upload
             ref="uploadMeetingRef"
             drag
@@ -227,7 +230,26 @@ export default {
         meetingType: null,
       },
       // 表单参数
-      form: {},
+      form: {
+        id: null,
+        title: null,
+        beginTime: null,
+        endTime: null,
+        location: null,
+        url: null,
+        views: null,
+        type: null,
+        status: null,
+        meetingType: null,
+        delFlag: null,
+        createBy: null,
+        createTime: null,
+        updateBy: null,
+        updateTime: null,
+        remark: null,
+        imageId: null,
+        file: null,
+      },
       // 表单校验
       rules: {
         title: [
@@ -241,9 +263,6 @@ export default {
         ],
         location: [
           { required: true, message: "会议地点不能为空", trigger: "blur" }
-        ],
-        url: [
-          { required: true, message: "会议封面海报图不能为空", trigger: "blur" }
         ],
       }
     };

@@ -70,6 +70,12 @@
             <artifactId>ruoyi-common-swagger</artifactId>
         </dependency>
 
+     <dependency>
+         <groupId>com.ruoyi</groupId>
+         <artifactId>ruoyi-api-cos</artifactId>
+         <version>3.6.5</version>
+     </dependency>
+
     </dependencies>
 
     <build>

@@ -4,6 +4,7 @@ import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class MeetingController extends BaseController
 {
     @Autowired
     private IMeetingService meetingService;
+    @Autowired
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询会议列表
@@ -88,19 +91,34 @@ public class MeetingController extends BaseController
     /**
      * 修改会议
      */
-    @RequiresPermissions("meeting:meeting:edit")
+    // @RequiresPermissions("meeting:meeting:edit")
     @Log(title = "会议", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     public AjaxResult edit(MeetingInsertQuery meetingEditQuery)
     {
-        System.err.println(meetingEditQuery);
+        int updateMeeting= 0;
+
+        // 如果传了图片就调用然后更新
+        if (!meetingEditQuery.getFile().isEmpty()) {
+             AjaxResult ajaxResult = remoteCosService.uploadFileCommon(meetingEditQuery.getFile(), meetingEditQuery.getImageId());
+             if (ajaxResult.get("code").toString().equals("200")) {
+                  // 走到这里image库里面插入了一条新的数据，现在删除老的图片
+                  if (meetingEditQuery.getUrl().startsWith("https")) {
+                      // 如果url开头，那么就说明开始的时候插入了数据，需要去Image库里面删除
+                      remoteCosService.removeImage(meetingEditQuery.getUrl());
+                  }
+              }
+        }
+
         Meeting meeting = new Meeting();
         BeanUtils.copyProperties(meetingEditQuery, meeting);
-        System.err.println(meeting);
-        int updateMeeting = meetingService.updateMeeting(meeting);
-        int updateImage = 1;
+        String filename = meetingEditQuery.getFile().getOriginalFilename();
+        String extend = filename.substring(filename.lastIndexOf(".") + 1);
+        if (!meetingEditQuery.getFile().isEmpty())
+            meeting.setUrl("https://jn-1306384632.cos.ap-nanjing.myqcloud.com/common/" + meetingEditQuery.getImageId() + "." + extend);
+        updateMeeting = meetingService.updateMeeting(meeting);
 
-        return toAjax(updateMeeting == updateImage);
+        return toAjax(updateMeeting == 1);
     }
 
     /**

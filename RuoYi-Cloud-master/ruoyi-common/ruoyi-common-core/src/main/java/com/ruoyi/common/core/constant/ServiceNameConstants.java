@@ -21,4 +21,9 @@ public class ServiceNameConstants
      * 文件服务的serviceid
      */
     public static final String FILE_SERVICE = "ruoyi-file";
+
+    /**
+     * cos腾讯云桶存储的serviceid
+     */
+    public static final String COS_SERVICE = "ruoyi-cos";
 }
