@@ -7,3 +7,12 @@ export function executeChatMessage(question) {
     method: 'get'
   })
 }
+
+
+export function sendFlux(data) {
+  return request({
+    url: '/agent/agent/flux',
+    method: 'post',
+	data: data
+  })
+}
