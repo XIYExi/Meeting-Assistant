@@ -119,7 +119,7 @@
 		getMeetingListOrderByAsc().then(resp => {
 			console.log(resp.rows);
 			if (resp.code === 200) {
-				this.meetingList = [resp.rows[0], resp.rows[0], resp.rows[0]];
+				this.meetingList = resp.rows;
 			}
 		});
 		
