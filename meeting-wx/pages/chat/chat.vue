@@ -30,12 +30,18 @@
 <script>
 import ChatBox from '@/components/ChatBox';
 import InputBar from '@/components/InputBar';
-import {executeChatMessage} from '@/api/agent/agent.js';
+import {executeChatMessage, sendFlux} from '@/api/agent/agent.js';
+import {generateUUID} from '@/utils/uuid.js';
 
 export default {
 	data() {
 		return {
+			uid: '',
 			value: '',
+			showStream: false,
+			intCount: 0,
+			path: "ws://127.0.0.1:8010/websocket",
+			socket: "",
 			emptys: [
 				'关于西湖论剑安全大会',
 				'告诉我会议日程安排',
@@ -55,7 +61,77 @@ export default {
 	    ChatBox, 
 	    InputBar, 
     },
-	methods: {
+	created() {
+		// this.getCode();
+		// this.getCookie();
+		this.uid = generateUUID();
+	},
+	mounted() {
+		// this.initWebSocket();
+		this.init();
+	},
+	destroyed() {
+	    // 销毁监听
+	    this.socket.onclose = this.close
+	},
+	methods: {	
+		init: function () {
+		    if (typeof (WebSocket) === "undefined") {
+				alert("您的浏览器不支持socket")
+		    } else {
+		    // 实例化socket
+		    this.socket = new WebSocket(this.path)
+		    // 监听socket连接
+		    this.socket.onopen = this.open
+		    // 监听socket错误信息
+		    this.socket.onerror = this.error
+		    // 监听socket消息
+		    this.socket.onmessage = this.getMessage
+		    }
+		},
+		open: function () {
+		    console.log("socket连接成功");
+		    this.send(this.uid)
+		},
+		error: function () {
+		    console.log("连接错误")
+		},
+		getMessage: function (msg) {
+		    this.intCount=this.intCount+1;
+		    setTimeout(()=>{
+				this.AiMsg = msg.data;
+		    },this.intCount*100)
+		    // this.AiMsg = msg.data;
+		    console.log(msg.data)
+		},
+		// 发送消息给被连接的服务端
+		send: function (params) {
+		    this.socket.send(params)
+		},
+		close: function () {
+		    console.log("socket已经关闭")
+		},
+		
+		
+		sendMsg(msg) {
+		      var that = this;
+		      
+		      this.showStream = true;
+		      //that.messages.push({ sender: 'other', content: this.AiMsg });
+				
+		      var data = {
+		        uid: this.uid,
+		        text: msg
+		      }
+			  console.log(data)
+		
+		      sendFlux(data).then(response => {
+		        this.showStream = false;
+		        console.log(response);
+		        that.loading = false;
+		      });
+		
+		    },
 		// 发送消息处理
 		handleSendMsg(msg) {
 			const currentTime = Date.now();
@@ -66,6 +142,7 @@ export default {
 				timestamp: currentTime,
 			});
 			// 模拟 AI 回复
+			/*
 			setTimeout(() => {
 				this.chatMsg.push({
 					position: 'left',
@@ -74,6 +151,8 @@ export default {
 					timestamp: Date.now(),
 				});
 			}, 1000);
+			*/
+		   this.sendMsg(msg);
 		},
 		// 滚动到最新消息
 		scrollToBottom() {
