@@ -99,10 +99,18 @@ export default {
 		getMessage: function (msg) {
 		    this.intCount=this.intCount+1;
 		    setTimeout(()=>{
-				this.AiMsg = msg.data;
+				const lastAIMsg = {
+					position: 'left',
+					msg: msg.data,
+					user: 'AI',
+					timestamp: Date.now(),
+				};
+				this.chatMsg[this.chatMsg.length - 1] = lastAIMsg;
+				console.log(msg.data, this.chatMsg)
 		    },this.intCount*100)
 		    // this.AiMsg = msg.data;
-		    console.log(msg.data)
+			
+		    
 		},
 		// 发送消息给被连接的服务端
 		send: function (params) {
@@ -123,11 +131,17 @@ export default {
 		        uid: this.uid,
 		        text: msg
 		      }
-			  console.log(data)
+			  
 		
 		      sendFlux(data).then(response => {
 		        this.showStream = false;
-		        console.log(response);
+		        const lastAIMsg = {
+		        	position: 'left',
+		        	msg: '',
+		        	user: 'AI',
+		        	timestamp: Date.now(),
+		        };
+		        this.chatMsg.push(lastAIMsg);
 		        that.loading = false;
 		      });
 		
