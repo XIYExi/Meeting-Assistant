@@ -70,13 +70,17 @@
     "style": {
       "navigationBarTitleText": "浏览文本"
     }
-  },
-  {
+  }, {
 	  "path": "pages/chat/chat",
 	  "style": {
 	  	"navigationBarTitleText": "AI对话"
-	  }
-  }
+		}
+	}, {
+	  "path": "pages/voice/index",
+	  "style": {
+	  	"navigationBarTitleText": "TTS"
+		}
+	}
   ],
   "tabBar": {
     "color": "#000000",

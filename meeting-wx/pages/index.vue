@@ -143,7 +143,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .container {
 	  width: 100vw;
 	  position: relative;
