@@ -96,21 +96,20 @@ export default {
 		error: function () {
 		    console.log("连接错误")
 		},
-		getMessage: function (msg) {
-		    this.intCount=this.intCount+1;
-		    setTimeout(()=>{
-				const lastAIMsg = {
-					position: 'left',
-					msg: msg.data,
-					user: 'AI',
-					timestamp: Date.now(),
-				};
-				this.chatMsg[this.chatMsg.length - 1] = lastAIMsg;
-				console.log(msg.data, this.chatMsg)
-		    },this.intCount*100)
-		    // this.AiMsg = msg.data;
-			
-		    
+		getMessage: function (msg) {    
+			const lastAIMsg = {
+				position: 'left',
+				msg: msg.data,
+				user: 'AI',
+				timestamp: Date.now(),
+			};
+			if (this.chatMsg[this.chatMsg.length - 1].position === 'right') {
+				this.chatMsg.push(lastAIMsg);
+			}
+			else {
+				this.chatMsg[this.chatMsg.length - 1].msg = msg.data;
+			}
+			this.scrollToBottom();
 		},
 		// 发送消息给被连接的服务端
 		send: function (params) {
@@ -122,32 +121,40 @@ export default {
 		
 		
 		sendMsg(msg) {
-		      var that = this;
-		      
+		      const that = this;
+			  this.loading = true;
 		      this.showStream = true;
 		      //that.messages.push({ sender: 'other', content: this.AiMsg });
-				
-		      var data = {
+		      const data = {
 		        uid: this.uid,
 		        text: msg
 		      }
 			  
-		
 		      sendFlux(data).then(response => {
 		        this.showStream = false;
 		        const lastAIMsg = {
 		        	position: 'left',
-		        	msg: '',
+		        	msg: response.msg,
 		        	user: 'AI',
 		        	timestamp: Date.now(),
 		        };
-		        this.chatMsg.push(lastAIMsg);
+				if (this.chatMsg[this.chatMsg.length - 1].position === 'right') {
+					this.chatMsg.push(lastAIMsg);
+				}
+				else {
+					this.chatMsg[this.chatMsg.length - 1].msg = response.msg;
+				}
+				console.log('final', this.chatMsg)
 		        that.loading = false;
+				this.scrollToBottom();
 		      });
-		
 		    },
 		// 发送消息处理
 		handleSendMsg(msg) {
+			if (this.loading) {
+				this.$modal.msg("请稍等...");
+				return;
+			}
 			const currentTime = Date.now();
 			this.chatMsg.push({
 				position: 'right',
@@ -155,24 +162,18 @@ export default {
 				user: '用户',
 				timestamp: currentTime,
 			});
-			// 模拟 AI 回复
-			/*
-			setTimeout(() => {
-				this.chatMsg.push({
-					position: 'left',
-					msg: "这是AI的回复！",
-					user: 'AI',
-					timestamp: Date.now(),
-				});
-			}, 1000);
-			*/
 		   this.sendMsg(msg);
 		},
 		// 滚动到最新消息
 		scrollToBottom() {
 			// 可根据需要实现滚动到底部逻辑
+			uni.pageScrollTo({
+				scrollTop: 2000000,    //滚动到页面的目标位置（单位px）
+				duration: 0    //滚动动画的时长，默认300ms，单位 ms
+			});
 		},
 		handleSendMsgInEmpty(msg) {
+			this.loading = true;
 			const currentTime = Date.now();
 			this.chatMsg.push({
 				position: 'right',
@@ -180,19 +181,29 @@ export default {
 				user: '用户',
 				timestamp: currentTime,
 			});
-			executeChatMessage(msg).then(response => {
-				console.log('resp', response);
+			const data = {
+			  uid: this.uid,
+			  text: msg
+			}
+			const that = this;
+			sendFlux(data).then(response => {
 				if(response.code === 200) {
-					const {session} = response.data.body.data;
-					const messages = session.messages;
-					const assistantResp = messages[1];
-					const resp = {
+					this.showStream = false;
+					const lastAIMsg = {
 						position: 'left',
-						msg: assistantResp.content,
+						msg: response.msg,
 						user: 'AI',
 						timestamp: Date.now(),
 					};
-					this.chatMsg.push(resp);
+					if (this.chatMsg[this.chatMsg.length - 1].position === 'right') {
+						this.chatMsg.push(lastAIMsg);
+					}
+					else {
+						this.chatMsg[this.chatMsg.length - 1].msg = response.msg;
+					}
+					console.log('final', this.chatMsg)
+					that.loading = false;
+					this.scrollToBottom();
 				}
 			})
 			
@@ -205,7 +216,8 @@ export default {
 .container {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: auto;
+	min-height: 100vh;
 	background-color: #f8f7f9;
 	overflow: hidden;
 }
