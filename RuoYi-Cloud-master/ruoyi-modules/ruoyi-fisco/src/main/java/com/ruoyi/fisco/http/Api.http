@@ -1,0 +1,4 @@
+### GET Fisco模块测试
+GET http://localhost:9622/test/read
+
+###

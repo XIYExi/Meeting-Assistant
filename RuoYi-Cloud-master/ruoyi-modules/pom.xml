@@ -17,6 +17,7 @@
         <module>ruoyi-cos</module>
         <module>ruoyi-agent</module>
         <module>ruoyi-tts</module>
+        <module>ruoyi-fisco</module>
     </modules>
 
     <artifactId>ruoyi-modules</artifactId>

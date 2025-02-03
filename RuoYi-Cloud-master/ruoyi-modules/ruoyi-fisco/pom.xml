@@ -9,14 +9,19 @@
         <version>3.6.5</version>
     </parent>
 
-    <artifactId>ruoyi-modules-meeting</artifactId>
+    <artifactId>ruoyi-modules-fisco</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <description>
-        会议管理模块
+        Fisco Bcos区块链加密模块
     </description>
 
- <dependencies>
 
-    	<!-- SpringCloud Alibaba Nacos -->
+    <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
@@ -70,21 +75,20 @@
             <artifactId>ruoyi-common-swagger</artifactId>
         </dependency>
 
-     <dependency>
-         <groupId>com.ruoyi</groupId>
-         <artifactId>ruoyi-api-cos</artifactId>
-         <version>3.6.5</version>
-     </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
-
-     <dependency>
-         <groupId>org.projectlombok</groupId>
-         <artifactId>lombok</artifactId>
-     </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
 
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
