@@ -2,6 +2,16 @@
 server:
   port: 9601
 
+aliyun:
+  market:
+    appkey: 204625460
+    appsecret: dY8ZGImgSKSaaU4jaDE9dambUXYDNFHK
+    appcode: be492ba3a0d340e08cb4dd45f9c3685d
+    templateId: f1b714345be64a0bb6efc421cc19ef13
+    smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
+
+
+
 # Spring
 spring:
   application:
