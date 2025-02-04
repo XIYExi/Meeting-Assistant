@@ -13,6 +13,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MeetingMapper 
 {
+
+
+    public List<Meeting> selectTomorrowMeetingsList();
+
     /**
      * 查询会议
      * 
