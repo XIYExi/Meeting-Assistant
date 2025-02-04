@@ -20,6 +20,8 @@ public class MeetingReservationQuery {
     /** 会议名称 */
     private String title;
 
+    private String phone;
+
     /** 会议开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
