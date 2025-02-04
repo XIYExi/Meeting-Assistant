@@ -9,6 +9,7 @@ create table meeting_schedule
     title        varchar(100) not null comment '会议名称',
     begin_time   datetime     not null comment '会议开始时间',
     end_time     datetime     not null comment '会议结束时间',
+    phone       varchar(100) not null comment '电话',
 
     del_flag     char(1)      default '0' comment '删除标志（0代表存在 2代表删除）',
     create_by    varchar(64)  default '' comment '创建者',
