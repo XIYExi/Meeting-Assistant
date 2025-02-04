@@ -2,7 +2,6 @@ package com.ruoyi.meeting.service;
 
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.meeting.constant.MeetingConstant;
-import com.ruoyi.meeting.domain.Meeting;
 import com.ruoyi.meeting.domain.MeetingSchedule;
 import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.mapper.MeetingScheduleMapper;
@@ -10,9 +9,6 @@ import com.ruoyi.meeting.qo.MeetingReservationQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -27,24 +23,16 @@ public class IRecordScheduleService {
     @Autowired
     private MeetingScheduleMapper meetingScheduleMapper;
 
-
-    public String MeetingReservation(MeetingReservationQuery meetingReservationQuery) {
+    /**
+     * 提交会议预约，此时只需要添加record到数据库即可。
+     * 系统会在每天晚上8点的时候扫描会议列表，然后发送信息。
+     * @param meetingReservationQuery
+     * @return
+     */
+    public boolean MeetingReservation(MeetingReservationQuery meetingReservationQuery) {
         if (!Objects.equals(meetingReservationQuery.getStatus(), MeetingConstant.MEETING_STATUE_NOT_YET_STARTED)) {
-            return MeetingConstant.RETURN_IS_OPENING;
+            return false;
         }
-
-
-        // Meeting meetingMessage = meetingMapper.selectMeetingById(meetingReservationQuery.getId());
-        // 添加预约信息
-        Date meetingBeginTime = meetingReservationQuery.getBeginTime();
-        // 一天之前
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(meetingBeginTime);
-        calendar.add(Calendar.DATE, -1);
-        Date time = calendar.getTime();
-
-        // quartz定时任务 提前一天发送短信通知
-
 
         // 添加预约信息
         MeetingSchedule meetingSchedule = new MeetingSchedule();
@@ -54,9 +42,9 @@ public class IRecordScheduleService {
         meetingSchedule.setEndTime(meetingReservationQuery.getEndTime());
         meetingSchedule.setTitle(meetingReservationQuery.getTitle());
         meetingSchedule.setCreateTime(DateUtils.getNowDate());
+        meetingSchedule.setPhone(meetingReservationQuery.getPhone());
         meetingScheduleMapper.insertMeetingSchedule(meetingSchedule);
-
-        return "";
+        return true;
     }
 
 
