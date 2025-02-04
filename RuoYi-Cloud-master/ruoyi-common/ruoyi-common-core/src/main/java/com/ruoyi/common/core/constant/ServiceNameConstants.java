@@ -26,4 +26,9 @@ public class ServiceNameConstants
      * cos腾讯云桶存储的serviceid
      */
     public static final String COS_SERVICE = "ruoyi-cos";
+
+    /**
+     * meeting会议存储的serviceid
+     */
+    public static final String MEETING_SERVICE = "ruoyi-meeting";
 }

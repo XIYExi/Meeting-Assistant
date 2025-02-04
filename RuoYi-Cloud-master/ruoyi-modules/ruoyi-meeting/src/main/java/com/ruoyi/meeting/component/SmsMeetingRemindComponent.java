@@ -4,7 +4,7 @@ import com.ruoyi.meeting.domain.Meeting;
 import com.ruoyi.meeting.domain.MeetingSchedule;
 import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.mapper.MeetingScheduleMapper;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Log
+@Slf4j
 @Component("smsMeetingRemindComponent")
 public class SmsMeetingRemindComponent {
 

@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.meeting.constant.CosConstant;
+import com.ruoyi.meeting.constant.MeetingConstant;
+import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,18 @@ public class MeetingController extends BaseController {
     private IMeetingService meetingService;
     @Autowired
     private RemoteCosService remoteCosService;
+
+
+    @GetMapping("/updateMeetingStatus")
+    public AjaxResult updateMeetingStatus(@RequestParam("id") Long meetingId, @RequestParam("status") int status) {
+        Meeting meeting = new Meeting();
+        meeting.setId(meetingId);
+        meeting.setStatus(status == 2 ? MeetingConstant.MEETING_STATUE_IN_PROGRESS : MeetingConstant.MEETING_STATUE_FINISHED);
+        int i = meetingService.updateMeeting(meeting);
+        return toAjax(i);
+    }
+
+
 
     /**
      * 查询会议列表

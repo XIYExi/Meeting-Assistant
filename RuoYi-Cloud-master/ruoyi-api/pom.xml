@@ -11,6 +11,7 @@
     <modules>
         <module>ruoyi-api-system</module>
         <module>ruoyi-api-cos</module>
+        <module>ruoyi-api-meeting</module>
     </modules>
 
     <artifactId>ruoyi-api</artifactId>
