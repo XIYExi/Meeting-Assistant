@@ -27,6 +27,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, title, begin_time, end_time, location, url, views, type, status, meeting_type, del_flag, create_by, create_time, update_by, update_time, remark from meeting
     </sql>
 
+       <select id="selectTomorrowMeetingsList" resultMap="MeetingResult" >
+        select * from meeting where DATE(begin_time) = CURDATE() + INTERVAL 1 DAY;
+    </select>
+
+
     <select id="selectMeetingList" parameterType="Meeting" resultMap="MeetingResult">
         <include refid="selectMeetingVo"/>
         <where>  

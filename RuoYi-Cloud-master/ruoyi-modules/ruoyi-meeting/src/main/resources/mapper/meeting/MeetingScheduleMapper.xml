@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="title"    column="title"    />
         <result property="beginTime"    column="begin_time"    />
         <result property="endTime"    column="end_time"    />
+        <result property="phone"    column="phone"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -20,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMeetingScheduleVo">
-        select id, meeting_id, user_id, title, begin_time, end_time, del_flag, create_by, create_time, update_by, update_time, remark from meeting_schedule
+        select id, meeting_id, user_id, title, phone, begin_time, end_time, del_flag, create_by, create_time, update_by, update_time, remark from meeting_schedule
     </sql>
 
     <select id="selectMeetingScheduleList" parameterType="MeetingSchedule" resultMap="MeetingScheduleResult">
