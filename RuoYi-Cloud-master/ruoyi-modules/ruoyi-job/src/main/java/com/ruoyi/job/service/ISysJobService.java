@@ -12,6 +12,12 @@ import com.ruoyi.job.domain.SysJob;
  */
 public interface ISysJobService
 {
+
+
+    public SysJob selectBeginJobByInvoketarget(Long meetingId);
+    public SysJob selectEndJobByInvoketarget(Long meetingId);
+
+
     /**
      * 获取quartz调度器的计划任务
      * 

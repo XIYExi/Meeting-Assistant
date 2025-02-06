@@ -6,10 +6,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.job.api.RemoteSysJobService;
+import com.ruoyi.job.api.domain.SysJob;
 import com.ruoyi.meeting.constant.CosConstant;
 import com.ruoyi.meeting.constant.MeetingConstant;
 import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
+import com.ruoyi.meeting.service.impl.MeetingServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author xiye
  * @date 2024-12-25
  */
+@Slf4j
 @RestController
 @RequestMapping("/meeting")
 public class MeetingController extends BaseController {
@@ -37,18 +42,8 @@ public class MeetingController extends BaseController {
     private IMeetingService meetingService;
     @Autowired
     private RemoteCosService remoteCosService;
-
-
-    @GetMapping("/updateMeetingStatus")
-    public AjaxResult updateMeetingStatus(@RequestParam("id") Long meetingId, @RequestParam("status") int status) {
-        Meeting meeting = new Meeting();
-        meeting.setId(meetingId);
-        meeting.setStatus(status == 2 ? MeetingConstant.MEETING_STATUE_IN_PROGRESS : MeetingConstant.MEETING_STATUE_FINISHED);
-        int i = meetingService.updateMeeting(meeting);
-        return toAjax(i);
-    }
-
-
+    @Autowired
+    private RemoteSysJobService remoteSysJobService;
 
     /**
      * 查询会议列表
@@ -120,7 +115,7 @@ public class MeetingController extends BaseController {
     public AjaxResult edit(MeetingInsertQuery meetingEditQuery) {
         int updateMeeting = 0;
         // 如果传了图片就调用然后更新
-        if (meetingEditQuery.getFile() != null ) {
+        if (meetingEditQuery.getFile() != null) {
             if (!meetingEditQuery.getFile().isEmpty()) {
                 AjaxResult ajaxResult = remoteCosService.uploadFileCommon(meetingEditQuery.getFile(), meetingEditQuery.getImageId());
                 if (ajaxResult.get("code").toString().equals("200")) {
@@ -143,6 +138,31 @@ public class MeetingController extends BaseController {
         }
         updateMeeting = meetingService.updateMeeting(meeting);
 
+        // TODO 修改定时任务
+        try {
+
+            if (meetingEditQuery.getBeginTime() != null) {
+                // 修改会议自动开始时间
+                AjaxResult editJobBeginResult = remoteSysJobService.editByMeetingId(
+                        meetingEditQuery.getId(),
+                        MeetingServiceImpl.convertToCron(meetingEditQuery.getBeginTime()),
+                        "begin");
+                log.info("feign更新会议开始时间： {}", editJobBeginResult.toString());
+            }
+            if (meetingEditQuery.getEndTime() != null) {
+                // 修改会议自动结束时间
+                AjaxResult editJobEndResult = remoteSysJobService.editByMeetingId(
+                        meetingEditQuery.getId(),
+                        MeetingServiceImpl.convertToCron(meetingEditQuery.getEndTime()),
+                        "end");
+                  log.info("feign更新会议结束时间： {}", editJobEndResult.toString());
+            }
+
+        }catch (Exception e) {
+
+        }
+
+
         return toAjax(updateMeeting == 1);
     }
 
@@ -154,5 +174,27 @@ public class MeetingController extends BaseController {
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(meetingService.deleteMeetingByIds(ids));
+    }
+
+    /**
+     * ======================================================
+     * =============      feign远程接口        ================
+     * ======================================================
+     */
+
+    /**
+     * feign远程接口，用来给 job 调用，自动修改会议状态
+     *
+     * @param meetingId
+     * @param status
+     * @return
+     */
+    @GetMapping("/updateMeetingStatus")
+    public AjaxResult updateMeetingStatus(@RequestParam("id") Long meetingId, @RequestParam("status") int status) {
+        Meeting meeting = new Meeting();
+        meeting.setId(meetingId);
+        meeting.setStatus(status == 2 ? MeetingConstant.MEETING_STATUE_IN_PROGRESS : MeetingConstant.MEETING_STATUE_FINISHED);
+        int i = meetingService.updateMeeting(meeting);
+        return toAjax(i);
     }
 }

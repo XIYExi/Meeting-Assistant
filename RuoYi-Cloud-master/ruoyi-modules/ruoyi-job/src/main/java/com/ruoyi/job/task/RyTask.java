@@ -1,6 +1,9 @@
 package com.ruoyi.job.task;
 
 
+import com.ruoyi.job.domain.SysJob;
+import com.ruoyi.job.mapper.SysJobMapper;
+import com.ruoyi.job.service.SysJobServiceImpl;
 import com.ruoyi.meeting.api.RemoteScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ public class RyTask
 {
     @Autowired
     private RemoteScheduleService remoteScheduleService;
+    @Autowired
+    private SysJobServiceImpl sysJobService;
 
 
 
@@ -47,6 +52,16 @@ public class RyTask
         remoteScheduleService.updateMeetingStatus(meetingId, 2);
         String msg = String.format("会议编号 %d ,自动开始", meetingId);
         log.info(msg);
+
+        // 关闭begin任务
+        try {
+            SysJob sysJob = sysJobService.selectBeginJobByInvoketarget(meetingId);
+            sysJob.setStatus("1");
+            sysJobService.changeStatus(sysJob);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -61,6 +76,15 @@ public class RyTask
         remoteScheduleService.updateMeetingStatus(meetingId, 3);
         String msg = String.format("会议编号 %d ,自动结束", meetingId);
         log.info(msg);
+
+        // 关闭end任务
+        try {
+            SysJob sysJob = sysJobService.selectEndJobByInvoketarget(meetingId);
+            sysJob.setStatus("1");
+            sysJobService.changeStatus(sysJob);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

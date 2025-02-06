@@ -31,4 +31,9 @@ public class ServiceNameConstants
      * meeting会议存储的serviceid
      */
     public static final String MEETING_SERVICE = "ruoyi-meeting";
+
+    /**
+     * job定时任务的serviceId
+     */
+    public static final String JOB_SERVICE = "ruoyi-job";
 }

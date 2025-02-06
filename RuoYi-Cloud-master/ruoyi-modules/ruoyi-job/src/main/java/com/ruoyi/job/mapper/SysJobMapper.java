@@ -2,14 +2,22 @@ package com.ruoyi.job.mapper;
 
 import java.util.List;
 import com.ruoyi.job.domain.SysJob;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 调度任务信息 数据层
  * 
  * @author ruoyi
  */
+@Mapper
 public interface SysJobMapper
 {
+
+    public SysJob selectBeginJobByInvoketarget(@Param("meetingId") Long meetingId);
+
+    public SysJob selectEndJobByInvoketarget(@Param("meetingId") Long meetingId);
+
     /**
      * 查询调度任务日志集合
      * 

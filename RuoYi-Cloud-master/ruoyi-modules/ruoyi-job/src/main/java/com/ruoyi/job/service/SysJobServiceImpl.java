@@ -29,6 +29,8 @@ public class SysJobServiceImpl implements ISysJobService
 
     @Autowired
     private SysJobMapper jobMapper;
+    @Autowired
+    private SysJobMapper sysJobMapper;
 
     /**
      * 项目启动时，初始化定时器 主要是防止手动修改数据库导致未同步到定时任务处理（注：不能手动修改数据库ID和任务组名，否则会导致脏数据）
@@ -42,6 +44,18 @@ public class SysJobServiceImpl implements ISysJobService
         {
             ScheduleUtils.createScheduleJob(scheduler, job);
         }
+    }
+
+    @Override
+    public SysJob selectBeginJobByInvoketarget(Long meetingId) {
+        SysJob sysJob = sysJobMapper.selectBeginJobByInvoketarget(meetingId);
+        return sysJob;
+    }
+
+    @Override
+    public SysJob selectEndJobByInvoketarget(Long meetingId) {
+        SysJob sysJob = sysJobMapper.selectEndJobByInvoketarget(meetingId);
+        return sysJob;
     }
 
     /**
@@ -200,7 +214,10 @@ public class SysJobServiceImpl implements ISysJobService
     @Transactional(rollbackFor = Exception.class)
     public int insertJob(SysJob job) throws SchedulerException, TaskException
     {
-        job.setStatus(ScheduleConstants.Status.PAUSE.getValue());
+        if (job.getStatus().equals("0"))
+            job.setStatus(ScheduleConstants.Status.NORMAL.getValue());
+        else
+            job.setStatus(ScheduleConstants.Status.PAUSE.getValue());
         int rows = jobMapper.insertJob(job);
         if (rows > 0)
         {

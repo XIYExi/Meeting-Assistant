@@ -1,17 +1,13 @@
 package com.ruoyi.job.controller;
 
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.security.annotation.Logical;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.constant.Constants;
 import com.ruoyi.common.core.exception.job.TaskException;
 import com.ruoyi.common.core.utils.StringUtils;
@@ -39,6 +35,60 @@ public class SysJobController extends BaseController
 {
     @Autowired
     private ISysJobService jobService;
+
+
+    @RequiresPermissions(value = {"monitor:job:remove", "meeting:meeting:remove"}, logical = Logical.OR)
+    @DeleteMapping("/removeByMeetingId")
+    public AjaxResult removeByMeetingId(@RequestParam("meetingId") Long meetingId) throws Exception
+    {
+        SysJob sysBeginJob = jobService.selectBeginJobByInvoketarget(meetingId);
+        SysJob sysEndJob = jobService.selectEndJobByInvoketarget(meetingId);
+        // 一个meeting会创建两个任务，分别是自动开始和结束
+        // 所以销毁会议的时候需要把两个子任务都删除掉
+        Long[] ids = {sysBeginJob.getJobId(), sysEndJob.getJobId()};
+        jobService.deleteJobByIds(ids);
+        return success();
+    }
+
+    /**
+     * 通过feign接口调用的修改，只会更新时间！
+     * @param meetingId
+     * @param time
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    @RequiresPermissions(value = {"monitor:job:edit", "meeting:meeting:edit"}, logical = Logical.OR)
+    @PutMapping("/editByMeetingId")
+    public AjaxResult editByMeetingId(
+            @RequestParam("meetingId") Long meetingId,
+            @RequestParam("time") String time,
+            @RequestParam("type") String type) throws Exception {
+        SysJob updateElem = null;
+        if (type.equals("begin")) {
+            updateElem = jobService.selectBeginJobByInvoketarget(meetingId);
+        }
+        else {
+            updateElem = jobService.selectEndJobByInvoketarget(meetingId);
+        }
+        SysJob sysJob = new SysJob();
+        sysJob.setJobId(updateElem.getJobId());
+        sysJob.setCronExpression(time);
+        // 状态和数据库保持一致
+        sysJob.setStatus(updateElem.getStatus());
+
+        if (!CronUtils.isValid(sysJob.getCronExpression()))
+        {
+            return error("修改任务'" + sysJob.getJobName() + "'失败，Cron表达式不正确");
+        }
+
+        sysJob.setUpdateBy(SecurityUtils.getUsername());
+        return toAjax(jobService.updateJob(sysJob));
+    }
+
+
+
+
 
     /**
      * 查询定时任务列表
@@ -77,12 +127,15 @@ public class SysJobController extends BaseController
 
     /**
      * 新增定时任务
+     * 直接在管理页面中可以插入
+     * 同时，在设置会议的时候要可以同步插入
      */
-    @RequiresPermissions("monitor:job:add")
+    @RequiresPermissions(value = {"monitor:job:add", "meeting:meeting:add"}, logical = Logical.OR)
     @Log(title = "定时任务", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SysJob job) throws SchedulerException, TaskException
     {
+        System.err.println(job.getCronExpression());
         if (!CronUtils.isValid(job.getCronExpression()))
         {
             return error("新增任务'" + job.getJobName() + "'失败，Cron表达式不正确");

@@ -1,12 +1,14 @@
 package com.ruoyi.meeting.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
+import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.cos.api.RemoteCosService;
-import com.ruoyi.meeting.qo.SysJobQuery;
+import com.ruoyi.job.api.RemoteSysJobService;
+import com.ruoyi.job.api.domain.SysJob;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.MeetingMapper;
@@ -19,6 +21,7 @@ import com.ruoyi.meeting.service.IMeetingService;
  * @author xiye
  * @date 2024-12-25
  */
+@Slf4j
 @Service
 public class MeetingServiceImpl implements IMeetingService 
 {
@@ -26,6 +29,8 @@ public class MeetingServiceImpl implements IMeetingService
     private MeetingMapper meetingMapper;
     @Autowired
     private RemoteCosService remoteCosService;
+    @Autowired
+    private RemoteSysJobService remoteSysJobService;
 
     /**
      * 查询会议
@@ -64,18 +69,24 @@ public class MeetingServiceImpl implements IMeetingService
         int i = meetingMapper.insertMeeting(meeting);
         if (1 == i) {
             // 添加 自动开始 定时任务
-            SysJobQuery sysJobQuery = SysJobQuery.builder()
-                    .jobName(meeting.getTitle() + "会议开始任务")
-                    .jobGroup("DEFAULT")
-                    .invokeTarget(String.format("ryTask.autoInjectMeetingBeginTask(%dL)", meeting.getId()))
-                    // todo 需要把会议开始时间，翻译成cron表达式
-                    .cronExpression(convertToCron(meeting.getBeginTime()))
-                    .misfirePolicy("1")
-                    .concurrent("1")
-                    .status("0")
-                    .build();
+            SysJob sysJobQuery = new SysJob();
+            sysJobQuery.setJobName(meeting.getTitle() + "会议开始任务");
+            sysJobQuery.setJobGroup("DEFAULT");
+            sysJobQuery.setInvokeTarget(String.format("ryTask.autoInjectMeetingBeginTask(%dL)", meeting.getId()));
+            // 需要把会议开始时间，翻译成cron表达式
+            sysJobQuery.setCronExpression(convertToCron(meeting.getBeginTime()));
+            sysJobQuery.setMisfirePolicy("1");
+            sysJobQuery.setConcurrent("1");
+            sysJobQuery.setStatus("0");
             sysJobQuery.setCreateTime(DateUtils.getNowDate());
-            // todo 发送feign请求调用 job 模块执行插入会议自动开始
+            // 发送feign请求调用 job 模块执行插入会议自动开始
+            try {
+                AjaxResult addBeginResult = remoteSysJobService.add(sysJobQuery);
+                //System.err.println(addBeginResult);
+                log.info(addBeginResult.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
             // 再添加 自动结束 定时任务
@@ -84,7 +95,13 @@ public class MeetingServiceImpl implements IMeetingService
             sysJobQuery.setCronExpression(convertToCron(meeting.getEndTime()));
             sysJobQuery.setCreateTime(DateUtils.getNowDate());
             // todo 再次发送feign请求调用 job 插入会议自动结束
-
+            try {
+                AjaxResult addEndResult = remoteSysJobService.add(sysJobQuery);
+                //System.err.println(addEndResult);
+                log.info(addEndResult.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             return i;
         }
@@ -104,7 +121,7 @@ public class MeetingServiceImpl implements IMeetingService
 
             // 构造Cron表达式
             // 注意：Cron表达式中的月份是从1开始的，而Date.getMonth()是从0开始的
-            String cronExpression = String.format("%d %d %d %d %d", second, minute, hour, day, month);
+            String cronExpression = String.format("%d %d %d %d %d ? %d", second, minute, hour, day, month, year);
             return cronExpression;
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,6 +158,12 @@ public class MeetingServiceImpl implements IMeetingService
             if (!url.equals("null")) {
                 remoteCosService.removeImage(url);
             }
+            try {
+                AjaxResult ajaxRemoveSysJobResult = remoteSysJobService.removeByMeetingId(meetingId);
+                log.info("删除成功 {}", ajaxRemoveSysJobResult.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         return meetingMapper.deleteMeetingByIds(ids);
     }
@@ -158,6 +181,12 @@ public class MeetingServiceImpl implements IMeetingService
         String url = meeting.getUrl();
         if (!url.equals("null")) {
             remoteCosService.removeImage(url);
+        }
+        try {
+            AjaxResult ajaxRemoveSysJobResult = remoteSysJobService.removeByMeetingId(id);
+            log.info("删除成功 {}", ajaxRemoveSysJobResult.toString());
+        }catch (Exception e) {
+            e.printStackTrace();
         }
         return meetingMapper.deleteMeetingById(id);
     }

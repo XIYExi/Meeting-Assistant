@@ -24,6 +24,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select job_id, job_name, job_group, invoke_target, cron_expression, misfire_policy, concurrent, status, create_by, create_time, remark 
 		from sys_job
     </sql>
+
+	<select id="selectBeginJobByInvoketarget" resultMap="SysJobResult">
+		select * from `sys_job`
+        where invoke_target = concat('ryTask.autoInjectMeetingBeginTask(', #{meetingId}, 'L)');
+	</select>
+
+	<select id="selectEndJobByInvoketarget" resultMap="SysJobResult">
+		select * from `sys_job`
+        where invoke_target = concat('ryTask.autoInjectMeetingEndTask(', #{meetingId}, 'L)');
+	</select>
 	
 	<select id="selectJobList" parameterType="SysJob" resultMap="SysJobResult">
 		<include refid="selectJobVo"/>

@@ -14,9 +14,9 @@
         会议管理模块
     </description>
 
- <dependencies>
+    <dependencies>
 
-    	<!-- SpringCloud Alibaba Nacos -->
+        <!-- SpringCloud Alibaba Nacos -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
@@ -28,13 +28,13 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-    	<!-- SpringCloud Alibaba Sentinel -->
+        <!-- SpringCloud Alibaba Sentinel -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
 
-    	<!-- SpringBoot Actuator -->
+        <!-- SpringBoot Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -69,18 +69,27 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common-swagger</artifactId>
         </dependency>
-
-     <dependency>
-         <groupId>com.ruoyi</groupId>
-         <artifactId>ruoyi-api-cos</artifactId>
-         <version>3.6.5</version>
-     </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
 
-     <dependency>
-         <groupId>org.projectlombok</groupId>
-         <artifactId>lombok</artifactId>
-     </dependency>
+        <!-- 远程服务调用 -->
+        <!-- 桶存储，图片资源云存储 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-api-cos</artifactId>
+            <version>3.6.5</version>
+        </dependency>
+
+        <!-- 定时任务调用，预约会议自动提交定时任务 -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-api-job</artifactId>
+            <version>3.6.5</version>
+        </dependency>
+
 
     </dependencies>
 
