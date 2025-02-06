@@ -3,8 +3,11 @@ package com.ruoyi.meeting.controller;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.meeting.qo.MeetingReservationQuery;
 import com.ruoyi.meeting.service.IRecordScheduleService;
+import com.ruoyi.system.api.domain.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/meetingAction")
@@ -23,6 +26,19 @@ public class MeetingActionController {
     @PostMapping("/reservation")
     public AjaxResult reservation(@RequestBody MeetingReservationQuery meetingReservationQuery){
         boolean b = recordScheduleService.MeetingReservation(meetingReservationQuery);
+        return b ? AjaxResult.success() : AjaxResult.error();
+    }
+
+
+    @PostMapping("/list")
+    public AjaxResult list(@RequestParam("meetingId") Long meetingId) {
+        List<SysUser> sysUsers = recordScheduleService.MeetingPartList(meetingId);
+        return AjaxResult.success(sysUsers);
+    }
+
+    @DeleteMapping("/remove")
+    public AjaxResult remove(@RequestParam("id") Long id) {
+        boolean b = recordScheduleService.MeetingPartRemove(id);
         return b ? AjaxResult.success() : AjaxResult.error();
     }
 

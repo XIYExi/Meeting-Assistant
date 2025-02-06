@@ -3,12 +3,13 @@ package com.ruoyi.meeting.service;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.meeting.constant.MeetingConstant;
 import com.ruoyi.meeting.domain.MeetingSchedule;
-import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.mapper.MeetingScheduleMapper;
 import com.ruoyi.meeting.qo.MeetingReservationQuery;
+import com.ruoyi.system.api.domain.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -18,10 +19,32 @@ import java.util.Objects;
 @Service
 public class IRecordScheduleService {
 
-    @Autowired
-    private MeetingMapper meetingMapper;
+
     @Autowired
     private MeetingScheduleMapper meetingScheduleMapper;
+
+
+    /**
+     * 取消预约
+     * @param id
+     * @return
+     */
+    public boolean MeetingPartRemove(Long id) {
+        int i = meetingScheduleMapper.deleteMeetingScheduleById(id);
+        return i == 1;
+    }
+
+
+    /**
+     * 出席会议的用户列表
+     * @return
+     */
+    public List<SysUser> MeetingPartList(Long meetingId) {
+        List<SysUser> sysUsers = meetingScheduleMapper.selectPartUserList(meetingId);
+        return sysUsers;
+    }
+
+
 
     /**
      * 提交会议预约，此时只需要添加record到数据库即可。

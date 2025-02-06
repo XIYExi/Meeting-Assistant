@@ -2,7 +2,9 @@ package com.ruoyi.meeting.mapper;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.MeetingSchedule;
+import com.ruoyi.system.api.domain.SysUser;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 会议预约Mapper接口
@@ -13,6 +15,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MeetingScheduleMapper 
 {
+
+    public List<SysUser> selectPartUserList(@Param("meetingId")Long meetingId);
+
+
     /**
      * 查询会议预约
      * 

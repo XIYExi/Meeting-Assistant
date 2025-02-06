@@ -24,6 +24,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, meeting_id, user_id, title, phone, begin_time, end_time, del_flag, create_by, create_time, update_by, update_time, remark from meeting_schedule
     </sql>
 
+
+    <select id="selectPartUserList" resultType="com.ruoyi.meeting.entity.PartUser">
+        select
+            part.id as id,
+            user.user_id as userId,
+            user.nick_name as nickName,
+            user.email as email,
+            user.phonenumber as phonenumber,
+            user.sex as sex,
+            part.create_time as partTime
+        from sys_user user, meeting_schedule part where user.user_id = part.user_id and part.meeting_id = #{meetingId}
+    </select>
+
     <select id="selectMeetingScheduleList" parameterType="MeetingSchedule" resultMap="MeetingScheduleResult">
         <include refid="selectMeetingScheduleVo"/>
         <where>  
