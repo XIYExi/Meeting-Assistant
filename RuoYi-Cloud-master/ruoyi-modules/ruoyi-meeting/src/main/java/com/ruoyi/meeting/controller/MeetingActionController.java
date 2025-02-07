@@ -30,16 +30,26 @@ public class MeetingActionController {
     }
 
 
+    /**
+     * 【参会者列表】
+     * @param meetingId
+     * @return
+     */
     @PostMapping("/list")
     public AjaxResult list(@RequestParam("meetingId") Long meetingId) {
         List<SysUser> sysUsers = recordScheduleService.MeetingPartList(meetingId);
         return AjaxResult.success(sysUsers);
     }
 
+
+    /**
+     * 【取消会议预约】
+     * @param id
+     * @return
+     */
     @DeleteMapping("/remove")
     public AjaxResult remove(@RequestParam("id") Long id) {
         boolean b = recordScheduleService.MeetingPartRemove(id);
         return b ? AjaxResult.success() : AjaxResult.error();
     }
-
 }

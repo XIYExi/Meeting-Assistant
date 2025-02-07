@@ -27,6 +27,7 @@ services:
       - ./mysql/conf:/etc/mysql/conf.d
       - ./mysql/logs:/logs
       - ./mysql/data:/var/lib/mysql
+      - ./mysql/db:/docker-entrypoint-initdb.d
     command: [
           'mysqld',
           '--innodb-buffer-pool-size=80M',
@@ -37,7 +38,7 @@ services:
         ]
     environment:
       MYSQL_DATABASE: 'ry-cloud'
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 123456
   ruoyi-redis:
     container_name: ruoyi-redis
     image: redis
@@ -131,6 +132,27 @@ services:
       - "9300:9300"
     volumes:
     - ./ruoyi/uploadPath:/home/ruoyi/uploadPath
+  ruoyi-modules-agent:
+    container_name: ruoyi-modules-agent
+    build:
+      context: ./ruoyi/modules/agent
+      dockerfile: dockerfile
+    ports:
+      - "9604:9604"
+  ruoyi-modules-cos:
+    container_name: ruoyi-modules-cos
+    build:
+      context: ./ruoyi/modules/cos
+      dockerfile: dockerfile
+    ports:
+      - "9602:9602"
+  ruoyi-modules-meeting:
+    container_name: ruoyi-modules-meeting
+    build:
+      context: ./ruoyi/modules/meeting
+      dockerfile: dockerfile
+    ports:
+      - "9601:9601"
   ruoyi-visual-monitor:
     container_name: ruoyi-visual-monitor
     build:
