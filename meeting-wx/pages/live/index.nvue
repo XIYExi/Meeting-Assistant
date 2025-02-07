@@ -1,0 +1,27 @@
+<template>
+	<view>
+		<text>hello1</text>
+		<text>hello2</text>
+		<text>hello3</text>
+		<text>hello4</text>
+		<text>hello5</text>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			
+		}
+		
+	}
+</script>
+
+<style>
+
+</style>
