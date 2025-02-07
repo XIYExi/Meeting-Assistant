@@ -1,6 +1,8 @@
 ######################################################################
 # Build Tools
 
+*.jar
+
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
