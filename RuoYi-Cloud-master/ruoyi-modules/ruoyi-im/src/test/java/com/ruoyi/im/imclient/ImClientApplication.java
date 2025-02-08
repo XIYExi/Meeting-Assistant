@@ -39,6 +39,7 @@ public class ImClientApplication {
             channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_LOGOUT_MSG.getCode(), "logout"));
             channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_BIZ_MSG.getCode(), "biz"));
             channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_HEARTBEAT_MSG.getCode(), "heart"));
+            Thread.sleep(1000);
         }
 
     }
