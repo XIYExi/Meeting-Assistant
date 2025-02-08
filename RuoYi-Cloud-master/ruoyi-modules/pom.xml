@@ -18,6 +18,7 @@
         <module>ruoyi-agent</module>
         <module>ruoyi-tts</module>
         <module>ruoyi-fisco</module>
+        <module>ruoyi-im</module>
     </modules>
 
     <artifactId>ruoyi-modules</artifactId>
