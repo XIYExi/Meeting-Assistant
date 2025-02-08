@@ -5,6 +5,10 @@ import com.ruoyi.im.handler.impl.ImHandlerFactoryImpl;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+
+/**
+ * IM消息统一handler入口
+ */
 public class ImServerCoreHandler extends SimpleChannelInboundHandler {
 
     private ImHandlerFactory imHandlerFactory = new ImHandlerFactoryImpl();
@@ -17,5 +21,16 @@ public class ImServerCoreHandler extends SimpleChannelInboundHandler {
         ImMsg imMsg = (ImMsg) msg;
         // factory用来分发不同code对应的处理函数
         imHandlerFactory.doMsgHandler(ctx, imMsg);
+    }
+
+
+    /**
+     * 正常或者意外短线，都会触发此函数
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        
     }
 }
