@@ -14,7 +14,7 @@
         this.initConfig()
         // 检查用户登录状态
         //#ifdef H5
-        //this.checkLogin()
+        this.checkLogin()
         //#endif
       },
       initConfig() {

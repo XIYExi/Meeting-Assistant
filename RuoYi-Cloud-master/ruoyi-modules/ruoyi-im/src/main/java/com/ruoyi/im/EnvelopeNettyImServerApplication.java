@@ -13,7 +13,7 @@ public class EnvelopeNettyImServerApplication {
 
     public static void main(String[] args) throws Exception {
        SpringApplication springApplication = new SpringApplication(EnvelopeNettyImServerApplication.class);
-       springApplication.setWebApplicationType(WebApplicationType.NONE);
+       // springApplication.setWebApplicationType(WebApplicationType.NONE);
        springApplication.run(args);
     }
 }

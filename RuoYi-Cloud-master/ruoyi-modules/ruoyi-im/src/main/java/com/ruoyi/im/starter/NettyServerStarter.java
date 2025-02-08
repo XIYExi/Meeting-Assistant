@@ -60,7 +60,6 @@ public class NettyServerStarter implements InitializingBean {
     }
 
 
-
     @Override
     public void afterPropertiesSet() throws Exception {
         Thread nettyServerThread = new Thread(new Runnable() {
@@ -70,6 +69,9 @@ public class NettyServerStarter implements InitializingBean {
                     startApplication();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
+                }
+                finally {
+
                 }
             }
         });

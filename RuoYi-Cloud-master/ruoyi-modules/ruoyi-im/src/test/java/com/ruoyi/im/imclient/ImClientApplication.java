@@ -36,10 +36,10 @@ public class ImClientApplication {
         Channel channel = channelFuture.channel();
         for (int i = 0; i < 100; ++i) {
             channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_LOGIN_MSG.getCode(), "login"));
-            channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_LOGOUT_MSG.getCode(), "logout"));
+            /*channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_LOGOUT_MSG.getCode(), "logout"));
             channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_BIZ_MSG.getCode(), "biz"));
-            channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_HEARTBEAT_MSG.getCode(), "heart"));
-            Thread.sleep(1000);
+            channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_HEARTBEAT_MSG.getCode(), "heart"));*/
+            Thread.sleep(10000);
         }
 
     }

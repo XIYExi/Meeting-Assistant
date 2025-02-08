@@ -9,7 +9,14 @@
 </template>
 
 <script>
+	import {testRequestLive} from '@/api/live/index.js';
 	export default {
+		mounted() {
+			console.log("live req")
+			testRequestLive().then(resp => {
+				console.log(resp)
+			})
+		},
 		data() {
 			return {
 				
