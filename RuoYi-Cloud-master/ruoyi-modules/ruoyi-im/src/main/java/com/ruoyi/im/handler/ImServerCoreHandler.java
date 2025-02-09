@@ -4,8 +4,11 @@ import com.ruoyi.im.common.ImContextAttr;
 import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.handler.impl.ImHandlerFactoryImpl;
+import com.ruoyi.im.handler.impl.LogoutMsgHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -15,10 +18,13 @@ import javax.annotation.Resource;
  * IM消息统一handler入口
  */
 @Component
+@ChannelHandler.Sharable
 public class ImServerCoreHandler extends SimpleChannelInboundHandler {
 
     @Resource
     private ImHandlerFactory imHandlerFactory;
+    @Autowired
+    private LogoutMsgHandler logoutMsgHandler;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -40,7 +46,10 @@ public class ImServerCoreHandler extends SimpleChannelInboundHandler {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // Long userId = ctx.attr(ImContextAttr.USER_ID).get();
         Long userId = ImContextUtils.getUserId(ctx);
-
+        Integer appId = ImContextUtils.getAppId(ctx);
+        if (userId != null && appId != null) {
+            // logoutMsgHandler.logoutHandler(ctx,userId,appId);
+        }
 
     }
 }

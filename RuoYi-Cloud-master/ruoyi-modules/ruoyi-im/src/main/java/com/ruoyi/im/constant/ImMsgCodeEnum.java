@@ -1,6 +1,6 @@
 package com.ruoyi.im.constant;
 
-public enum ImMsgCodeeEnum {
+public enum ImMsgCodeEnum {
 
     // 登录消息包，将channel 和 userId 关联
     IM_LOGIN_MSG(1001, "登录消息包"),
@@ -14,7 +14,7 @@ public enum ImMsgCodeeEnum {
     private int code;
     private String desc;
 
-    ImMsgCodeeEnum(int code, String desc) {
+    ImMsgCodeEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }

@@ -1,7 +1,7 @@
 package com.ruoyi.im.handler.impl;
 
 import com.ruoyi.im.common.ImMsg;
-import com.ruoyi.im.constant.ImMsgCodeeEnum;
+import com.ruoyi.im.constant.ImMsgCodeEnum;
 import com.ruoyi.im.handler.ImHandlerFactory;
 import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,9 +36,9 @@ public class ImHandlerFactoryImpl implements ImHandlerFactory, InitializingBean 
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_LOGIN_MSG.getCode(), applicationContext.getBean(LoginMsgHandler.class));
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_LOGOUT_MSG.getCode(), applicationContext.getBean(LogoutMsgHandler.class));
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_BIZ_MSG.getCode(), applicationContext.getBean(BizMsgHandler.class));
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_HEARTBEAT_MSG.getCode(), applicationContext.getBean(HeartBeatMsgHandler.class));
+        simpleHandlerMap.put(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), applicationContext.getBean(LoginMsgHandler.class));
+        simpleHandlerMap.put(ImMsgCodeEnum.IM_LOGOUT_MSG.getCode(), applicationContext.getBean(LogoutMsgHandler.class));
+        simpleHandlerMap.put(ImMsgCodeEnum.IM_BIZ_MSG.getCode(), applicationContext.getBean(BizMsgHandler.class));
+        simpleHandlerMap.put(ImMsgCodeEnum.IM_HEARTBEAT_MSG.getCode(), applicationContext.getBean(HeartBeatMsgHandler.class));
     }
 }

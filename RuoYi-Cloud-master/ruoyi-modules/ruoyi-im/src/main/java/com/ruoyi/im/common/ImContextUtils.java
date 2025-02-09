@@ -12,4 +12,12 @@ public class ImContextUtils {
         return ctx.attr(ImContextAttr.USER_ID).get();
     }
 
+    public static void setAppId(ChannelHandlerContext ctx, Integer appid) {
+        ctx.attr(ImContextAttr.APP_ID).set(appid);
+    }
+
+    public static Integer getAppId(ChannelHandlerContext ctx) {
+        return ctx.attr(ImContextAttr.APP_ID).get();
+    }
+
 }

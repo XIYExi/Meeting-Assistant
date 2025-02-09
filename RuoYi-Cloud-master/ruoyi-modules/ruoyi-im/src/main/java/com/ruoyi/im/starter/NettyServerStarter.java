@@ -44,7 +44,7 @@ public class NettyServerStarter implements InitializingBean {
         bootstrap.childHandler(new ChannelInitializer() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
-                logger.info("初始化连接池");
+                logger.info("初始化连接渠道");
                 // 定义编解码器
                 ch.pipeline().addLast(new ImMsgDecoder());
                 ch.pipeline().addLast(new ImMsgEncoder());

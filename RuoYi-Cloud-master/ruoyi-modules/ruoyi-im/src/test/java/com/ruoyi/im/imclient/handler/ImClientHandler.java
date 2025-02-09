@@ -1,4 +1,4 @@
-package com.ruoyi.im.imclient;
+package com.ruoyi.im.imclient.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.im.common.ImMsg;
@@ -7,6 +7,7 @@ import com.ruoyi.im.common.ImMsgEncoder;
 import com.ruoyi.im.constant.AppIdEnum;
 import com.ruoyi.im.constant.ImMsgCodeEnum;
 import com.ruoyi.im.entity.ImMsgBody;
+import com.ruoyi.im.imclient.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -15,17 +16,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class ImClientApplication {
-    private static final Logger logger = LoggerFactory.getLogger(ImClientApplication.class);
-
-    private void startConnection(String address, int port) throws Exception {
+@Service
+public class ImClientHandler implements InitializingBean {
+    @Override
+    public void afterPropertiesSet() throws Exception {
         Thread clientThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -48,7 +48,7 @@ public class ImClientApplication {
 
                     ChannelFuture channelFuture = null;
                     try {
-                        channelFuture = bootstrap.connect(address, port).sync();
+                        channelFuture = bootstrap.connect("localhost", 9094).sync();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -67,7 +67,6 @@ public class ImClientApplication {
 
                 while(true) {
                     for (Long userId : userIdChannelMap.keySet()) {
-                        System.err.println("开始检测心跳： " + userId);
                         ImMsgBody heartBeatBody = new ImMsgBody();
                         heartBeatBody.setAppId(AppIdEnum.LIVE_BIZ.getCode());
                         heartBeatBody.setUserId(userId);
@@ -84,10 +83,5 @@ public class ImClientApplication {
             }
         });
         clientThread.start();
-    }
-
-    public static void main(String[] args) throws Exception{
-        ImClientApplication app = new ImClientApplication();
-        app.startConnection("localhost", 9094);
     }
 }
