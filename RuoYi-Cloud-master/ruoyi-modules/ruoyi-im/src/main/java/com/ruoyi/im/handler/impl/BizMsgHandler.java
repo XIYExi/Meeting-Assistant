@@ -5,7 +5,9 @@ import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BizMsgHandler implements SimpleHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(BizMsgHandler.class);

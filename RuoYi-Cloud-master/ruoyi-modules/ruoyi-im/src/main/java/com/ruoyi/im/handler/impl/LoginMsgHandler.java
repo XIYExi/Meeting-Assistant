@@ -3,6 +3,8 @@ package com.ruoyi.im.handler.impl;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.im.common.ChannelHandlerContextCache;
+import com.ruoyi.im.common.ImContextAttr;
+import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.constant.AppIdEnum;
 import com.ruoyi.im.constant.ImMsgCodeeEnum;
@@ -11,12 +13,14 @@ import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 /**
  * 登录消息报处理逻辑
  */
+@Component
 public class LoginMsgHandler implements SimpleHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginMsgHandler.class);
@@ -41,8 +45,8 @@ public class LoginMsgHandler implements SimpleHandler {
 
         // 根据userId保存channel对应信息
         ChannelHandlerContextCache.put(userId, ctx);
-        // Todo
-
+        // ctx.attr(ImContextAttr.USER_ID).set(userId);
+        ImContextUtils.setUserId(ctx, userId);
 
         ImMsgBody respBody = new ImMsgBody();
         respBody.setUserId(userId);

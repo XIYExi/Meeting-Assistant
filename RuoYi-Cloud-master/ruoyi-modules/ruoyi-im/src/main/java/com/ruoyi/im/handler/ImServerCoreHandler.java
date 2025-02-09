@@ -1,5 +1,7 @@
 package com.ruoyi.im.handler;
 
+import com.ruoyi.im.common.ImContextAttr;
+import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.handler.impl.ImHandlerFactoryImpl;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,6 +33,9 @@ public class ImServerCoreHandler extends SimpleChannelInboundHandler {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        
+        // Long userId = ctx.attr(ImContextAttr.USER_ID).get();
+        Long userId = ImContextUtils.getUserId(ctx);
+
+
     }
 }

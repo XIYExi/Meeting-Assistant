@@ -5,23 +5,25 @@ import com.ruoyi.im.constant.ImMsgCodeeEnum;
 import com.ruoyi.im.handler.ImHandlerFactory;
 import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 消息处理函数工厂实现类
  */
-public class ImHandlerFactoryImpl implements ImHandlerFactory {
+@Component
+public class ImHandlerFactoryImpl implements ImHandlerFactory, InitializingBean {
 
-    private static Map<Integer, SimpleHandler> simpleHandlerMap = new HashMap<>();
+    private static final Map<Integer, SimpleHandler> simpleHandlerMap = new HashMap<>();
 
-    static {
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_LOGIN_MSG.getCode(), new LoginMsgHandler());
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_LOGOUT_MSG.getCode(), new LogoutMsgHandler());
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_BIZ_MSG.getCode(), new BizMsgHandler());
-        simpleHandlerMap.put(ImMsgCodeeEnum.IM_HEARTBEAT_MSG.getCode(), new HeartBeatMsgHandler());
-    }
+    @Resource
+    private ApplicationContext applicationContext;
+
 
     @Override
     public void doMsgHandler(ChannelHandlerContext ctx, ImMsg imMsg) {
@@ -30,5 +32,13 @@ public class ImHandlerFactoryImpl implements ImHandlerFactory {
             throw new IllegalArgumentException("msg code is error, code is : " + imMsg.getCode());
         }
         simpleHandler.handler(ctx, imMsg);
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        simpleHandlerMap.put(ImMsgCodeeEnum.IM_LOGIN_MSG.getCode(), applicationContext.getBean(LoginMsgHandler.class));
+        simpleHandlerMap.put(ImMsgCodeeEnum.IM_LOGOUT_MSG.getCode(), applicationContext.getBean(LogoutMsgHandler.class));
+        simpleHandlerMap.put(ImMsgCodeeEnum.IM_BIZ_MSG.getCode(), applicationContext.getBean(BizMsgHandler.class));
+        simpleHandlerMap.put(ImMsgCodeeEnum.IM_HEARTBEAT_MSG.getCode(), applicationContext.getBean(HeartBeatMsgHandler.class));
     }
 }
