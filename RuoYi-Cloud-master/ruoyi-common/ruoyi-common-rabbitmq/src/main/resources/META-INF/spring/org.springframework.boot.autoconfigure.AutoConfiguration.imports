@@ -1,0 +1,3 @@
+com.ruoyi.common.mq.properties.RocketMQConsumerProperties
+com.ruoyi.common.mq.properties.RocketMQProducerProperties
+com.ruoyi.common.mq.producer.RocketMQProducerConfig
