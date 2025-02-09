@@ -1,15 +1,17 @@
 # Tomcat
 server:
-  port: 9609
+  port: 9612
 
-netty:
-  port: 9094
-  sport: 9091
-  host: 127.0.0.1 #客户端用到
 
 ruoyi:
   rmq:
     producer:
+      nameSrv: 1.13.154.224:9876
+      groupName: ${spring.application.name}
+      applicationName: ${spring.application.name}
+      sendMsgTimeout: 3000
+      retryTimes: 2
+    consumer:
       nameSrv: 1.13.154.224:9876
       groupName: ${spring.application.name}
       applicationName: ${spring.application.name}
@@ -21,7 +23,7 @@ ruoyi:
 spring:
   application:
     # 应用名称
-    name: ruoyi-im
+    name: ruoyi-live
   profiles:
     # 环境配置
     active: dev

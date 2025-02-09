@@ -19,6 +19,7 @@
         <module>ruoyi-tts</module>
         <module>ruoyi-fisco</module>
         <module>ruoyi-im</module>
+        <module>ruoyi-live</module>
     </modules>
 
     <artifactId>ruoyi-modules</artifactId>
