@@ -6,14 +6,19 @@ import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.handler.impl.ImHandlerFactoryImpl;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 
 /**
  * IM消息统一handler入口
  */
+@Component
 public class ImServerCoreHandler extends SimpleChannelInboundHandler {
 
-    private ImHandlerFactory imHandlerFactory = new ImHandlerFactoryImpl();
+    @Resource
+    private ImHandlerFactory imHandlerFactory;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {

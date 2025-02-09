@@ -16,6 +16,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
+
 
 @Configuration
 public class NettyServerStarter implements InitializingBean {
@@ -25,6 +27,9 @@ public class NettyServerStarter implements InitializingBean {
     // 指定监听端口
     @Value("${netty.port}")
     private int port;
+
+    @Resource
+    private ImServerCoreHandler imServerCoreHandler;
 
     // 基于netty启动一个java进程，绑定监听窗口
     public void startApplication() throws InterruptedException {
@@ -43,7 +48,7 @@ public class NettyServerStarter implements InitializingBean {
                 // 定义编解码器
                 ch.pipeline().addLast(new ImMsgDecoder());
                 ch.pipeline().addLast(new ImMsgEncoder());
-                ch.pipeline().addLast(new ImServerCoreHandler());
+                ch.pipeline().addLast(imServerCoreHandler);
             }
         });
 
