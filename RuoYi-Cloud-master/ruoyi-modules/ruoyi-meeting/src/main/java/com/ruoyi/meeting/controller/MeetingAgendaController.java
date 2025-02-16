@@ -4,14 +4,7 @@ import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
@@ -59,6 +52,16 @@ public class MeetingAgendaController extends BaseController
         ExcelUtil<MeetingAgenda> util = new ExcelUtil<MeetingAgenda>(MeetingAgenda.class);
         util.exportExcel(response, list, "会议议程数据");
     }
+
+    /**
+     * 根据meetingId获取会议议程详细信息
+     */
+    @GetMapping(value = "/details")
+    public AjaxResult getInfoByMeetingId(@RequestParam(value = "id") Long id)
+    {
+        return success(meetingAgendaService.selectMeetingAgendaByMeetingId(id));
+    }
+
 
     /**
      * 获取会议议程详细信息

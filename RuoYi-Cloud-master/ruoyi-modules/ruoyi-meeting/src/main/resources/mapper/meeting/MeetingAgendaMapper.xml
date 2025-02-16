@@ -39,6 +39,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectMeetingAgendaByMeetingId" parameterType="Long" resultMap="MeetingAgendaResult">
+        <include refid="selectMeetingAgendaVo"/>
+        where meeting_id = #{meetingId} order by begin_time asc
+    </select>
+
     <insert id="insertMeetingAgenda" parameterType="MeetingAgenda" useGeneratedKeys="true" keyProperty="id">
         insert into meeting_agenda
         <trim prefix="(" suffix=")" suffixOverrides=",">

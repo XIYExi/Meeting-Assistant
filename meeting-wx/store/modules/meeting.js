@@ -1,8 +1,9 @@
-import { getMeetingListOrderByAsc, getBeginTimeList } from '@/api/meeting/meeting'
+import { getMeetingListOrderByAsc, getMeetingAgendaList } from '@/api/meeting/meeting'
 
 const meeting = {
   state: {
     meetingList: [],
+    agendaList: [],
     searchText: '',
   },
   actions: {
@@ -18,6 +19,18 @@ const meeting = {
         }).catch(error => {
             reject(error)
         })
+    },
+    AgendaList({commit, state}, meetingId) {
+      return new Promise((resolve, reject) => {
+        getMeetingAgendaList(meetingId).then(resp => {
+            const {data} = resp;
+            // console.log('dd', data)
+            commit('SET_AGENDA_LIST', data);
+            resolve();
+        });
+    }).catch(error => {
+        reject(error)
+    })
     }
   },
   mutations: {
@@ -27,6 +40,9 @@ const meeting = {
     },
     SET_MEETING_LIST: (state, meetingList) => {
         state.meetingList = meetingList;
+    },
+    SET_AGENDA_LIST: (state, agendaList) => {
+      state.agendaList = agendaList;
     }
   }
 }

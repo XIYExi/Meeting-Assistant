@@ -32,6 +32,11 @@ public class MeetingAgendaServiceImpl implements IMeetingAgendaService
         return meetingAgendaMapper.selectMeetingAgendaById(id);
     }
 
+    @Override
+    public List<MeetingAgenda> selectMeetingAgendaByMeetingId(Long meetingId) {
+        return meetingAgendaMapper.selectMeetingAgendaByMeetingId(meetingId);
+    }
+
     /**
      * 查询会议议程列表
      * 

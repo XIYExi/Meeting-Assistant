@@ -151,7 +151,7 @@
         </view>
       </view>
       <view class="content">
-        <component :is="selectedComponent" />
+        <component :is="selectedComponent" :id="event.id"/>
       </view>
     </view>
 

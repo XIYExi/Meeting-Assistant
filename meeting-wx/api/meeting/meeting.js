@@ -38,3 +38,11 @@ export function getSimpleMeetingPartUsers(id) {
 		method: 'get'
 	})
 }
+
+
+export function getMeetingAgendaList(id) {
+	return request({
+		url:`/meeting/agenda/details?id=${id}`,
+		method: 'get'
+	})
+}

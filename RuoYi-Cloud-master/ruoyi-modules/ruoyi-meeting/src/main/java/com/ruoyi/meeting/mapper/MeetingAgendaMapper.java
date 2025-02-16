@@ -2,6 +2,8 @@ package com.ruoyi.meeting.mapper;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.MeetingAgenda;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 会议议程Mapper接口
@@ -9,6 +11,7 @@ import com.ruoyi.meeting.domain.MeetingAgenda;
  * @author xiye
  * @date 2024-12-25
  */
+@Mapper
 public interface MeetingAgendaMapper 
 {
     /**
@@ -18,6 +21,9 @@ public interface MeetingAgendaMapper
      * @return 会议议程
      */
     public MeetingAgenda selectMeetingAgendaById(Long id);
+
+
+    public List<MeetingAgenda> selectMeetingAgendaByMeetingId(@Param("meetingId") Long meetingId);
 
     /**
      * 查询会议议程列表

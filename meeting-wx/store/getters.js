@@ -7,5 +7,6 @@ const getters = {
 
   meetingList: state => state.meeting.meetingList,
   meetingSearchText: state => state.meeting.searchText,
+  agendaList: state => state.meeting.agendaList,
 }
 export default getters

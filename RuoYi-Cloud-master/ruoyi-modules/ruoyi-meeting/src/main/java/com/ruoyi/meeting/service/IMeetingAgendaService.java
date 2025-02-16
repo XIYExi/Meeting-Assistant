@@ -2,6 +2,7 @@ package com.ruoyi.meeting.service;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.MeetingAgenda;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 会议议程Service接口
@@ -19,6 +20,8 @@ public interface IMeetingAgendaService
      */
     public MeetingAgenda selectMeetingAgendaById(Long id);
 
+
+    public List<MeetingAgenda> selectMeetingAgendaByMeetingId(Long meetingId);
     /**
      * 查询会议议程列表
      * 
