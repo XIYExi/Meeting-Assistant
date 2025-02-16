@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import com.ruoyi.meeting.domain.Meeting;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 会议Mapper接口
@@ -14,6 +15,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MeetingMapper 
 {
+
+    public List<String> getPartUserAvatarById(@Param("id") Long id);
 
     public List<String> selectMeetingBeginTimeForList();
 

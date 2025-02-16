@@ -17,27 +17,126 @@
     </view>
 
     <!-- 会议名字 -->
-    <view class="event-name">西湖论剑暨安恒信息年度新品发布日</view>
-
-    <!-- 会议时间和地点 -->
-    <view class="event-details">
-      <view class="icon-container">
-        <image src="path-to-date-icon.png" class="icon" />
-      </view>
-      <view class="details-text">
-        <view class="event-date">14 December, 2021</view>
-        <view class="event-time">Tuesday, 4:00PM - 8:00PM</view>
-      </view>
+    <view class="event-name">
+      <text>{{ event.title }}</text>
     </view>
+
+    <!-- 开始时间 -->
     <view class="event-details">
       <view class="icon-container">
-        <image src="path-to-location-icon.png" class="icon" />
+        <uni-icons type="calendar" size="20"></uni-icons>
       </view>
       <view class="details-text">
-        <view class="event-location">Gala Convention Center, 35 Guild Street London, UK</view>
+        <view class="event-date">
+          <text class="meta-msg">开始时间 {{ event.beginTime }}</text>
+        </view>
+        <view class="event-time">
+          <text>会议持续{{ calculateTimeDifferenceInHours(event.beginTime, event.endTime) }}</text>
+        </view>
       </view>
     </view>
 
+    <!-- 会议地点 -->
+    <view class="event-details location">
+      <view class="event-details-location">
+        <view class="icon-container">
+          <uni-icons type="location" size="20"></uni-icons>
+        </view>
+        <view class="details-text">
+          <view class="event-location">
+            <view class="event-date">
+              <text class="meta-msg">会议地点</text>
+            </view>
+            <text>{{ event.location }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="map-icon">
+        <uni-icons type="map" size="20"></uni-icons>
+        <text class="map-text">导航</text>
+      </view>
+    </view>
+
+    <!-- 会议类型 会议状态 参与人数 -->
+    <view class="event-details last-detail-wrapper">
+      <view class="flex-wrapper">
+        <view class="icon-container">
+          <uni-icons type="map-pin" size="20"></uni-icons>
+        </view>
+        <view class="details-text">
+          <view class="event-location">
+            <view class="event-date">
+              <text class="meta-msg">会议类型</text>
+            </view>
+            <text>{{ meetingTypeConstants[event.type] }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="flex-wrapper">
+        <view class="icon-container">
+          <uni-icons type="smallcircle" size="20"></uni-icons>
+        </view>
+        <view class="details-text">
+          <view class="event-location">
+            <view class="event-date">
+              <text class="meta-msg">会议状态</text>
+            </view>
+            <text>{{ types[eventStatus] }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="flex-wrapper">
+        <view class="icon-container">
+          <uni-icons type="staff-filled" size="20"></uni-icons>
+        </view>
+        <view class="details-text">
+          <view class="event-location">
+            <view class="event-date">
+              <text class="meta-msg">参与人数</text>
+            </view>
+            <text>{{ parts }} 人</text>
+          </view>
+        </view>
+      </view>  
+    </view>
+
+    <view class="divider">
+      <view class="center-wrapper">
+        <view>
+          <view>
+            <text class="views-text">{{ event.views }}</text>
+            人关注
+          </view>
+        </view>
+        <view>
+          <view v-if="times.length > 0">
+            <view>距离会议开始还有</view>
+            <uni-countdown :day="times[0]" :hour="times[1]" :minute="times[2]" :second="times[3]" color="#FFFFFF" background-color="#007AFF" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 会议介绍 -->
+    <view class="event-details">
+      <view class="icon-container">
+        <uni-icons type="paperclip" size="20"></uni-icons>
+      </view>
+      <view class="details-text">
+        <view class="event-location">
+          <view class="event-date">
+            <text class="meta-msg">会议介绍</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="remark-wrapper">
+      <text class="remark">{{ event.remark }}</text>
+    </view>
+    
     <!-- 选择器 -->
     <view class="selector-container">
       <view class="selector">
@@ -59,7 +158,23 @@
 
     <!-- 底部固定按钮 -->
     <view class="bottom-blur">
-      <button class="fixed-button">进入直播</button>
+      <view class="bottom-bar">
+        <view class="bottom-bar-left-wrapper">
+          <view class="bottom-bar-left-wrapper-1">
+            <uni-icons type="list" size="24"></uni-icons>
+            <view class="bottom-bar-left-wrapper-text">更多</view>
+          </view>
+          <view>
+            <uni-icons type="chatbubble" size="24"></uni-icons>
+            <view class="bottom-bar-left-wrapper-text">助理</view>
+          </view>
+          
+        </view>
+        <view>
+          <button v-if="eventStatus==='upcoming'" class="fixed-button">立刻预约</button>
+          <button v-if="eventStatus==='ongoing'" class="fixed-button">进入直播</button>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -73,6 +188,50 @@
   height: 100vh; /* 固定高度 */
   overflow-y: auto; /* 允许滚动 */
 }
+.meta-msg {
+  font-weight: bold;
+}
+
+.divider {
+  padding: 20px 0;
+  border-top: 0.5px rgb(134, 133, 133) solid;
+  border-bottom: 0.5px rgb(134, 133, 133) solid;
+}
+
+.map-icon {
+  margin-right: 20px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+.map-text {
+  font-size: 10px;
+  font-weight: 300;
+}
+
+.remark-wrapper {
+  margin: 5px 0;
+  padding: 0 10px;
+}
+.remark {
+  text-align: justify;
+  font-weight: 300;
+  font-size: 13px;
+}
+
+.center-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.views-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: orange;
+}
 
 .poster {
   position: absolute;
@@ -81,6 +240,11 @@
   width: 100%;
   height: 250px; /* 固定高度 */
   overflow: hidden;
+}
+.flex-wrapper {
+  display: flex;
+  width: 50%;
+  align-items: center;
 }
 
 .blurred-poster {
@@ -145,12 +309,21 @@
 .event-details {
   display: flex;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 12px;
+}
+.event-details.location {
+  justify-content: space-between;
+}
+.event-details-location {
+  display: flex;
+  align-items: center;
+}
+.last-detail-wrapper {
+  margin-bottom: 15px;
 }
 
 .icon-container {
   background-color: #e6e6fa;
-  padding: 10px;
   border-radius: 10px;
   margin-right: 10px;
 }
@@ -196,18 +369,6 @@
   color: #8a2be2; /* Purple color for selected option */
 }
 
-/* .selector-option.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #8a2be2; 
-} */
-
-
-
 .content {
   margin-top: 20px;
 }
@@ -217,15 +378,35 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 20px;
-  background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+  padding: 10px;
+  background: linear-gradient(to top, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0));
   backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
+  height: 60px;
+  max-height: 60px;
+}
+
+.bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 20px;
+}
+.bottom-bar-left-wrapper {
+  display:flex;
+}
+.bottom-bar-left-wrapper-1 {
+  margin-right: 20px;
+}
+.bottom-bar-left-wrapper-text {
+  font-size: 12px;
+  margin-top: 2px;
 }
 
 .fixed-button {
-  height: 50px;
+  height: 40px;
+  width: 200px;
   display: flex;              
   align-items: center;        
   justify-content: center;
@@ -233,7 +414,7 @@
   color: #fff;
   border: none;
   padding: 12px 24px;
-  border-radius: 35px;
+  border-radius: 35px 35px 35px 0px;
   font-size: 16px;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -245,7 +426,9 @@
 import Recommend from '@/pages/schedule/detail/recommend.vue';
 import Agenda from '@/pages/schedule/detail/agenda.vue';
 import Sum from '@/pages/schedule/detail/sum.vue';
-import {getMeetingDetail} from '@/api/meeting/meeting';
+import {getMeetingDetail, getSimpleMeetingPartUsers} from '@/api/meeting/meeting';
+import {meetingTypeConstants} from '@/utils/constant';
+import {calculateTimeDifference} from '@/utils/time';
 
 export default {
   components: {
@@ -254,9 +437,8 @@ export default {
     Sum,
   },
   onLoad(option) {
-    // console.log(option.id)
     getMeetingDetail(option.id).then(resp => {
-      // console.log(resp.data);
+      console.log(resp.data);
       this.event = resp.data;
       if(this.event.status === 1) {
         this.eventStatus = 'upcoming';
@@ -267,14 +449,41 @@ export default {
       else {
         this.eventStatus = 'ended';
       }
+
+      this.times = calculateTimeDifference(resp.data.beginTime);
+    });
+
+
+    getSimpleMeetingPartUsers(option.id).then(resp => {
+      // console.log(resp.data)
+      this.parts = resp.data.parts;
+      this.avatars = resp.data.avatars;
     })
   },
   data() {
     return {
+      // 会议详细信息
       event: {},
+      // 会议状态 联动 event.type
       eventStatus: 'upcoming', // 可以是 'upcoming', 'ongoing', 'ended'
-      selectedOption: '相关推荐',
-      options: ['相关推荐', '大会议程'],
+      // tabs选择
+      selectedOption: '大会议程',
+      // options
+      options: ['大会议程', '相关推荐'],
+      // 会议类型映射
+      meetingTypeConstants,
+      // 报名人数
+      parts: 0,
+      // 报名人数前三个人的头像
+      avatars: [],
+      // 会议距离开始时间，分别是[天，时，分，秒]
+      times: [],
+      // 会议状态 中文，对应eventStatus 用来渲染展示
+      types: {
+        'upcoming': '尚未开始',
+        'ongoing': '进行中',
+        'ended': '已经结束'
+      }
     };
   },
   computed: {
@@ -303,6 +512,22 @@ export default {
         this.options.push('大会纲要');
       }
     },
-  },
+    calculateTimeDifferenceInHours(beginTimeStr, endTimeStr) {
+      // 将时间字符串转换为 Date 对象
+      const beginTime = new Date(beginTimeStr);
+      const endTime = new Date(endTimeStr);
+      // 检查是否开始时间晚于结束时间
+      if (beginTime > endTime) {
+          return "Meeting Time Error！";
+      }
+      // 计算时间差（单位为毫秒）
+      const timeDifference = endTime - beginTime;
+      // 将时间差转换为小时（1小时 = 3600000毫秒）
+      const hoursDifference = Math.floor(timeDifference / 3600000);
+      // 返回结果
+      return `约${hoursDifference}小时`;
+    },
+  }
+
 };
 </script>

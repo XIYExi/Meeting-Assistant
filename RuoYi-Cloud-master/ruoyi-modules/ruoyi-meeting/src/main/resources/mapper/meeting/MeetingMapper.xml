@@ -27,6 +27,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, title, begin_time, end_time, location, url, views, type, status, meeting_type, del_flag, create_by, create_time, update_by, update_time, remark from meeting
     </sql>
 
+    <select id="getPartUserAvatarById">
+        SELECT
+            su.avatar as avatar
+        FROM `meeting_schedule` as ms, sys_user as su where ms.user_id = su.user_id and ms.meeting_id = #{id} limit 3
+    </select>
+
     <select id="selectMeetingBeginTimeForList">
         SELECT DATE_FORMAT(begin_time, '%m-%d') FROM meeting
     </select>

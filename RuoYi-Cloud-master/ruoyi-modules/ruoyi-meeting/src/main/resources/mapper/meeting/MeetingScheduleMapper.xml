@@ -24,6 +24,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, meeting_id, user_id, title, phone, begin_time, end_time, del_flag, create_by, create_time, update_by, update_time, remark from meeting_schedule
     </sql>
 
+    <select id="selectPartsNumberById">
+        select sum(id) from meeting_schedule where meeting_id = #{id}
+    </select>
+
 
     <select id="selectPartUserList" resultType="com.ruoyi.meeting.entity.PartUser">
         select

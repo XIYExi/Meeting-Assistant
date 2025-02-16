@@ -16,6 +16,19 @@ import org.apache.ibatis.annotations.Param;
 public interface MeetingScheduleMapper 
 {
 
+    /**
+     *  会议详细页面中使用
+     *  查出当前会议参与人数
+     * @param id
+     * @return
+     */
+    public Integer selectPartsNumberById(@Param("id") Long id);
+
+    /**
+     * 查询当前会议报名数据
+     * @param meetingId
+     * @return
+     */
     public List<SysUser> selectPartUserList(@Param("meetingId")Long meetingId);
 
 

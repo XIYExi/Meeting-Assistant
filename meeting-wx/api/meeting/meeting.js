@@ -30,3 +30,11 @@ export function getMeetingDetail(id) {
 		method: 'get'
 	})
 }
+
+
+export function getSimpleMeetingPartUsers(id) {
+	return request({
+		url:`/meeting/meeting/getPartNumber?id=${id}`,
+		method: 'get'
+	})
+}

@@ -1,17 +1,19 @@
 package com.ruoyi.meeting.service;
 
-import java.util.Date;
 import java.util.List;
 import com.ruoyi.meeting.domain.Meeting;
+import com.ruoyi.meeting.entity.SimplePartUser;
 
 /**
  * 会议Service接口
- * 
+ *
  * @author xiye
  * @date 2024-12-25
  */
 public interface IMeetingService 
 {
+
+    public SimplePartUser getPartUserAvatarById(Long id);
 
     public List<String> selectMeetingBeginTimeForList();
     /**
@@ -61,4 +63,5 @@ public interface IMeetingService
      * @return 结果
      */
     public int deleteMeetingById(Long id);
+
 }

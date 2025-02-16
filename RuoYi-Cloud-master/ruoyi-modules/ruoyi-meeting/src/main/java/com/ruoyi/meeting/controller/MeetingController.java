@@ -11,6 +11,7 @@ import com.ruoyi.job.api.RemoteSysJobService;
 import com.ruoyi.job.api.domain.SysJob;
 import com.ruoyi.meeting.constant.CosConstant;
 import com.ruoyi.meeting.constant.MeetingConstant;
+import com.ruoyi.meeting.entity.SimplePartUser;
 import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
 import com.ruoyi.meeting.service.impl.MeetingServiceImpl;
@@ -45,6 +46,14 @@ public class MeetingController extends BaseController {
     private RemoteCosService remoteCosService;
     @Autowired
     private RemoteSysJobService remoteSysJobService;
+
+
+    @GetMapping("/getPartNumber")
+    public AjaxResult getPartNumber(@RequestParam("id") Long id) {
+        SimplePartUser partUserAvatarById = meetingService.getPartUserAvatarById(id);
+        return AjaxResult.success(partUserAvatarById);
+    }
+
 
     @GetMapping("/beginTimeList")
     public AjaxResult beginTimeList() {

@@ -8,6 +8,8 @@ import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.job.api.RemoteSysJobService;
 import com.ruoyi.job.api.domain.SysJob;
+import com.ruoyi.meeting.entity.SimplePartUser;
+import com.ruoyi.meeting.mapper.MeetingScheduleMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,18 @@ public class MeetingServiceImpl implements IMeetingService
     private RemoteCosService remoteCosService;
     @Autowired
     private RemoteSysJobService remoteSysJobService;
+    @Autowired
+    private MeetingScheduleMapper meetingScheduleMapper;
+
+    @Override
+    public SimplePartUser getPartUserAvatarById(Long id) {
+        SimplePartUser simplePartUser = new SimplePartUser();
+        List<String> partUserAvatarById = meetingMapper.getPartUserAvatarById(id);
+        Integer total = meetingScheduleMapper.selectPartsNumberById(id);
+        simplePartUser.setParts(total);
+        simplePartUser.setAvatars(partUserAvatarById);
+        return simplePartUser;
+    }
 
     @Override
     public List<String> selectMeetingBeginTimeForList() {
@@ -195,4 +209,6 @@ public class MeetingServiceImpl implements IMeetingService
         }
         return meetingMapper.deleteMeetingById(id);
     }
+
+
 }
