@@ -3,17 +3,40 @@
     <!-- 模糊海报封面 -->
     <view class="poster">
       <image :src="event.url" alt="Event Poster" class="blurred-poster" />
+      <view class="goto-room-bottom">进入直播间</view>
     </view>
 
     <!-- 参会人员头像、人数和分享按钮 -->
-    <view class="info-container">
-      <view class="avatars">
-        <image src="/static/images/banner/banner07.jpg" alt="Avatar 1" class="avatar" />
-        <image src="/static/images/banner/banner07.jpg" alt="Avatar 2" class="avatar" />
-        <image src="/static/images/banner/banner07.jpg" alt="Avatar 3" class="avatar" />
+    <view class="info-container" v-if="eventStatus === 'upcoming'">
+      <view class="avatar-wrapper">
+        <view class="avatars">
+        <image v-for="(avatar, idx) in avatars" :key="idx" :src="avatar" class="avatar" alt="Avatar" />
+        </view>
+        <view class="viewers-count">等 {{ parts }} 人已经报名</view>
       </view>
-      <view class="viewers-count">1.2K 人在观看</view>
-      <button class="purple-button">分享</button>
+     
+      <view class="viewer-btn-wrapper">
+        <button class="purple-button">分享</button>
+        <button class="purple-button other-button-color">预约</button>
+      </view>
+    </view>
+    <view class="info-container" v-else>
+      <view class="tool-wrapper">
+        <view class="logo-wrapper">logo</view>
+        <view class="tool-text">会议助手</view>
+      </view>
+      <view class="tool-wrapper">
+        <view class="logo-wrapper">logo</view>
+        <view class="tool-text">语音识别</view>
+      </view>
+      <view class="tool-wrapper">
+        <view class="logo-wrapper">logo</view>
+        <view class="tool-text">信息抽取</view>
+      </view>
+      <view class="tool-wrapper">
+        <view class="logo-wrapper">logo</view>
+        <view class="tool-text">笔记查看</view>
+      </view>
     </view>
 
     <!-- 会议名字 -->
@@ -241,6 +264,21 @@
   height: 250px; /* 固定高度 */
   overflow: hidden;
 }
+
+.goto-room-bottom {
+  position: absolute;
+  width: 120px;
+  height: 50px;
+  border: 1px white solid;
+  top: 90px;
+  left: calc(50% - 60px);
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .flex-wrapper {
   display: flex;
   width: 50%;
@@ -258,11 +296,36 @@
   position: relative;
   top: 200px; /* 与海报重叠 */
   background-color: #fff;
-  padding: 15px;
+  padding: 15px 20px;
   border-radius: 50px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tool-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+.logo-wrapper {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.tool-text {
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+  font-weight: 300;
+}
+
+
+
+.avatar-wrapper {
+  display: flex;
+  justify-content:center;
   align-items: center;
 }
 
@@ -284,19 +347,31 @@
   color: #666;
 }
 
+.viewer-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .purple-button {
 	font-size: 15px;
   margin-left: auto;
   background-color: #8a2be2;
   color: #fff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 30px;
+  padding: 8px 12px;
+  border-radius: 20px 0 0 20px;
   cursor: pointer;
-  height:40px;
-  display: flex;               /* 设置为 flexbox */
-  align-items: center;         /* 竖直居中 */
-  justify-content: center; 
+  height:30px;
+  display: flex;   
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.other-button-color {
+  border-radius: 0 20px 20px 0;
+  margin-right: 0px;
 }
 
 .event-name {
@@ -371,6 +446,7 @@
 
 .content {
   margin-top: 20px;
+  padding-bottom: 40px;
 }
 
 .bottom-blur {
@@ -449,11 +525,12 @@ export default {
       else {
         this.eventStatus = 'ended';
       }
+      //todo 用于开发
+      this.eventStatus = 'ongoing';
 
       this.times = calculateTimeDifference(resp.data.beginTime);
     });
-
-
+    
     getSimpleMeetingPartUsers(option.id).then(resp => {
       // console.log(resp.data)
       this.parts = resp.data.parts;

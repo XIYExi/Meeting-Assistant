@@ -1,28 +1,35 @@
 <template>
 	<view>
 		<view class="event-list">
-			<view class="event-container" @click="handleToDetail" v-for="(event, index) in events" :key="index">
+			<view class="event-container" @click="handleToDetail(event.id)" v-for="(event, index) in meetings" :key="index">
 				<view class="event-card">
 					<view class="event-poster">
-						<!-- 这里可以放会议海报的图片 -->
+						<img :src="event.url" class="event-image" loading="lazy"/>
+            			<view class="image-fixed-tag">{{ event.type === 1 ? "线下" : "线上" }}</view>
 					</view>
 			  
 					<view class="event-details">
-						<text class="event-date">{{ event.date }}</text>
-						<text class="event-time">{{ event.time }}</text>
-						<text class="event-name">{{ event.name }}</text>
+						<text class="event-date">{{ event.beginTime }}</text>
+						<text class="event-name">{{ event.title }}</text>
 						<text class="event-location">{{ event.location }}</text>
-						<text class="event-subscribed">{{ event.subscribed ? '已订阅' : '未订阅' }}</text>
 					</view>
 				</view>
 			</view>
 		</view>
 	</view>
-	
 </template>
 
 <script>
-	export default {
+export default {
+	onLoad(args) {
+		this.$store.dispatch("MeetingList");
+	},
+	computed: {
+		meetings() {
+			const meetings = this.$store.state.meeting.meetingList;
+			return meetings;
+		}
+	},
 	data() {
 	  return {
 	    selectedDate: '',
@@ -31,37 +38,16 @@
 	    dates: ['2024.4.19', '2024.5.10', '2024.6.15'],
 	    types: ['技术会议', '学术会议', '行业峰会'],
 	    locations: ['仅线下', '线上', '线上线下混合'],
-	    events: [
-	      {
-	        date: '2024.4.19',
-	        time: 'SAT, APR 24 - 1:30 PM',
-	        name: '西安智能电容器测试项目',
-	        location: '53 Bush St · San Francisco, CA',
-	        subscribed: true
-	      },
-	      {
-	        date: '2024.5.10',
-	        time: 'FRI, MAY 10 - 2:00 PM',
-	        name: '全球人工智能峰会',
-	        location: '线上',
-	        subscribed: false
-	      },
-	      {
-	        date: '2024.6.15',
-	        time: 'SAT, JUN 15 - 10:00 AM',
-	        name: '未来科技论坛',
-	        location: '北京国际会议中心',
-	        subscribed: true
-	      }
-	    ]
 	  };
 	},
 	methods: {
-		handleToDetail(){
-			this.$tab.navigateTo('/pages/schedule/detail/index');
+		handleToDetail(id){
+			uni.navigateTo({
+				url: `/pages/schedule/detail/index?id=${id}`
+			});
 		}
 	},
-	}
+}
 </script>
 
 <style scoped>
@@ -71,6 +57,23 @@
 	  gap: 15px; /* 会议容器之间的间距 */
 	}
 	
+	.event-image {
+		height: 150px;
+		width: 100%;
+	}
+
+	.image-fixed-tag {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		color: #fff;
+		padding: 3px 6px;
+		background-color: rgba(24, 240, 168, 0.7);
+		font-size: 12px;
+		border-radius: 5px;
+	}
+
+
 	.event-container {
 	  background-color: #fff;
 	  border-radius: 10px;
@@ -84,6 +87,7 @@
 	}
 	
 	.event-poster {
+		position: relative;
 	  height: 150px;
 	  background-color: #ddd;
 	  border-radius: 10px;

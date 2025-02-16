@@ -126,7 +126,6 @@ export default {
 .agenda_container {
   padding: 10px;
   background-color: #f9f9f9;
-  margin-bottom: 40px;
 }
 
 .agenda-item {

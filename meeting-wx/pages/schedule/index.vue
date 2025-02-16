@@ -100,14 +100,11 @@ export default {
       dates: ['2024.4.19', '2024.5.10', '2024.6.15'],
       eventMeetingTypes: ['技术会议', '学术会议', '行业峰会'],
       eventTypes: ['线上', '线下'],
-      events: []
     };
   },
   methods: {
   	handleToDetail(id){
   		// this.$tab.navigateTo('/pages/schedule/detail/index');
-
-      console.log(id)
       uni.navigateTo({
         url: `/pages/schedule/detail/index?id=${id}`
       });
