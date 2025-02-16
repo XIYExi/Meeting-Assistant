@@ -15,7 +15,8 @@ function checkWhite(url) {
 }
 
 // 页面跳转验证拦截器
-let list = ["navigateTo", "redirectTo", "reLaunch", "switchTab"]
+// let list = ["navigateTo", "redirectTo", "reLaunch", "switchTab"]
+let list = []
 list.forEach(item => {
   uni.addInterceptor(item, {
     invoke(to) {

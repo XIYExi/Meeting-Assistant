@@ -1,5 +1,6 @@
 package com.ruoyi.meeting.service;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.meeting.domain.Meeting;
 
@@ -11,6 +12,8 @@ import com.ruoyi.meeting.domain.Meeting;
  */
 public interface IMeetingService 
 {
+
+    public List<String> selectMeetingBeginTimeForList();
     /**
      * 查询会议
      * 

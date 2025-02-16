@@ -1,5 +1,6 @@
 package com.ruoyi.meeting.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.meeting.domain.Meeting;
 import org.apache.ibatis.annotations.Mapper;
@@ -14,6 +15,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MeetingMapper 
 {
 
+    public List<String> selectMeetingBeginTimeForList();
 
     public List<Meeting> selectTomorrowMeetingsList();
 

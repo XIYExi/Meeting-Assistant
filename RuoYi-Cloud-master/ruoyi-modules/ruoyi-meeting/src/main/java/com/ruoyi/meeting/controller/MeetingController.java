@@ -1,5 +1,6 @@
 package com.ruoyi.meeting.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,12 @@ public class MeetingController extends BaseController {
     private RemoteCosService remoteCosService;
     @Autowired
     private RemoteSysJobService remoteSysJobService;
+
+    @GetMapping("/beginTimeList")
+    public AjaxResult beginTimeList() {
+        List<String> dates = meetingService.selectMeetingBeginTimeForList();
+        return AjaxResult.success(dates);
+    }
 
     /**
      * 查询会议列表

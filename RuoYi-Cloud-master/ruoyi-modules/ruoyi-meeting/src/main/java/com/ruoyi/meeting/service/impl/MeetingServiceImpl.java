@@ -32,6 +32,11 @@ public class MeetingServiceImpl implements IMeetingService
     @Autowired
     private RemoteSysJobService remoteSysJobService;
 
+    @Override
+    public List<String> selectMeetingBeginTimeForList() {
+        return meetingMapper.selectMeetingBeginTimeForList();
+    }
+
     /**
      * 查询会议
      * 

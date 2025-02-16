@@ -16,3 +16,17 @@ export function getGuestListOrderByDate() {
 		method: 'get'
 	})
 }
+
+export function getBeginTimeList() {
+	return request({
+		url: '/meeting/meeting/beginTimeList',
+		method: 'get'
+	})
+}
+
+export function getMeetingDetail(id) {
+	return request({
+		url: `/meeting/meeting/${id}`,
+		method: 'get'
+	})
+}
