@@ -1,6 +1,8 @@
 package com.ruoyi.im.starter;
 
+import com.ruoyi.common.core.utils.ip.IpUtils;
 import com.ruoyi.im.EnvelopeNettyImServerApplication;
+import com.ruoyi.im.common.ChannelHandlerContextCache;
 import com.ruoyi.im.common.ImMsgDecoder;
 import com.ruoyi.im.common.ImMsgEncoder;
 import com.ruoyi.im.handler.ImServerCoreHandler;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import javax.annotation.Resource;
 
@@ -28,8 +31,14 @@ public class NettyServerStarter implements InitializingBean {
     @Value("${netty.port}")
     private int port;
 
+    @Value("${server.port}")
+    private int imServerPort;
+
+
     @Resource
     private ImServerCoreHandler imServerCoreHandler;
+    @Resource
+    private Environment environment;
 
     // 基于netty启动一个java进程，绑定监听窗口
     public void startApplication() throws InterruptedException {
@@ -58,6 +67,11 @@ public class NettyServerStarter implements InitializingBean {
             workerGroup.shutdownGracefully();
         }));
 
+        // 注册im服务器地址 ip:host
+        String ipAddr = IpUtils.getHostIp();
+        //System.err.println(ipAddr);
+        //System.err.println(imServerPort);
+        ChannelHandlerContextCache.setServerIpAddress(ipAddr + ":" + imServerPort);
         ChannelFuture channelFuture = bootstrap.bind(port).sync();
         logger.info("Netty服务启动成功，监听 {} 端口", port);
         // 阻塞主线程，实现服务长期开启的效果

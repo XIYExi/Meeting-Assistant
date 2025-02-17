@@ -5,6 +5,7 @@ import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImCoreServerCacheKeyBuilder;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.constant.ImConstants;
+import com.ruoyi.im.constant.ImCoreServerConstants;
 import com.ruoyi.im.constant.ImMsgCodeEnum;
 import com.ruoyi.im.entity.ImMsgBody;
 import com.ruoyi.im.handler.SimpleHandler;
@@ -12,6 +13,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -23,9 +25,11 @@ public class HeartBeatMsgHandler implements SimpleHandler {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
     @Resource
     private ImCoreServerCacheKeyBuilder cacheKeyBuilder;
+
 
     @Override
     public void handler(ChannelHandlerContext ctx, ImMsg imMsg) {
@@ -43,8 +47,13 @@ public class HeartBeatMsgHandler implements SimpleHandler {
         String redisKey = cacheKeyBuilder.buildImLoginTokenKey(userId, appId);
         this.recordOnlineTime(userId, redisKey);
         this.removeExpireRecord(redisKey);
+        // 接收到心跳之后就去redis中延长时间
         redisTemplate.expire(redisKey, 5, TimeUnit.MINUTES);
-
+        stringRedisTemplate.expire(
+                ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId,
+                ImConstants.DEFAULT_HEART_BEAT_GAP * 2,
+                TimeUnit.SECONDS
+        );
         ImMsgBody imMsgBody = new ImMsgBody();
         imMsgBody.setUserId(userId);
         imMsgBody.setAppId(appId);

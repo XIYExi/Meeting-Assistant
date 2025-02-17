@@ -6,6 +6,7 @@ import com.ruoyi.common.mq.topic.ImCoreServerProviderTopicName;
 import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +43,10 @@ public class BizMsgHandler implements SimpleHandler {
         message.setBody(body);
         message.setTopic(ImCoreServerProviderTopicName.LIVE_IM_BIZ_MSG_TOPIC);
         try {
-            mqProducer.send(message);
+            SendResult sendResult = mqProducer.send(message);
+            logger.info("[BizMsgHandler消息投送结果]: {}", sendResult);
         } catch (Exception e) {
-            logger.error("send error ,erros is :", e);
+            logger.error("send error ,error is :", e);
             throw new RuntimeException(e);
         }
         // ctx.writeAndFlush(imMsg);

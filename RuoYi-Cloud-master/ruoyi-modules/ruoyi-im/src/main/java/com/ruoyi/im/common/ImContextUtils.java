@@ -20,4 +20,11 @@ public class ImContextUtils {
         return ctx.attr(ImContextAttr.APP_ID).get();
     }
 
+    public static void removeUserId(ChannelHandlerContext ctx) {
+        ctx.attr(ImContextAttr.USER_ID).remove();
+    }
+
+    public static void removeAppId(ChannelHandlerContext ctx) {
+        ctx.attr(ImContextAttr.APP_ID).remove();
+    }
 }
