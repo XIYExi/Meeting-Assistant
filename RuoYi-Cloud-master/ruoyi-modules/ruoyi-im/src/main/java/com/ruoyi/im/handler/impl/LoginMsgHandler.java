@@ -66,7 +66,7 @@ public class LoginMsgHandler implements SimpleHandler {
 
         ImMsgBody respBody = new ImMsgBody();
         respBody.setUserId(userId);
-        respBody.setAppId(AppIdEnum.LIVE_BIZ.getCode());
+        respBody.setAppId(appId);
         ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), JSON.toJSONString(respBody));
 
         stringRedisTemplate.opsForValue().set(

@@ -33,7 +33,7 @@ public class HeartBeatMsgHandler implements SimpleHandler {
 
     @Override
     public void handler(ChannelHandlerContext ctx, ImMsg imMsg) {
-        logger.info("进入心跳检测处理函数... {}", imMsg);
+        //logger.info("进入心跳检测处理函数... {}", imMsg);
         // 心跳包基本校验
         Long userId = ImContextUtils.getUserId(ctx);
         Integer appId = ImContextUtils.getAppId(ctx);
@@ -59,7 +59,7 @@ public class HeartBeatMsgHandler implements SimpleHandler {
         imMsgBody.setAppId(appId);
         imMsgBody.setData("true");
         ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_HEARTBEAT_MSG.getCode(), JSON.toJSONString(imMsgBody));
-        logger.info("[HeartBeatImMsgHandler] imMsg is {}", imMsg);
+        //logger.info("[HeartBeatImMsgHandler] imMsg is {}", imMsg);
         ctx.writeAndFlush(respMsg);
     }
 

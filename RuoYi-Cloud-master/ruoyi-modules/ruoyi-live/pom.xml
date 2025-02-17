@@ -92,6 +92,13 @@
             <version>3.6.5</version>
         </dependency>
 
+
+        <!--dev测试用-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-api-router</artifactId>
+            <version>3.6.5</version>
+        </dependency>
     </dependencies>
 
     <build>

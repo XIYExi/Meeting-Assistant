@@ -43,4 +43,9 @@ public class ServiceNameConstants
     public static final String IM_SERVICE = "ruoyi-im";
 
 
+    /**
+     * im router 转发服务器 serviceId
+     */
+    public static final String ROUTER_SERVICE = "ruoyi-router";
+
 }

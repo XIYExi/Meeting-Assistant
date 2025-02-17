@@ -10,6 +10,9 @@ public class ImMsgBody implements Serializable {
     // 用户id
     private long userId;
 
+    // 业务标识
+    private int bizCode;
+
     // 和业务服务进行消息传递
     private String data;
 
@@ -36,5 +39,13 @@ public class ImMsgBody implements Serializable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public int getBizCode() {
+        return bizCode;
+    }
+
+    public void setBizCode(int bizCode) {
+        this.bizCode = bizCode;
     }
 }

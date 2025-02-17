@@ -1,4 +1,4 @@
-package com.ruoyi.im.entity;
+package com.ruoyi.live.entity;
 
 import java.io.Serializable;
 

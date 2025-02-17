@@ -9,13 +9,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
 @SpringBootApplication
 @EnableCustomConfig
 @EnableRyFeignClients
-public class EnvelopeImRouterApplication implements CommandLineRunner {
+public class EnvelopeImRouterApplication /*implements CommandLineRunner*/ {
 
     @Resource
     private ImRouterService imRouterService;
@@ -26,12 +28,12 @@ public class EnvelopeImRouterApplication implements CommandLineRunner {
         application.run(args);
     }
 
-    @Override
+    /*@Override
     public void run(String... args) throws Exception {
         for(int i=0;i<1000;++i) {
             ImMsgBody imMsgBody = new ImMsgBody();
             imRouterService.sendMsg(1001L, JSON.toJSONString(imMsgBody));
             Thread.sleep(1000);
         }
-    }
+    }*/
 }

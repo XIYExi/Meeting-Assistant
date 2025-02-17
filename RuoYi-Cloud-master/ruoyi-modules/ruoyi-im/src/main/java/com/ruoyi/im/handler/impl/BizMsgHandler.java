@@ -38,7 +38,6 @@ public class BizMsgHandler implements SimpleHandler {
             logger.error("body error,imMsg is {}", imMsg);
             return;
         }
-
         Message message = new Message();
         message.setBody(body);
         message.setTopic(ImCoreServerProviderTopicName.LIVE_IM_BIZ_MSG_TOPIC);

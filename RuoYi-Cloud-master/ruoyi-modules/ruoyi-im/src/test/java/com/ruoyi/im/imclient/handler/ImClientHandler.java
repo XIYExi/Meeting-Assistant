@@ -17,11 +17,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 @Service
 public class ImClientHandler implements InitializingBean {
@@ -43,51 +45,71 @@ public class ImClientHandler implements InitializingBean {
                         ch.pipeline().addLast(new ClientHandler());
                     }
                 });
-                Map<Long, Channel> userIdChannelMap = new HashMap<>();
-                for (int i = 0; i < 100; ++i) {
-                    Long userId = (long) i;
 
-                    ChannelFuture channelFuture = null;
-                    try {
-                        channelFuture = bootstrap.connect("localhost", 9094).sync();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                ChannelFuture channelFuture = null;
+                try {
+                    // 连接netty！
+                    channelFuture = bootstrap.connect("localhost", 9094).sync();
                     Channel channel = channelFuture.channel();
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("请输入userId");
+                    Long userId = scanner.nextLong();
+                    System.out.println("请输入objectId");
+                    Long objectId = scanner.nextLong();
+
+                    //发送登录消息包
                     ImMsgBody imMsgBody = new ImMsgBody();
                     imMsgBody.setAppId(AppIdEnum.LIVE_BIZ.getCode());
-                    imMsgBody.setUserId(i);
+                    imMsgBody.setUserId(userId);
                     ImMsg loginMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), JSON.toJSONString(imMsgBody));
                     channel.writeAndFlush(loginMsg);
-                    userIdChannelMap.put(userId, channel);
-                    /*channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_LOGOUT_MSG.getCode(), "logout"));
-                    channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_BIZ_MSG.getCode(), "biz"));
-                    channel.writeAndFlush(ImMsg.build(ImMsgCodeeEnum.IM_HEARTBEAT_MSG.getCode(), "heart"));*/
-                }
 
+                    //心跳包机制
+                    sendHeartBeat(userId, channel);
 
-                while(true) {
-                    for (Long userId : userIdChannelMap.keySet()) {
+                    while (true) {
+                        System.out.println("请输入聊天内容");
+                        String content = scanner.nextLine();
+                        if (StringUtils.isEmpty(content)) {
+                            continue;
+                        }
                         ImMsgBody bizBody = new ImMsgBody();
                         bizBody.setAppId(AppIdEnum.LIVE_BIZ.getCode());
                         bizBody.setUserId(userId);
+                        bizBody.setBizCode(5555);
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("userId", userId);
-                        jsonObject.put("objectId", 1001101L);
-                        jsonObject.put("content", "你好，我是" +userId);
+                        jsonObject.put("objectId", objectId);
+                        jsonObject.put("content", content);
                         bizBody.setData(JSON.toJSONString(jsonObject));
                         ImMsg heartBeatMsg = ImMsg.build(ImMsgCodeEnum.IM_BIZ_MSG.getCode(), JSON.toJSONString(bizBody));
-                        userIdChannelMap.get(userId).writeAndFlush(heartBeatMsg);
-
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
+                        channel.writeAndFlush(heartBeatMsg);
                     }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
         clientThread.start();
+    }
+
+
+
+
+    private void sendHeartBeat(Long userId, Channel channel) {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                ImMsgBody imMsgBody = new ImMsgBody();
+                imMsgBody.setAppId(AppIdEnum.LIVE_BIZ.getCode());
+                imMsgBody.setUserId(userId);
+                ImMsg loginMsg = ImMsg.build(ImMsgCodeEnum.IM_HEARTBEAT_MSG.getCode(), JSON.toJSONString(imMsgBody));
+                channel.writeAndFlush(loginMsg);
+            }
+        }).start();
     }
 }

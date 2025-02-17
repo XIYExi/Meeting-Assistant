@@ -19,6 +19,7 @@ public class ImController {
     @GetMapping("/rpc")
     public AjaxResult rpc(@RequestParam("userId") Long userId,
                           @RequestParam("msgJson") String msgJson) {
+        System.err.println("!!");
         routerHandlerRpc.sendMsg(userId, msgJson);
         return AjaxResult.success();
     }

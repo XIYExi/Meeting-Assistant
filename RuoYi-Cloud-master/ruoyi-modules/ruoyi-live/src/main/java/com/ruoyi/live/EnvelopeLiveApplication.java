@@ -14,7 +14,7 @@ public class EnvelopeLiveApplication {
     public static void main(String[] args) {
         // SpringApplication.run(EnvelopeLiveApplication.class, args);
         SpringApplication springApplication = new SpringApplication(EnvelopeLiveApplication.class);
-        springApplication.setWebApplicationType(WebApplicationType.NONE);
+        // springApplication.setWebApplicationType(WebApplicationType.NONE);
         springApplication.run(args);
     }
 }
