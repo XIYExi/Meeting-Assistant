@@ -1,6 +1,7 @@
 package com.ruoyi.im.imclient.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.common.ImMsgDecoder;
 import com.ruoyi.im.common.ImMsgEncoder;
@@ -67,10 +68,15 @@ public class ImClientHandler implements InitializingBean {
 
                 while(true) {
                     for (Long userId : userIdChannelMap.keySet()) {
-                        ImMsgBody heartBeatBody = new ImMsgBody();
-                        heartBeatBody.setAppId(AppIdEnum.LIVE_BIZ.getCode());
-                        heartBeatBody.setUserId(userId);
-                        ImMsg heartBeatMsg = ImMsg.build(ImMsgCodeEnum.IM_HEARTBEAT_MSG.getCode(), JSON.toJSONString(heartBeatBody));
+                        ImMsgBody bizBody = new ImMsgBody();
+                        bizBody.setAppId(AppIdEnum.LIVE_BIZ.getCode());
+                        bizBody.setUserId(userId);
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("userId", userId);
+                        jsonObject.put("objectId", 1001101L);
+                        jsonObject.put("content", "你好，我是" +userId);
+                        bizBody.setData(JSON.toJSONString(jsonObject));
+                        ImMsg heartBeatMsg = ImMsg.build(ImMsgCodeEnum.IM_BIZ_MSG.getCode(), JSON.toJSONString(bizBody));
                         userIdChannelMap.get(userId).writeAndFlush(heartBeatMsg);
 
                         try {
