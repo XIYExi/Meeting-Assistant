@@ -36,4 +36,11 @@ public class ServiceNameConstants
      * job定时任务的serviceId
      */
     public static final String JOB_SERVICE = "ruoyi-job";
+
+    /**
+     * im 服务器 serviceId
+     */
+    public static final String IM_SERVICE = "ruoyi-im";
+
+
 }

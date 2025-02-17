@@ -20,6 +20,7 @@
         <module>ruoyi-fisco</module>
         <module>ruoyi-im</module>
         <module>ruoyi-live</module>
+        <module>ruoyi-router</module>
     </modules>
 
     <artifactId>ruoyi-modules</artifactId>

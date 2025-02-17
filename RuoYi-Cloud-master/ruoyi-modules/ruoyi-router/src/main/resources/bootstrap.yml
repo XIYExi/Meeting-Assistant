@@ -1,0 +1,36 @@
+# Tomcat
+server:
+  port: 9629
+
+
+ruoyi:
+  rmq:
+    producer:
+      nameSrv: 1.13.154.224:9876
+      groupName: ${spring.application.name}
+      applicationName: ${spring.application.name}
+      sendMsgTimeout: 3000
+      retryTimes: 2
+
+
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: ruoyi-router
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 127.0.0.1:8848
+      config:
+        # 配置中心地址
+        server-addr: 127.0.0.1:8848
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
