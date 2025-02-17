@@ -13,6 +13,7 @@
         <module>ruoyi-api-cos</module>
         <module>ruoyi-api-meeting</module>
         <module>ruoyi-api-job</module>
+        <module>ruoyi-api-im</module>
     </modules>
 
     <artifactId>ruoyi-api</artifactId>
