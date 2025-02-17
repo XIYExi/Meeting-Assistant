@@ -15,7 +15,6 @@
       </view>
 
       <view v-if="index < agendaList.length - 1" class="divider"></view>
-
     </view>
   </view>
 </template>
@@ -80,7 +79,6 @@ export default {
           // 将姓名和职务作为数组添加到结果中
           result.push([name, position]);
       });
-
       return result;
     }
   }
