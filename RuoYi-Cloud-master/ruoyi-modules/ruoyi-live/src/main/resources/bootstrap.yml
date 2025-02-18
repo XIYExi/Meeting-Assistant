@@ -18,6 +18,12 @@ ruoyi:
       sendMsgTimeout: 3000
       retryTimes: 2
 
+mybatis-plus:
+  # 搜索指定包别名
+  typeAliasesPackage: com.ruoyi.live
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath:mapper/*.xml
+
 
 # Spring
 spring:
