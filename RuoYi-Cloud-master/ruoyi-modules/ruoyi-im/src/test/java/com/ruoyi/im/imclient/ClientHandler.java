@@ -17,7 +17,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         if (imMsg.getCode() == ImMsgCodeEnum.IM_BIZ_MSG.getCode()) {
             ImMsgBody respBody = JSON.parseObject(new String(imMsg.getBody()), ImMsgBody.class);
             ImMsgBody ackBody = new ImMsgBody();
-            // ackBody.setMsgId(respBody.getMsgId());
+            ackBody.setMsgId(respBody.getMsgId());
             ackBody.setAppId(respBody.getAppId());
             ackBody.setUserId(respBody.getUserId());
             ImMsg ackMsg = ImMsg.build(ImMsgCodeEnum.IM_BIZ_MSG.getCode(), JSON.toJSONString(ackBody));
