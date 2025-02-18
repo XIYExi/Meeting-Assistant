@@ -13,6 +13,9 @@ public class ImCoreServerCacheKeyBuilder {
 
     private static String IM_ONLINE_ZSET = "imOnlineZset";
 
+
+    private static String IM_ACK_MAP = "imAckMap";
+
     public String getPrefix() {
         return applicationName + SPLIT_ITEM;
     }
@@ -24,6 +27,10 @@ public class ImCoreServerCacheKeyBuilder {
      */
     public String buildImLoginTokenKey(Long userId, Integer appId) {
         return getPrefix() + IM_ONLINE_ZSET + SPLIT_ITEM + appId + SPLIT_ITEM + userId % 10000;
+    }
+
+    public String buildImAckMapKey(Long userId,Integer appId) {
+        return getPrefix() + IM_ACK_MAP + SPLIT_ITEM + appId + SPLIT_ITEM + userId % 100;
     }
 
 }

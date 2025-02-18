@@ -1,14 +1,18 @@
 package com.ruoyi.im.handler;
 
+import com.ruoyi.im.common.ChannelHandlerContextCache;
 import com.ruoyi.im.common.ImContextAttr;
 import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImMsg;
+import com.ruoyi.im.constant.ImCoreServerConstants;
 import com.ruoyi.im.handler.impl.ImHandlerFactoryImpl;
 import com.ruoyi.im.handler.impl.LogoutMsgHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -25,6 +29,9 @@ public class ImServerCoreHandler extends SimpleChannelInboundHandler {
     private ImHandlerFactory imHandlerFactory;
     @Autowired
     private LogoutMsgHandler logoutMsgHandler;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -49,7 +56,8 @@ public class ImServerCoreHandler extends SimpleChannelInboundHandler {
         Integer appId = ImContextUtils.getAppId(ctx);
         if (userId != null && appId != null) {
             // logoutMsgHandler.logoutHandler(ctx,userId,appId);
+            ChannelHandlerContextCache.remove(userId);
+            redisTemplate.delete(ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId);
         }
-
     }
 }

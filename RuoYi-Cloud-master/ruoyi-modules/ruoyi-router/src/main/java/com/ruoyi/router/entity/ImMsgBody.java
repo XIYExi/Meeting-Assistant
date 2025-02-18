@@ -16,6 +16,9 @@ public class ImMsgBody implements Serializable {
     // 和业务服务进行消息传递
     private String data;
 
+    //唯一的消息id
+    private String msgId;
+
     public int getAppId() {
         return appId;
     }
@@ -47,5 +50,24 @@ public class ImMsgBody implements Serializable {
 
     public void setBizCode(int bizCode) {
         this.bizCode = bizCode;
+    }
+
+    public String getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
+    }
+
+    @Override
+    public String toString() {
+        return "ImMsgBody{" +
+                "appId=" + appId +
+                ", userId=" + userId +
+                ", bizCode=" + bizCode +
+                ", data='" + data + '\'' +
+                ", msgId='" + msgId + '\'' +
+                '}';
     }
 }

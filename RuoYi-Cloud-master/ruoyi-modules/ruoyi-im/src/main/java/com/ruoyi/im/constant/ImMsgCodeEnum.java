@@ -10,7 +10,9 @@ public enum ImMsgCodeEnum {
     IM_BIZ_MSG(1003, "业务消息包"),
     // 心跳消息包
 
-    IM_HEARTBEAT_MSG(1004, "心跳消息包");
+    IM_HEARTBEAT_MSG(1004, "心跳消息包"),
+
+    IM_ACK_MSG(1005, "im服务ack消息包");
     private int code;
     private String desc;
 
