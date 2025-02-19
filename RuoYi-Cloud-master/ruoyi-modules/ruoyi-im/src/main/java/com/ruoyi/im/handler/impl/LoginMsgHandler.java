@@ -79,4 +79,38 @@ public class LoginMsgHandler implements SimpleHandler {
         ctx.writeAndFlush(respMsg);
         logger.info("登录函数处理完毕... {}", respMsg);
     }
+
+
+
+    /**
+     * 如果用户登录成功则处理相关记录
+     *
+     * @param ctx
+     * @param userId
+     * @param appId
+     */
+    public void loginSuccessHandler(ChannelHandlerContext ctx, Long userId, Integer appId, Integer roomId) {
+        //按照userId保存好相关的channel对象信息
+        ChannelHandlerContextCache.put(userId, ctx);
+        ImContextUtils.setUserId(ctx, userId);
+        ImContextUtils.setAppId(ctx, appId);
+        if (roomId != null) {
+            ImContextUtils.setRoomId(ctx, roomId);
+        }
+        //将im消息回写给客户端
+        ImMsgBody respBody = new ImMsgBody();
+        respBody.setAppId(appId);
+        respBody.setUserId(userId);
+        respBody.setData("true");
+        ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), JSON.toJSONString(respBody));
+        stringRedisTemplate.opsForValue()
+                .set(ImCoreServerConstants.IM_BIND_IP_KEY +
+                                appId + ":" + userId,
+
+                        ChannelHandlerContextCache.getServerIpAddress() + "%" + userId,
+                        ImConstants.DEFAULT_HEART_BEAT_GAP * 2, TimeUnit.SECONDS);
+        logger.info("[LoginMsgHandler] login success,userId is {},appId is {}", userId, appId);
+        ctx.writeAndFlush(respMsg);
+        // sendLoginMQ(userId, appId, roomId);
+    }
 }

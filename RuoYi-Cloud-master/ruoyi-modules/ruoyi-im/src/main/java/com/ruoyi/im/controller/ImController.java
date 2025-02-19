@@ -1,7 +1,9 @@
 package com.ruoyi.im.controller;
 
 import com.ruoyi.common.core.web.domain.AjaxResult;
+import com.ruoyi.im.entity.ImConfigVO;
 import com.ruoyi.im.rpc.IRouterHandlerRpc;
+import com.ruoyi.im.service.ImService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +16,8 @@ import javax.annotation.Resource;
 public class ImController {
 
     @Resource
+    private ImService imService;
+    @Resource
     private IRouterHandlerRpc routerHandlerRpc;
 
     @GetMapping("/rpc")
@@ -22,6 +26,12 @@ public class ImController {
         System.err.println("!!");
         routerHandlerRpc.sendMsg(userId, msgJson);
         return AjaxResult.success();
+    }
+
+    @GetMapping("/imConfig")
+    public AjaxResult getImConfig() {
+        ImConfigVO imConfig = imService.getImConfig();
+        return AjaxResult.success(imConfig);
     }
 
 }

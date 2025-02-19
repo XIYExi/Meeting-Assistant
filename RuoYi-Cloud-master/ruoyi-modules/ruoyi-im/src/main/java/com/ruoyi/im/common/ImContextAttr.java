@@ -8,4 +8,6 @@ public class ImContextAttr {
 
     public static AttributeKey<Integer> APP_ID = AttributeKey.valueOf("appId");
 
+
+    public static AttributeKey<Integer> ROOM_ID = AttributeKey.valueOf("roomId");
 }

@@ -8,3 +8,19 @@ export function testRequestLive() {
     method: 'get'
   })
 }
+
+
+export function startLiving() {
+  return request({
+    url: `/live/living/startLiving?type=${0}`,
+    method: 'post'
+  })
+}
+
+
+export function getImConfig() {
+	return request({
+		url: '/im/im/imConfig',
+		method: 'get'
+	})
+}

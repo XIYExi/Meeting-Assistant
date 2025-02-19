@@ -10,6 +10,8 @@ import com.ruoyi.im.constant.ImMsgCodeEnum;
 import com.ruoyi.im.entity.ImMsgBody;
 import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -61,5 +63,35 @@ public class LogoutMsgHandler implements SimpleHandler {
         ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGOUT_MSG.getCode(), JSON.toJSONString(respBody));
         ctx.writeAndFlush(respMsg);
         ctx.close();
+    }
+
+
+
+    /**
+     * 登出的时候做缓存的清理和mq通知
+     *
+     * @param ctx
+     * @param userId
+     * @param appId
+     */
+    public void logoutHandler(ChannelHandlerContext ctx, Long userId, Integer appId) {
+        logger.info("[LogoutMsgHandler] logout success,userId is {},appId is {}", userId, appId);
+        //理想情况下，客户端断线的时候，会发送一个断线消息包
+        ChannelHandlerContextCache.remove(userId);
+        stringRedisTemplate.delete(ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId);
+        ImContextUtils.removeUserId(ctx);
+        ImContextUtils.removeAppId(ctx);
+        sendLogoutMQ(ctx, userId, appId);
+    }
+
+    /**
+     * 登出的时候发送mq消息
+     *
+     * @param ctx
+     * @param userId
+     * @param appId
+     */
+    public void sendLogoutMQ(ChannelHandlerContext ctx, Long userId, Integer appId) {
+
     }
 }

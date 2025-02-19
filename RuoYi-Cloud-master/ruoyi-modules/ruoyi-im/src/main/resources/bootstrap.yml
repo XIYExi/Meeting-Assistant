@@ -3,9 +3,15 @@ server:
   port: 9609
 
 netty:
-  port: 9094
-  sport: 9091
-  host: 127.0.0.1 #客户端用到
+  ip: 127.0.0.1
+  ws:
+    port: 9094
+    sport: 9091
+    host: 127.0.0.1 #客户端用到
+  tcp:
+    port: 9095
+    sport: 9092
+    host: 127.0.0.1 #客户端用到
 
 ruoyi:
   rmq:

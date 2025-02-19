@@ -3,7 +3,7 @@
     <!-- 模糊海报封面 -->
     <view class="poster">
       <image :src="event.url" alt="Event Poster" class="blurred-poster" />
-      <view class="goto-room-bottom">进入直播间</view>
+      <view class="goto-room-bottom" @click="gotoLivingRoom">进入直播间</view>
     </view>
 
     <!-- 参会人员头像、人数和分享按钮 -->
@@ -503,6 +503,7 @@ import Recommend from '@/pages/schedule/detail/recommend.vue';
 import Agenda from '@/pages/schedule/detail/agenda.vue';
 import Sum from '@/pages/schedule/detail/sum.vue';
 import {getMeetingDetail, getSimpleMeetingPartUsers} from '@/api/meeting/meeting';
+import {startLiving} from '@/api/live/index';
 import {meetingTypeConstants} from '@/utils/constant';
 import {calculateTimeDifference} from '@/utils/time';
 
@@ -560,7 +561,9 @@ export default {
         'upcoming': '尚未开始',
         'ongoing': '进行中',
         'ended': '已经结束'
-      }
+      },
+      // todo 直播间id
+      roomId: 200, 
     };
   },
   computed: {
@@ -604,6 +607,11 @@ export default {
       // 返回结果
       return `约${hoursDifference}小时`;
     },
+    gotoLivingRoom() {
+      uni.navigateTo({
+				url: `/pages/live/index?id=${this.roomId}`
+			});
+    }
   }
 
 };

@@ -9,21 +9,55 @@
 </template>
 
 <script>
-	import {testRequestLive} from '@/api/live/index.js';
+	import {testRequestLive, getImConfig} from '@/api/live/index.js';
 	export default {
-		mounted() {
-			console.log("live req")
-			testRequestLive().then(resp => {
-				console.log(resp)
+		onLoad(params) {
+			// console.log("live req, params", params)
+			this.roomId = params.id;
+			getImConfig().then(resp => {
+				const {data} = resp;
+				this.url = data.wsImServerAddress;
+				return data.wsImServerAddress;
+			}).then(url => {
+				console.log(url);
+				this.connetImServer('ws://' + url + `/1/${1}/1001/200`);
 			})
+
+			// 连接room
+
+			// 连接im服务器
+			
+			
+		},
+		mounted() {
+			
 		},
 		data() {
 			return {
-				
 			}
 		},
 		methods: {
-			
+			connetImServer: function (url) {
+				let that = this;
+				that.websock = new WebSocket(url);
+				that.websock.onmessage = that.websocketOnMessage;
+				that.websock.onopen = that.websocketOnOpen;
+				that.websock.onerror = that.websocketOnError;
+				that.websock.onclose = that.websocketClose;
+				console.log("连接到ws服务器");
+			},
+			websocketOnMessage(e) {
+				console.log('收到消息', e)
+			},
+			websocketOnOpen() {
+				console.log('初始化建立连接');
+			},
+			websocketOnError() {
+				console.log('出现异常');
+			},
+			websocketClose(e) {
+				console.log('断开连接', e);
+			}
 		}
 		
 	}
