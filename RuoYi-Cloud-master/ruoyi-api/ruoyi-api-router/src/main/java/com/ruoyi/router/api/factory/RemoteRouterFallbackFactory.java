@@ -1,11 +1,14 @@
 package com.ruoyi.router.api.factory;
 
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.router.api.RemoteRouterService;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class RemoteRouterFallbackFactory implements FallbackFactory<RemoteRouterService> {
@@ -18,6 +21,11 @@ public class RemoteRouterFallbackFactory implements FallbackFactory<RemoteRouter
             @Override
             public AjaxResult sendMsg(Long userId, String msgJson) {
                 return AjaxResult.error("im router send msg error");
+            }
+
+            @Override
+            public AjaxResult batchSendMsg(List<ImMsgBody> imMsgBody) {
+                return AjaxResult.error("im router send batch msgs error");
             }
         };
     }

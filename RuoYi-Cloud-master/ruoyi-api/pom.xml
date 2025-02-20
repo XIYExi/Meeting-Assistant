@@ -15,6 +15,7 @@
         <module>ruoyi-api-job</module>
         <module>ruoyi-api-im</module>
         <module>ruoyi-api-router</module>
+        <module>ruoyi-api-live</module>
     </modules>
 
     <artifactId>ruoyi-api</artifactId>

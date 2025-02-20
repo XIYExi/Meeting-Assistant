@@ -1,15 +1,15 @@
 package com.ruoyi.im.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.web.domain.AjaxResult;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.im.entity.ImConfigVO;
 import com.ruoyi.im.rpc.IRouterHandlerRpc;
 import com.ruoyi.im.service.ImService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/im")
@@ -21,11 +21,19 @@ public class ImController {
     private IRouterHandlerRpc routerHandlerRpc;
 
     @GetMapping("/rpc")
-    public AjaxResult rpc(@RequestParam("userId") Long userId,
-                          @RequestParam("msgJson") String msgJson) {
+    public AjaxResult rpc(@RequestParam("msgJson") String msgJson) {
         System.err.println("!!");
-        routerHandlerRpc.sendMsg(userId, msgJson);
+        routerHandlerRpc.sendMsg(msgJson);
         return AjaxResult.success();
+    }
+
+    @PostMapping("/batchRpc")
+    public AjaxResult batchRpc(@RequestBody List<ImMsgBody> imMsgBodyList) {
+        System.err.println("??");
+        imMsgBodyList.forEach(imMsgBody -> {
+            routerHandlerRpc.sendMsg(JSON.toJSONString(imMsgBody));
+        });
+       return AjaxResult.success();
     }
 
     @GetMapping("/imConfig")

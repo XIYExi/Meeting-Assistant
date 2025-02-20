@@ -1,7 +1,6 @@
 package com.ruoyi.live.handler.impl;
 
-import com.ruoyi.live.entity.ImMsgBody;
-import com.ruoyi.live.enums.ImMsgBizCodeEnum;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.live.handler.ImMsgBizFactory;
 import com.ruoyi.live.handler.MessageHandler;
 import org.springframework.stereotype.Component;

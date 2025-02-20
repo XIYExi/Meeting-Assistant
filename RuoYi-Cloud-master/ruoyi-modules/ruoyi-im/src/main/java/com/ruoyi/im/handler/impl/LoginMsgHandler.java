@@ -1,16 +1,20 @@
 package com.ruoyi.im.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.entity.im.ImMsgBody;
+import com.ruoyi.common.entity.im.ImOnlineDTO;
+import com.ruoyi.common.mq.topic.ImCoreServerProviderTopicName;
 import com.ruoyi.im.common.ChannelHandlerContextCache;
 import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImMsg;
-import com.ruoyi.im.constant.AppIdEnum;
 import com.ruoyi.im.constant.ImConstants;
 import com.ruoyi.im.constant.ImCoreServerConstants;
 import com.ruoyi.im.constant.ImMsgCodeEnum;
-import com.ruoyi.im.entity.ImMsgBody;
 import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -30,6 +34,8 @@ public class LoginMsgHandler implements SimpleHandler {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private MQProducer mqProducer;
 
     @Override
     public void handler(ChannelHandlerContext ctx, ImMsg imMsg) {
@@ -70,8 +76,8 @@ public class LoginMsgHandler implements SimpleHandler {
         ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), JSON.toJSONString(respBody));
 
         stringRedisTemplate.opsForValue().set(
-                ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId,
-                ChannelHandlerContextCache.getServerIpAddress(),
+                ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId ,
+                ChannelHandlerContextCache.getServerIpAddress() + "%" + userId,
                 ImConstants.DEFAULT_HEART_BEAT_GAP * 2,
                 TimeUnit.SECONDS
         );
@@ -111,6 +117,25 @@ public class LoginMsgHandler implements SimpleHandler {
                         ImConstants.DEFAULT_HEART_BEAT_GAP * 2, TimeUnit.SECONDS);
         logger.info("[LoginMsgHandler] login success,userId is {},appId is {}", userId, appId);
         ctx.writeAndFlush(respMsg);
-        // sendLoginMQ(userId, appId, roomId);
+        sendLoginMQ(userId, appId, roomId);
+    }
+
+
+
+    private void sendLoginMQ(Long userId, Integer appId, Integer roomId) {
+        ImOnlineDTO imOnlineDTO = new ImOnlineDTO();
+        imOnlineDTO.setUserId(userId);
+        imOnlineDTO.setAppId(appId);
+        imOnlineDTO.setRoomId(roomId);
+        imOnlineDTO.setLoginTime(System.currentTimeMillis());
+        Message message = new Message();
+        message.setTopic(ImCoreServerProviderTopicName.IM_ONLINE_MSG_TOPIC);
+        message.setBody(JSON.toJSONString(imOnlineDTO).getBytes());
+        try {
+            SendResult send = mqProducer.send(message);
+            logger.info("[sendLoginMQ] sendResult: {}", send);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

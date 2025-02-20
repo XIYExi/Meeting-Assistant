@@ -1,9 +1,9 @@
 package com.ruoyi.im.consumer;
 
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.common.mq.properties.RocketMQConsumerProperties;
 import com.ruoyi.common.mq.topic.ImCoreServerProviderTopicName;
-import com.ruoyi.im.entity.ImMsgBody;
 import com.ruoyi.im.service.IMsgAckCheckService;
 import com.ruoyi.im.service.IRouterHandlerService;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -13,9 +13,11 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+@Component
 public class ImAckConsumer implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImAckConsumer.class);
 

@@ -1,6 +1,6 @@
 package com.ruoyi.im.service;
 
-import com.ruoyi.im.entity.ImMsgBody;
+import com.ruoyi.common.entity.im.ImMsgBody;
 
 public interface IRouterHandlerService {
 

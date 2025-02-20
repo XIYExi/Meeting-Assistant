@@ -8,9 +8,9 @@ public interface IRouterHandlerRpc {
 
     /**
      * 根据用户id进行消息的发送
-     * @param userId
+     *
      * @param msgJson
      */
-    void sendMsg(Long userId, String msgJson);
+    void sendMsg(String msgJson);
 
 }

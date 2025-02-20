@@ -1,4 +1,4 @@
-package com.ruoyi.live.entity;
+package com.ruoyi.common.entity.im;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -7,7 +7,9 @@ public class MessageDTO implements Serializable {
 
     private static final long serialVersionUID = -8982006120358366161L;
     private Long userId;
-    private Long objectId;
+    private Integer roomId;
+
+    private String avatarName;
 
     /**
      * 消息类型
@@ -28,13 +30,6 @@ public class MessageDTO implements Serializable {
         this.userId = userId;
     }
 
-    public Long getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(Long objectId) {
-        this.objectId = objectId;
-    }
 
     public Integer getType() {
         return type;
@@ -66,5 +61,21 @@ public class MessageDTO implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
+    public String getAvatarName() {
+        return avatarName;
+    }
+
+    public void setAvatarName(String avatarName) {
+        this.avatarName = avatarName;
     }
 }

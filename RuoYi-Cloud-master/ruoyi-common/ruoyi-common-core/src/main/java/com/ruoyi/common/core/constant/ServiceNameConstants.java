@@ -48,4 +48,9 @@ public class ServiceNameConstants
      */
     public static final String ROUTER_SERVICE = "ruoyi-router";
 
+    /**
+     * live 直播模块 serviceId
+     */
+    public static final String LIVE_SERVICE = "ruoyi-live";
+
 }

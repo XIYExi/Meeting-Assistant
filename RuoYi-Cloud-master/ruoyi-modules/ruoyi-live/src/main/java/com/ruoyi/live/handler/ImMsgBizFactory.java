@@ -1,7 +1,7 @@
 package com.ruoyi.live.handler;
 
-import com.ruoyi.live.entity.ImMsgBody;
-import io.netty.channel.ChannelHandlerContext;
+
+import com.ruoyi.common.entity.im.ImMsgBody;
 
 public interface ImMsgBizFactory {
 

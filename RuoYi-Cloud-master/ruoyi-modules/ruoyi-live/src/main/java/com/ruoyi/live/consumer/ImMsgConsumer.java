@@ -1,9 +1,9 @@
 package com.ruoyi.live.consumer;
 
 import com.alibaba.fastjson2.JSON;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.common.mq.properties.RocketMQConsumerProperties;
 import com.ruoyi.common.mq.topic.ImCoreServerProviderTopicName;
-import com.ruoyi.live.entity.ImMsgBody;
 import com.ruoyi.live.handler.MessageHandler;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;

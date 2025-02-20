@@ -96,6 +96,13 @@
             <artifactId>ruoyi-api-im</artifactId>
             <version>3.6.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-common-entity</artifactId>
+            <version>3.6.5</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -7,7 +7,6 @@ import com.ruoyi.im.common.ImMsgDecoder;
 import com.ruoyi.im.common.ImMsgEncoder;
 import com.ruoyi.im.constant.AppIdEnum;
 import com.ruoyi.im.constant.ImMsgCodeEnum;
-import com.ruoyi.im.entity.ImMsgBody;
 import com.ruoyi.im.imclient.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -21,8 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 @Service

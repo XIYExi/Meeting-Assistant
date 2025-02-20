@@ -1,16 +1,10 @@
 package com.ruoyi.router;
 
-import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.security.annotation.EnableCustomConfig;
 import com.ruoyi.common.security.annotation.EnableRyFeignClients;
-import com.ruoyi.router.entity.ImMsgBody;
 import com.ruoyi.router.service.ImRouterService;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 

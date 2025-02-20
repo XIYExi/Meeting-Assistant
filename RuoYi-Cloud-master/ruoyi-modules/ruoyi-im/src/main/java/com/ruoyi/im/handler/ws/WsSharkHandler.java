@@ -68,6 +68,9 @@ public class WsSharkHandler extends ChannelInboundHandlerAdapter {
         String[] paramArr = uri.split("/");
         //String token = paramArr[1];
         Long userId = Long.valueOf(paramArr[2]);
+        System.err.println(
+                paramArr[0] + " : " + paramArr[1] + " : " + paramArr[2] + " : " +paramArr[3]
+        );
         //token的尾部就是appId
         //Integer appId = Integer.valueOf(token.substring(token.lastIndexOf("%") + 1));
         Integer appId = AppIdEnum.LIVE_BIZ.getCode();

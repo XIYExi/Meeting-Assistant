@@ -1,13 +1,13 @@
 package com.ruoyi.im.handler.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImCoreServerCacheKeyBuilder;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.constant.ImConstants;
 import com.ruoyi.im.constant.ImCoreServerConstants;
 import com.ruoyi.im.constant.ImMsgCodeEnum;
-import com.ruoyi.im.entity.ImMsgBody;
 import com.ruoyi.im.handler.SimpleHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;

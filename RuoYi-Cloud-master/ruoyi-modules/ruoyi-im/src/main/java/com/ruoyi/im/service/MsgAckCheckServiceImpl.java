@@ -2,9 +2,9 @@ package com.ruoyi.im.service;
 
 
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.common.mq.topic.ImCoreServerProviderTopicName;
 import com.ruoyi.im.common.ImCoreServerCacheKeyBuilder;
-import com.ruoyi.im.entity.ImMsgBody;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;

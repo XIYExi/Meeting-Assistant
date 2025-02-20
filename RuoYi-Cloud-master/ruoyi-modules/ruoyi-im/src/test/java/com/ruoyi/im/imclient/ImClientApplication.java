@@ -7,7 +7,6 @@ import com.ruoyi.im.common.ImMsgDecoder;
 import com.ruoyi.im.common.ImMsgEncoder;
 import com.ruoyi.im.constant.AppIdEnum;
 import com.ruoyi.im.constant.ImMsgCodeEnum;
-import com.ruoyi.im.entity.ImMsgBody;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

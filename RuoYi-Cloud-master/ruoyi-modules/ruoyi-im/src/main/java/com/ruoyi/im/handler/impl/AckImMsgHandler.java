@@ -1,9 +1,9 @@
 package com.ruoyi.im.handler.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.im.common.ImContextUtils;
 import com.ruoyi.im.common.ImMsg;
-import com.ruoyi.im.entity.ImMsgBody;
 import com.ruoyi.im.handler.SimpleHandler;
 import com.ruoyi.im.service.IMsgAckCheckService;
 import io.netty.channel.ChannelHandlerContext;
