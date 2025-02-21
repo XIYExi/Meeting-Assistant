@@ -1,6 +1,7 @@
 package com.ruoyi.im.imclient;
 
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.constant.ImMsgCodeEnum;
 import io.netty.channel.ChannelHandlerContext;

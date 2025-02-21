@@ -2,6 +2,7 @@ package com.ruoyi.im.imclient.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.im.common.ImMsg;
 import com.ruoyi.im.common.ImMsgDecoder;
 import com.ruoyi.im.common.ImMsgEncoder;
