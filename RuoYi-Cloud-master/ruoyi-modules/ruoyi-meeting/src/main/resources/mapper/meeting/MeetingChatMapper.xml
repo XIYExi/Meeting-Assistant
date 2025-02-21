@@ -7,6 +7,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="MeetingChat" id="MeetingChatResult">
         <result property="id"    column="id"    />
         <result property="meetingId"    column="meeting_id"    />
+        <result property="room_id" column="room_id" />
+        <result property="user_id" column="user_id" />
+        <result property="nick_name" column="nick_name" />
         <result property="content"    column="content"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createBy"    column="create_by"    />
@@ -17,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMeetingChatVo">
-        select id, meeting_id, content, del_flag, create_by, create_time, update_by, update_time, remark from meeting_chat
+        select id, meeting_id,room_id,user_id, nick_name, content, del_flag, create_by, create_time, update_by, update_time, remark from meeting_chat
     </sql>
 
     <select id="selectMeetingChatList" parameterType="MeetingChat" resultMap="MeetingChatResult">

@@ -1,10 +1,12 @@
 package com.ruoyi.live.handler.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.common.entity.im.MessageDTO;
+import com.ruoyi.live.domain.MeetingChat;
 import com.ruoyi.live.service.LiveRoomService;
+import com.ruoyi.live.service.MessageChatService;
 import com.ruoyi.router.api.RemoteRouterService;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.live.enums.ImMsgBizCodeEnum;
@@ -29,15 +31,28 @@ public class LiveRoomMsgHandler implements SimpleMsgHandler {
     @Resource
     private LiveRoomService liveRoomService;
 
+    @Resource
+    private MessageChatService messageChatService;
+
 
     @Override
     public void handler(ImMsgBody imMsgBody) {
         // 聊天室 一个人发送，N个人接受
         MessageDTO messageDTO = JSON.parseObject(imMsgBody.getData(), MessageDTO.class);
+        // System.err.println(messageDTO);
         Integer roomId = messageDTO.getRoomId();
-        List<Long> userIdList = liveRoomService.queryByRoomId(roomId, imMsgBody.getAppId());
-        //System.err.println(userIdList.size());
+        // 1. 消息存储
+        MeetingChat messageChat = new MeetingChat()
+                .setRoomId(messageDTO.getRoomId().longValue())
+                .setUserId(messageDTO.getUserId())
+                .setMeetingId(0L)
+                .setContent(messageDTO.getContent())
+                .setCreateTime(DateUtils.getNowDate())
+                .setNickName(messageDTO.getAvatarName());
+        messageChatService.save(messageChat);
 
+        // 2. 聊天室推送
+        List<Long> userIdList = liveRoomService.queryByRoomId(roomId, imMsgBody.getAppId());
         List<ImMsgBody> imMsgBodyList = new ArrayList<>();
         userIdList.forEach(userId -> {
             ImMsgBody respMsg = new ImMsgBody();

@@ -22,6 +22,12 @@ public class MeetingChat extends BaseEntity
     @Excel(name = "会议表id")
     private Long meetingId;
 
+    private Long userId;
+
+    private Long roomId;
+
+    private String nickName;
+
     /** 聊天信息 */
     @Excel(name = "聊天信息")
     private String content;
@@ -66,18 +72,40 @@ public class MeetingChat extends BaseEntity
         return delFlag;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("meetingId", getMeetingId())
-            .append("content", getContent())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .toString();
+        return "MeetingChat{" +
+                "id=" + id +
+                ", meetingId=" + meetingId +
+                ", userId=" + userId +
+                ", roomId=" + roomId +
+                ", nickName='" + nickName + '\'' +
+                ", content='" + content + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                '}';
     }
 }

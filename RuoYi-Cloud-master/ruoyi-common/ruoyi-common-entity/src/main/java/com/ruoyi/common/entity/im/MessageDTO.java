@@ -78,4 +78,17 @@ public class MessageDTO implements Serializable {
     public void setAvatarName(String avatarName) {
         this.avatarName = avatarName;
     }
+
+    @Override
+    public String toString() {
+        return "MessageDTO{" +
+                "userId=" + userId +
+                ", roomId=" + roomId +
+                ", avatarName='" + avatarName + '\'' +
+                ", type=" + type +
+                ", content='" + content + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }

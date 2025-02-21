@@ -24,3 +24,10 @@ export function getImConfig() {
 		method: 'get'
 	})
 }
+
+export function getHistoryChatList(roomId) {
+	return request({
+		url: `/live/living/queryHistoryChatMsg?roomId=${roomId}`,
+		method: 'post'
+	})
+}

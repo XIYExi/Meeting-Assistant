@@ -6,11 +6,13 @@
 		<text>hello4</text>
 		<text>hello5</text>
 		
-		<input @input="changeInput($event)"/>
+		<input @input="changeInput($event)" :value="input"/>
 		<button @click="sendwsfortest">发送</button>
 		
 		<view style="padding: 20px; border: 1px solid black; margin: 20px;">
-			{{input}}
+			<view v-for="(item, idx) in chatList" :key="idx" style="display: flex;">
+				<view>{{item.avatarName}}:{{item.content}}</view>
+			</view>
 		</view>
 		
 	</view>
@@ -18,7 +20,8 @@
 
 <script>
 import { generateUUID } from '@/utils/uuid';
-import {testRequestLive, getImConfig} from '@/api/live/index.js';
+import {testRequestLive, getImConfig, getHistoryChatList} from '@/api/live/index.js';
+import {b64DecodeUnicode} from '@/utils/common.js';
 
 export default {
 	onLoad(params) {
@@ -36,6 +39,18 @@ export default {
 			// param即roomId
 			this.connetImServer('ws://' + url + `/1/${this.$store.state.user.userId}/1001/200`);
 		});
+		
+		// 用户进入的时候先查询10条对话记录，显得不那么空
+		getHistoryChatList(params.id).then(resp => {
+			console.log('chat list history limit 10: ', resp)
+			if(resp.code === 200) {
+				const {data} = resp;
+				const chatHistory = data.map(item => {
+					return {"content": item.content, "avatarName": item.nickName};
+				});
+				this.chatList = chatHistory;
+			}
+		})
 	},
 	data() {
 		return {
@@ -58,7 +73,7 @@ export default {
 			let bodyStr = JSON.stringify(jsonStr);
 			// ImMsg
 			let reviewMsg = {"magic": 19231, "code": 1003, "len": bodyStr.length, "body": bodyStr};
-			console.log(JSON.stringify(reviewMsg));
+			// console.log(JSON.stringify(reviewMsg));
 			this.websocketSend(JSON.stringify(reviewMsg));
 			this.input = '';
 		},
@@ -80,16 +95,16 @@ export default {
 				this.startHeartBeatJob();
 			}
 			else if(wsData.code == 1003) {
-				let respData = JSON.parse(atob(wsData.body));
-				// console.log('decode', respData)
+				//console.log('wsData: ', JSON.parse(b64DecodeUnicode(wsData.body)))
+				let respData = JSON.parse(b64DecodeUnicode(wsData.body));
+				//console.log('decode', respData)
 				if(respData.bizCode==5555) {
 					let respMsg = JSON.parse(respData.data);
 					let sendMsg = {"content": respMsg.content, "avatarName": respMsg.avatarName};
-					let msgWrapper = {"msgType": 1, "msg": sendMsg};
-					// console.log('wsData code 1003', sendMsg);
-					this.chatList.push(msgWrapper);
-					
-					//todo 注意让滑轮滚到底
+					console.log('receive msg: ', sendMsg)
+					// todo 把消息添加到chatList中，聊天室可以查看历史消息
+					this.chatList.push(sendMsg);
+					//todo 注意让滑轮滚到底 
 					
 				}
 				this.sendAckCode(respData);
