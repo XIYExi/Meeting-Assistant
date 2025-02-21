@@ -1,8 +1,13 @@
 <template>
   <view class="agenda_container">
+    <view class="agenda_title">会议议程</view>
+
     <view v-for="(item, index) in agendaList" :key="index" class="agenda-item">
 
-      <view class="time">{{ item.time[0] }} - {{ item.time[1] }}</view>
+      <view class="time">
+        <view class="agenda-idx">{{ index+1 }}</view>
+        <view class="agenda-time">{{ item.time[0] }} - {{ item.time[1] }}</view>
+      </view>
 
       <view class="message">
         <view class="title">{{ item.content }}</view>
@@ -13,8 +18,6 @@
           </view>
         </view>
       </view>
-
-      <view v-if="index < agendaList.length - 1" class="divider"></view>
     </view>
   </view>
 </template>
@@ -87,14 +90,21 @@ export default {
 
 <style scoped>
 .agenda_container {
-  padding: 10px;
-  background-color: #f9f9f9;
+  padding: 5px 0px;
+}
+
+.agenda_title {
+  font-weight: 600;
+  font-size: 24px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  padding-left: 5px;
 }
 
 .agenda-item {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
 }
 
@@ -103,20 +113,41 @@ export default {
   font-size: 14px;
   font-weight: 300;
   color: #666;
-  width: 35%;
+  width: 30%;
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.agenda-idx {
+  border-radius: 12px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 35px;
+  height: 35px;
+  color: #FAFAFA;
+  background-color: #006FEE;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+.agenda-time {
+  padding-top: 8px;
+  font-size: 13px;
+  font-weight: 300;
+  color: #52525B;
+  font-style: italic;
 }
 
 .title {
   font-size: 14px;
-  color: #333;
-  margin-top: 5px;
-  font-weight: 500;
+  color: #27272A;
+  font-weight: 600;
 }
 
 .message {
-  width: 65%;
-  border-left: 1px solid black;
+  width: 60%;
   padding-left: 10px;
   padding-bottom: 5px;
   padding-top: 5px;
@@ -142,11 +173,5 @@ export default {
   font-size: 12px;
   color: #999;
   font-weight: 300;
-}
-
-.divider {
-  height: 1px;
-  background-color: #ddd;
-  margin: 20px 0;
 }
 </style>
