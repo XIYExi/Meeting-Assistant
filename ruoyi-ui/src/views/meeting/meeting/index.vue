@@ -98,9 +98,21 @@
         </template>
       </el-table-column>
       <el-table-column label="查看次数" align="center" prop="views" />
-      <el-table-column label="会议类型" align="center" prop="type" />
-      <el-table-column label="会议状态" align="center" prop="status" />
-      <el-table-column label="会议开展类型" align="center" prop="meetingType" />
+      <el-table-column label="会议类型" align="center" prop="type" >
+        <template slot-scope="scope">
+          <p>{{ meetingType[scope.row.type] }}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="会议状态" align="center" prop="status" >
+        <template slot-scope="scope">
+          <p>{{ meetingStatus[scope.row.type] }}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="会议开展类型" align="center" prop="meetingType" >
+        <template slot-scope="scope">
+          <p>{{ scope.row.meetingType === 1 ? '线下' : '线上' }}</p>
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="备注" align="center" prop="remark" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -118,6 +130,7 @@
             @click="handleEditAgenda(scope.row)"
             v-hasPermi="['meeting:meeting:edit']"
           >议程</el-button>
+
           <el-button
             size="mini"
             type="text"
@@ -199,6 +212,17 @@ export default {
   name: "Meeting",
   data() {
     return {
+      meetingStatus: {
+        1: '尚未开始',
+        2: '会议进行中',
+        3: '会议结束'
+      },
+      meetingType: {
+        1: '技术会议',
+        2: '学术会议',
+        3: '行业峰会' ,
+        4: '新品发布'
+      },
       // 遮罩层
       loading: true,
       // 选中数组

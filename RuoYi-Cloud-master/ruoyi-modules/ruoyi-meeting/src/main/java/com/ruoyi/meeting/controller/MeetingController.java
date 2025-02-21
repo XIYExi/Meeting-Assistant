@@ -1,23 +1,24 @@
 package com.ruoyi.meeting.controller;
 
-import java.util.Date;
 import java.util.List;
-import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.job.api.RemoteSysJobService;
-import com.ruoyi.job.api.domain.SysJob;
 import com.ruoyi.meeting.constant.CosConstant;
 import com.ruoyi.meeting.constant.MeetingConstant;
+import com.ruoyi.meeting.constant.MeetingRedisKeyBuilder;
 import com.ruoyi.meeting.entity.SimplePartUser;
-import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
 import com.ruoyi.meeting.service.impl.MeetingServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
@@ -40,12 +41,44 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/meeting")
 public class MeetingController extends BaseController {
-    @Autowired
+    @Resource
     private IMeetingService meetingService;
-    @Autowired
+    @Resource
     private RemoteCosService remoteCosService;
-    @Autowired
+    @Resource
     private RemoteSysJobService remoteSysJobService;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @GetMapping("/view")
+    public AjaxResult view(@RequestParam("id") Long id) {
+        Meeting meeting = meetingService.selectMeetingById(id);
+        meeting.setViews(meeting.getViews() + 1);
+        meetingService.updateMeeting(meeting);
+        // 更新redis排行榜
+        Double v = redisTemplate.opsForZSet().incrementScore(MeetingRedisKeyBuilder.MEETING_RANK_KEY, meeting.getId(), 1D);
+        logger.info(v.toString());
+        return AjaxResult.success();
+    }
+
+
+    /**
+     * 排行榜
+     * @return
+     */
+    @GetMapping("/rank")
+    public AjaxResult rank() {
+        Set<ZSetOperations.TypedTuple<Object>> ranks =  redisTemplate.opsForZSet().reverseRangeWithScores(MeetingRedisKeyBuilder.MEETING_RANK_KEY, 0L, -1L);
+        List<Meeting> collect = ranks.stream().map(elem -> {
+            Meeting meeting = meetingService.selectMeetingById((Long) elem.getValue());
+            // 这个文字太多了，不传
+            meeting.setRemark("");
+            return meeting;
+        }).collect(Collectors.toList());
+        return AjaxResult.success(collect);
+    }
+
 
 
     @GetMapping("/getPartNumber")

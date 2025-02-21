@@ -41,8 +41,8 @@
 				<view class="event-card">
 					<view class="event-poster">
 						<!-- 这里可以放会议海报的图片 -->
-             <img :src="event.url" class="event-image" loading="lazy"/>
-             <view class="image-fixed-tag">{{ event.type === 1 ? "线下" : "线上" }}</view>
+						<img :src="event.url" class="event-image" loading="lazy"/>
+						<view class="image-fixed-tag">{{ event.meetType === 1 ? "线下" : "线上" }}</view>
 					</view>
 			  
 					<view class="event-details">
@@ -69,7 +69,7 @@
 
 <script>
 import MeetingTimeMetaComponent from '@/components/MeetingTimeMetaComponent';
-import { getBeginTimeList } from '@/api/meeting/meeting.js';
+import { getBeginTimeList, recordMeetingView } from '@/api/meeting/meeting.js';
 export default {
   onLoad(args) {
     this.$store.dispatch("MeetingList");
@@ -98,16 +98,21 @@ export default {
       selectedType: '',
       selectedLocation: '',
       dates: ['2024.4.19', '2024.5.10', '2024.6.15'],
-      eventMeetingTypes: ['技术会议', '学术会议', '行业峰会'],
+      eventMeetingTypes: ['技术会议', '学术会议', '行业峰会' ,'新品发布'],
       eventTypes: ['线上', '线下'],
     };
   },
   methods: {
   	handleToDetail(id){
   		// this.$tab.navigateTo('/pages/schedule/detail/index');
-      uni.navigateTo({
-        url: `/pages/schedule/detail/index?id=${id}`
-      });
+      recordMeetingView(id).then(resp => {
+        console.log('click', resp)
+      })
+
+      // todo 先不跳转，测试
+      // uni.navigateTo({
+      //   url: `/pages/schedule/detail/index?id=${id}`
+      // });
   	},
     changeSearchText(event) {
       this.$store.commit('CHANGE_MEETING_LIST', event.target.value);

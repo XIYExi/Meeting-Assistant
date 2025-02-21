@@ -46,3 +46,10 @@ export function getMeetingAgendaList(id) {
 		method: 'get'
 	})
 }
+
+export function recordMeetingView(id) {
+	return request({
+		url: `/meeting/meeting/view?id=${id}`,
+		method: 'get'
+	})
+}

@@ -552,7 +552,7 @@
 import Recommend from '@/pages/schedule/detail/recommend.vue';
 import Agenda from '@/pages/schedule/detail/agenda.vue';
 import Sum from '@/pages/schedule/detail/sum.vue';
-import {getMeetingDetail, getSimpleMeetingPartUsers} from '@/api/meeting/meeting';
+import {getMeetingDetail, getSimpleMeetingPartUsers,recordMeetingView} from '@/api/meeting/meeting';
 import {startLiving, getUsersInRoom} from '@/api/live/index';
 import {meetingTypeConstants} from '@/utils/constant';
 import {calculateTimeDifference} from '@/utils/time';
@@ -564,6 +564,10 @@ export default {
     Sum,
   },
   onLoad(option) {
+     // 记录，当前会议关注度+1
+     recordMeetingView(option.id);
+
+    // 获取会议详细信息
     getMeetingDetail(option.id).then(resp => {
       console.log(resp.data);
       this.event = resp.data;
@@ -582,15 +586,17 @@ export default {
       this.times = calculateTimeDifference(resp.data.beginTime);
     });
     
+    // ongoing下获得当前多少用户报名
     getSimpleMeetingPartUsers(option.id).then(resp => {
       // console.log(resp.data)
       this.parts = resp.data.parts;
       this.avatars = resp.data.avatars;
     })
 	
-	getUsersInRoom(this.roomId, 10001).then(resp => {
-		this.userInRoom = resp.data.length;
-	})
+    // 记录当前聊天室有多少用户
+    getUsersInRoom(this.roomId, 10001).then(resp => {
+      this.userInRoom = resp.data.length;
+    });   
   },
   data() {
     return {
