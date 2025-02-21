@@ -22,20 +22,20 @@
     </view>
     <view class="info-container" v-else>
       <view class="tool-wrapper">
-        <view class="logo-wrapper">logo</view>
+        <view class="logo-wrapper"><img src="@/static/images/robot.png" class="robot-mini"/></view>
         <view class="tool-text">会议助手</view>
       </view>
       <view class="tool-wrapper">
-        <view class="logo-wrapper">logo</view>
-        <view class="tool-text">语音识别</view>
+        <view class="logo-wrapper"><img src="@/static/images/news.png" class="robot-mini"/></view>
+        <view class="tool-text">会议新闻</view>
       </view>
       <view class="tool-wrapper">
-        <view class="logo-wrapper">logo</view>
-        <view class="tool-text">信息抽取</view>
+        <view class="logo-wrapper"><img src="@/static/images/activity.png" class="robot-mini"/></view>
+        <view class="tool-text">活动展览</view>
       </view>
       <view class="tool-wrapper">
-        <view class="logo-wrapper">logo</view>
-        <view class="tool-text">笔记查看</view>
+        <view class="logo-wrapper"><img src="@/static/images/more.png" class="robot-mini"/></view>
+        <view class="tool-text">更多信息</view>
       </view>
     </view>
 
@@ -51,9 +51,9 @@
       </view>
       <view class="details-text">
         <view class="event-date">
-          <text class="meta-msg">开始时间 {{ event.beginTime }}</text>
+          <text class="meta-msg">开始时间 <text class="begin-time"><img src="@/static/images/clock.png" class="clock-png" />{{ event.beginTime }}</text></text>
         </view>
-        <view class="event-time">
+        <view class="event-meta">
           <text>会议持续{{ calculateTimeDifferenceInHours(event.beginTime, event.endTime) }}</text>
         </view>
       </view>
@@ -70,7 +70,7 @@
             <view class="event-date">
               <text class="meta-msg">会议地点</text>
             </view>
-            <text>{{ event.location }}</text>
+            <text class="event-meta">{{ event.location }}</text>
           </view>
         </view>
       </view>
@@ -92,7 +92,7 @@
             <view class="event-date">
               <text class="meta-msg">会议类型</text>
             </view>
-            <text>{{ meetingTypeConstants[event.type] }}</text>
+            <text class="event-meta">{{ meetingTypeConstants[event.type] }}</text>
           </view>
         </view>
       </view>
@@ -106,7 +106,7 @@
             <view class="event-date">
               <text class="meta-msg">会议状态</text>
             </view>
-            <text>{{ types[eventStatus] }}</text>
+            <text class="event-meta">{{ types[eventStatus] }}</text>
           </view>
         </view>
       </view>
@@ -120,13 +120,14 @@
             <view class="event-date">
               <text class="meta-msg">参与人数</text>
             </view>
-            <text>{{ parts }} 人</text>
+            <text class="event-meta">{{ parts }} 人</text>
           </view>
         </view>
       </view>  
     </view>
 
-    <view class="divider">
+    <!--upcoming-->
+    <view class="divider" v-if="eventStatus === 'upcoming'">
       <view class="center-wrapper">
         <view>
           <view>
@@ -142,6 +143,13 @@
         </view>
       </view>
     </view>
+    <!--ongoing-->
+    <view class="ongoing-wrapper" v-if="eventStatus === 'ongoing'">
+      <view >
+        <Sum :number="userInRoom"/>
+      </view>
+    </view>
+
 
     <!-- 会议介绍 -->
     <view class="event-details">
@@ -161,7 +169,7 @@
     </view>
     
     <!-- 选择器 -->
-    <view class="selector-container">
+    <!-- <view class="selector-container">
       <view class="selector">
         <view
           v-for="option in options"
@@ -176,7 +184,16 @@
       <view class="content">
         <component :is="selectedComponent" :id="event.id"/>
       </view>
+    </view> -->
+
+    <view class="content">
+        <Agenda :id="event.id"/>
     </view>
+
+    <view class="content">
+        <Recommend :id="event.id"/>
+    </view>
+
 
 
     <!-- 底部固定按钮 -->
@@ -207,12 +224,29 @@
 .container {
   position: relative;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: white;
   height: 100vh; /* 固定高度 */
   overflow-y: auto; /* 允许滚动 */
 }
 .meta-msg {
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 14px;
+  color: #27272A;
+}
+.begin-time {
+  font-weight: 400;
+  margin-left: 10px;
+  background-color: #E6F1FE;
+  padding: 4px 8px;
+  border-radius: 12px;;
+  color: #006FEE;
+  font-weight: 600;
+  font-size: 12px;
+}
+.clock-png {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
 }
 
 .divider {
@@ -253,7 +287,7 @@
 .views-text {
   font-size: 24px;
   font-weight: bold;
-  color: orange;
+  color: #17C964
 }
 
 .poster {
@@ -261,7 +295,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 250px; /* 固定高度 */
+  height: 150px; /* 固定高度 */
   overflow: hidden;
 }
 
@@ -270,7 +304,7 @@
   width: 120px;
   height: 50px;
   border: 1px white solid;
-  top: 90px;
+  top: 40px;
   left: calc(50% - 60px);
   border-radius: 12px;
   color: white;
@@ -287,16 +321,15 @@
 
 .blurred-poster {
   width: 100%;
-  height: 100%;
   object-fit: cover;
   filter: blur(5px);
 }
 
 .info-container {
   position: relative;
-  top: 200px; /* 与海报重叠 */
+  top: 100px; /* 与海报重叠 */
   background-color: #fff;
-  padding: 15px 20px;
+  padding: 12px 30px;
   border-radius: 50px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
@@ -313,6 +346,10 @@
 .logo-wrapper {
   text-align: center;
   margin-bottom: 5px;
+}
+.robot-mini {
+  width: 32px;
+  height: 32px;
 }
 .tool-text {
   text-align: center;
@@ -377,7 +414,7 @@
 .event-name {
   font-size: 24px;
   font-weight: bold;
-  margin-top: 240px; /* 固定位置 */
+  margin-top: 120px; /* 固定位置 */
   color: #333;
 }
 
@@ -398,19 +435,32 @@
 }
 
 .icon-container {
-  background-color: #e6e6fa;
+  background-color: #E6F1FE;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
   margin-right: 10px;
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
 }
 
 .details-text {
   font-size: 14px;
   color: #666;
+}
+
+.event-meta {
+  margin-top: 6px;
+  color: #52525B;
+  font-size: 12px;
 }
 
 .selector-container {
@@ -503,7 +553,7 @@ import Recommend from '@/pages/schedule/detail/recommend.vue';
 import Agenda from '@/pages/schedule/detail/agenda.vue';
 import Sum from '@/pages/schedule/detail/sum.vue';
 import {getMeetingDetail, getSimpleMeetingPartUsers} from '@/api/meeting/meeting';
-import {startLiving} from '@/api/live/index';
+import {startLiving, getUsersInRoom} from '@/api/live/index';
 import {meetingTypeConstants} from '@/utils/constant';
 import {calculateTimeDifference} from '@/utils/time';
 
@@ -537,6 +587,10 @@ export default {
       this.parts = resp.data.parts;
       this.avatars = resp.data.avatars;
     })
+	
+	getUsersInRoom(this.roomId, 10001).then(resp => {
+		this.userInRoom = resp.data.length;
+	})
   },
   data() {
     return {
@@ -564,6 +618,7 @@ export default {
       },
       // todo 直播间id
       roomId: 200, 
+	    userInRoom: 0,
     };
   },
   computed: {
