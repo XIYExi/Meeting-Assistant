@@ -1,5 +1,7 @@
 <template>
 	<view>
+		<view class="rec_title">会议推荐</view>
+
 		<view class="event-list">
 			<view class="event-container" @click="handleToDetail(event.id)" v-for="(event, index) in meetings" :key="index">
 				<view class="event-card">
@@ -9,7 +11,9 @@
 					</view>
 			  
 					<view class="event-details">
-						<text class="event-date">{{ event.beginTime }}</text>
+						<view>
+							<text class="begin-time"><img src="@/static/images/clock.png" class="clock-png" />{{ event.beginTime }}</text>
+						</view>
 						<text class="event-name">{{ event.title }}</text>
 						<text class="event-location">{{ event.location }}</text>
 					</view>
@@ -51,6 +55,14 @@ export default {
 </script>
 
 <style scoped>
+
+	.rec_title {
+		font-weight: 600;
+		font-size: 24px;
+		margin-bottom: 15px;
+		padding-left: 5px;
+	}
+
 	.event-list {
 	  display: flex;
 	  flex-direction: column;
@@ -99,6 +111,22 @@ export default {
 	  flex-direction: column;
 	}
 	
+	.begin-time {
+		font-weight: 400;
+		background-color: #E6F1FE;
+		padding: 4px 8px;
+		border-radius: 12px;;
+		color: #006FEE;
+		font-weight: 600;
+		font-size: 12px;
+		width: auto;
+	}
+	.clock-png {
+		width: 12px;
+		height: 12px;
+		margin-right: 4px;
+	}
+
 	.event-date {
 	  font-size: 12px;
 	  color: #666;
@@ -112,9 +140,11 @@ export default {
 	}
 	
 	.event-name {
-	  font-size: 16px;
-	  color: #333;
-	  margin-bottom: 5px;
+		margin-top: 6px;
+		font-size: 16px;
+		color: #333;
+		margin-bottom: 5px;
+		font-weight: 500;
 	}
 	
 	.event-location {
