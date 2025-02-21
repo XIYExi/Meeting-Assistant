@@ -8,7 +8,9 @@ const baseUrl = config.baseUrl
 
 const user = {
   state: {
+	userId: storage.get(constant.userid),
     token: getToken(),
+	nickname: storage.get(constant.nickname),
     name: storage.get(constant.name),
     avatar: storage.get(constant.avatar),
     roles: storage.get(constant.roles),
@@ -34,7 +36,15 @@ const user = {
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
       storage.set(constant.permissions, permissions)
-    }
+    },
+	SET_USER_ID: (state, id) => {
+		state.userId = id
+		storage.set(constant.userid, id)
+	},
+	SET_NICKNAME: (state, nickname) => {
+		state.nickname = nickname;
+		storage.set(constant.nickname, nickname);
+	}
   },
 
   actions: {
@@ -59,6 +69,8 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
+		  const userId = res.user.userId;
+		  console.log('getuserinfo ', res.user)
           const user = res.user
           const avatar = (user == null || user.avatar == "" || user.avatar == null) ? require("@/static/images/profile.jpg") : baseUrl + user.avatar
           const username = (user == null || user.userName == "" || user.userName == null) ? "" : user.userName
@@ -70,6 +82,8 @@ const user = {
           }
           commit('SET_NAME', username)
           commit('SET_AVATAR', avatar)
+		  commit('SET_USER_ID', userId);
+		  commit('SET_NICKNAME', user.nickName);
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -84,6 +98,8 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           commit('SET_PERMISSIONS', [])
+		  commit('SET_USER_ID', 0)
+		  commit('SET_NICKNAME', '');
           removeToken()
           storage.clean()
           resolve()
