@@ -31,3 +31,11 @@ export function getHistoryChatList(roomId) {
 		method: 'post'
 	})
 }
+
+
+export function getUsersInRoom(roomId, appId) {
+  return request({
+    url: `/live/living/queryByRoomId?roomId=${roomId}&appId=${appId}`,
+    method: 'post'
+  })
+}
