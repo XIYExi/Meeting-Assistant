@@ -56,19 +56,20 @@ public class MeetingController extends BaseController {
         Meeting meeting = meetingService.selectMeetingById(id);
         meeting.setViews(meeting.getViews() + 1);
         meetingService.updateMeeting(meeting);
-        // 更新redis排行榜
-        Double v = redisTemplate.opsForZSet().incrementScore(MeetingRedisKeyBuilder.MEETING_RANK_KEY, meeting.getId(), 1D);
-        logger.info(v.toString());
+        // 更新redis排行榜(总榜）
+        redisTemplate.opsForZSet().incrementScore(MeetingRedisKeyBuilder.MEETING_RANK_KEY, meeting.getId(), 1D);
+
         return AjaxResult.success();
     }
 
 
     /**
-     * 排行榜
+     * 排行榜（总榜）
      * @return
      */
     @GetMapping("/rank")
     public AjaxResult rank() {
+        // 总榜
         Set<ZSetOperations.TypedTuple<Object>> ranks =  redisTemplate.opsForZSet().reverseRangeWithScores(MeetingRedisKeyBuilder.MEETING_RANK_KEY, 0L, -1L);
         List<Meeting> collect = ranks.stream().map(elem -> {
             Meeting meeting = meetingService.selectMeetingById((Long) elem.getValue());
@@ -78,8 +79,6 @@ public class MeetingController extends BaseController {
         }).collect(Collectors.toList());
         return AjaxResult.success(collect);
     }
-
-
 
     @GetMapping("/getPartNumber")
     public AjaxResult getPartNumber(@RequestParam("id") Long id) {

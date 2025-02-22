@@ -69,7 +69,7 @@
 
 <script>
 import MeetingTimeMetaComponent from '@/components/MeetingTimeMetaComponent';
-import { getBeginTimeList, recordMeetingView } from '@/api/meeting/meeting.js';
+import { getBeginTimeList } from '@/api/meeting/meeting.js';
 export default {
   onLoad(args) {
     this.$store.dispatch("MeetingList");
@@ -105,14 +105,10 @@ export default {
   methods: {
   	handleToDetail(id){
   		// this.$tab.navigateTo('/pages/schedule/detail/index');
-      recordMeetingView(id).then(resp => {
-        console.log('click', resp)
-      })
-
-      // todo 先不跳转，测试
-      // uni.navigateTo({
-      //   url: `/pages/schedule/detail/index?id=${id}`
-      // });
+      
+      uni.navigateTo({
+        url: `/pages/schedule/detail/index?id=${id}`
+      });
   	},
     changeSearchText(event) {
       this.$store.commit('CHANGE_MEETING_LIST', event.target.value);

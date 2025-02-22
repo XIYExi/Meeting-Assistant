@@ -42,8 +42,8 @@
 			<view class="tool_elem_wrapper">
 				<text class="tool_elem">实时翻译</text>
 			</view>
-			<view class="tool_elem_wrapper">
-				<text class="tool_elem">AI对话</text>
+			<view class="tool_elem_wrapper" @click="handleNavigateToRankPage">
+				<text class="tool_elem">实时排行</text>
 			</view>
 		</view>
 		<view class="reservation">
@@ -73,7 +73,7 @@
 			<text class="meeting_card_container_title">会议推荐</text>
 		</view>
 		<scroll-view scroll-x="true" class="scroll-view-x" scroll-left="0">
-			<view v-for="elem in meetingList"  class="meeting_card">
+			<view v-for="(elem,index) in meetingList" :key="index"  class="meeting_card">
 				<view class="meeting_card_image_wrapper"></view>
 				<view class="meeting_card_msg_wrapper">
 					<text class="meeting_card_title">{{elem.title}}</text>
@@ -142,7 +142,12 @@
 			uni.navigateTo({
 				url:'/pages/live/index'
 			})
-		}
+		},
+		handleNavigateToRankPage() {
+			uni.navigateTo({
+				url:'/pages/rank/index'
+			})
+		},
 	}
   }
 </script>
@@ -202,7 +207,6 @@
   .ai_wrapper_right {
 	  width: auto;
 	  height: auto;
-	  // border: 1px solid black;
 	  padding: 6px 12px;
 	  border-radius: 15px;
 	  background-color: #ccff22;
@@ -421,7 +425,7 @@
 	  display: inline-block;
 	  margin-right: 20px;
 	  width: 40%!important;
-	  heght: 30px!important;
+	  height: 30px!important;
 	  position: relative;
 	  margin-top: 15px;
 	  margin-bottom: 15px;

@@ -53,3 +53,10 @@ export function recordMeetingView(id) {
 		method: 'get'
 	})
 }
+
+export function getRank() {
+	return request({
+		url: '/meeting/meeting/rank',
+		method: 'get'
+	})
+}

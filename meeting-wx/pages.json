@@ -110,6 +110,12 @@
     "style": {
       "navigationBarTitleText": "会议详情"
     }
+  },
+  {
+    "path": "pages/rank/index",
+    "style": {
+      "navigationBarTitleText": "排行榜"
+    }
   }
   ],
   "tabBar": {
