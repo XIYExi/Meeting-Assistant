@@ -120,7 +120,23 @@ export const constantRoutes = [
         }
       }
     ]
-  }
+  },
+  {
+    path: '/meeting/agenda/:id(\\d+)/:type(\\d+)',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/',
+        component: () => import('@/views/meeting/clip/index'),
+        name: 'Clip',
+        noRedirect: true,
+        meta: {
+          title: '附件'
+        }
+      }
+    ]
+  },
 ]
 
 // 动态路由，基于用户权限动态去加载

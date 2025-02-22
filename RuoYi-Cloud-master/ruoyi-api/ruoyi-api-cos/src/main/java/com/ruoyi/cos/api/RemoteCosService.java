@@ -31,4 +31,8 @@ public interface RemoteCosService {
 
     @PostMapping(value = "/cos/removeImage")
     public AjaxResult removeImage(@RequestParam("url") String url);
+
+
+    @PostMapping(value = "/file/removeClip")
+    public AjaxResult removeClip(@RequestParam("url") String url);
 }

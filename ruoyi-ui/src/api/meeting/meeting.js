@@ -82,3 +82,28 @@ export function delMeeting(id) {
     method: 'delete'
   })
 }
+
+
+export function addClip(data) {
+  return request({
+    url: '/meeting/meeting/addClip',
+    method: 'post',
+    data: data
+  })
+}
+
+
+export function clips(id, type) {
+  return request({
+    url: `/meeting/meeting/clips?id=${id}&type=${type}`,
+    method: 'get'
+  })
+}
+
+
+export function delClip(id) {
+  return request({
+    url: `/meeting/meeting/delClip?id=${id}`,
+    method: 'post'
+  })
+}

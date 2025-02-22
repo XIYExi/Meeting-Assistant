@@ -27,7 +27,6 @@
                         <text class="meeting-type">{{ eventMeetingTypes[elem.type-1] }}</text>
                         <text class="meeting-open-type">{{ elem.meetingType === 1 ? '线上' : '线下' }}</text>
                     </view>
-                    
                 </view>
 
                 <view class="view-wrapper" >
@@ -48,9 +47,7 @@ export default({
             this.ranks = resp.data;
         })
     },
-    mounted() {
-
-    },
+    mounted() {},
     data() {
         return {
             // 排行榜数据，就是meeting，把remark删掉了

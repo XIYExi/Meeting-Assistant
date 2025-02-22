@@ -85,6 +85,7 @@ public class MeetingServiceImpl implements IMeetingService
     public int insertMeeting(Meeting meeting)
     {
         meeting.setCreateTime(DateUtils.getNowDate());
+
         int i = meetingMapper.insertMeeting(meeting);
         if (1 == i) {
             // 添加 自动开始 定时任务

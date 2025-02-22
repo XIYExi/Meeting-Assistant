@@ -2,18 +2,22 @@ package com.ruoyi.meeting.controller;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.utils.DateUtils;
+import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.job.api.RemoteSysJobService;
 import com.ruoyi.meeting.constant.CosConstant;
 import com.ruoyi.meeting.constant.MeetingConstant;
 import com.ruoyi.meeting.constant.MeetingRedisKeyBuilder;
+import com.ruoyi.meeting.domain.MeetingClip;
 import com.ruoyi.meeting.entity.SimplePartUser;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
+import com.ruoyi.meeting.service.IMeetingClipService;
 import com.ruoyi.meeting.service.impl.MeetingServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -50,6 +54,36 @@ public class MeetingController extends BaseController {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private IMeetingClipService meetingClipService;
+
+
+    @PostMapping("/addClip")
+    public AjaxResult addClip(@RequestBody List<MeetingClip> meetingClip) {
+        AtomicInteger total = new AtomicInteger();
+        meetingClip.forEach(elem -> {
+            elem.setFileName(elem.getFileName().split("\\.")[0]);
+            elem.setUploadUserId(SecurityUtils.getUserId());
+            elem.setCreateTime(DateUtils.getNowDate());
+            int i = meetingClipService.insertMeetingClip(elem);
+            total.addAndGet(i);
+        });
+        return AjaxResult.success(total.get() == meetingClip.size());
+    }
+
+    @GetMapping("/clips")
+    public AjaxResult clips(@RequestParam("id") Long id, @RequestParam("type") Long type) {
+        List<MeetingClip> meetingClips = meetingClipService.selectMeetingClipsByCond(id, type);
+        return AjaxResult.success(meetingClips);
+    }
+
+    @PostMapping("/delClip")
+    public AjaxResult delClip(@RequestParam("id") Long id) {
+        meetingClipService.delCip(id);
+        return AjaxResult.success();
+    }
+
+
 
     @GetMapping("/view")
     public AjaxResult view(@RequestParam("id") Long id) {

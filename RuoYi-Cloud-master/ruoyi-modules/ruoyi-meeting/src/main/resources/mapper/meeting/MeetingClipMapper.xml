@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.meeting.mapper.MeetingClipMapper">
+    
+    <resultMap type="MeetingClip" id="MeetingClipResult">
+        <result property="id"    column="id"    />
+        <result property="meetingId"    column="meeting_id"    />
+        <result property="agendaId"    column="agenda_id"    />
+        <result property="clipType"    column="clip_type"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="uploadUserId"    column="upload_user_id"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="url"    column="url"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMeetingClipVo">
+        select id, meeting_id, agenda_id, clip_type, file_name, upload_user_id, file_type, file_size, url, del_flag, create_by, create_time, update_by, update_time from meeting_clip
+    </sql>
+
+    <select id="selectMeetingClipList" parameterType="MeetingClip" resultMap="MeetingClipResult">
+        <include refid="selectMeetingClipVo"/>
+        <where>  
+            <if test="meetingId != null "> and meeting_id = #{meetingId}</if>
+            <if test="agendaId != null "> and agenda_id = #{agendaId}</if>
+            <if test="clipType != null "> and clip_type = #{clipType}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="uploadUserId != null "> and upload_user_id = #{uploadUserId}</if>
+            <if test="fileType != null  and fileType != ''"> and file_type = #{fileType}</if>
+            <if test="fileSize != null "> and file_size = #{fileSize}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+        </where>
+    </select>
+    
+    <select id="selectMeetingClipById" parameterType="Long" resultMap="MeetingClipResult">
+        <include refid="selectMeetingClipVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMeetingClip" parameterType="MeetingClip" useGeneratedKeys="true" keyProperty="id">
+        insert into meeting_clip
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="meetingId != null">meeting_id,</if>
+            <if test="agendaId != null">agenda_id,</if>
+            <if test="clipType != null">clip_type,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="uploadUserId != null">upload_user_id,</if>
+            <if test="fileType != null">file_type,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="url != null">url,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="meetingId != null">#{meetingId},</if>
+            <if test="agendaId != null">#{agendaId},</if>
+            <if test="clipType != null">#{clipType},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="uploadUserId != null">#{uploadUserId},</if>
+            <if test="fileType != null">#{fileType},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="url != null">#{url},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMeetingClip" parameterType="MeetingClip">
+        update meeting_clip
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="meetingId != null">meeting_id = #{meetingId},</if>
+            <if test="agendaId != null">agenda_id = #{agendaId},</if>
+            <if test="clipType != null">clip_type = #{clipType},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="uploadUserId != null">upload_user_id = #{uploadUserId},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMeetingClipById" parameterType="Long">
+        delete from meeting_clip where id = #{id}
+    </delete>
+
+    <delete id="deleteMeetingClipByIds" parameterType="String">
+        delete from meeting_clip where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

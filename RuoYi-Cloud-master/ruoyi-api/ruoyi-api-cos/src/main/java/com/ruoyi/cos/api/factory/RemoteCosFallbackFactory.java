@@ -48,6 +48,11 @@ public class RemoteCosFallbackFactory implements FallbackFactory<RemoteCosServic
             public AjaxResult removeImage(String url) {
                 return AjaxResult.error("文件删除失败:" + throwable.getMessage());
             }
+
+            @Override
+            public AjaxResult removeClip(String url) {
+                return  AjaxResult.error("文件删除失败:" + throwable.getMessage());
+            }
         };
     }
 }

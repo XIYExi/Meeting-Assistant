@@ -126,18 +126,35 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleEditAgenda(scope.row)"
             v-hasPermi="['meeting:meeting:edit']"
           >议程</el-button>
 
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['meeting:meeting:remove']"
-          >删除</el-button>
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              更多<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="handleDelete(scope.row)"
+                  v-hasPermi="['meeting:meeting:remove']"
+                >删除</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-delete"
+                  @click="handleUploadClip(scope.row)"
+                  v-hasPermi="['meeting:meeting:remove']"
+                >附件</el-button>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -151,50 +168,116 @@
     />
 
     <!-- 添加或修改会议对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="会议名称" prop="title">
-          <el-input v-model="form.title" placeholder="请输入会议名称" />
-        </el-form-item>
-        <el-form-item label="开始时间" prop="beginTime">
-          <el-date-picker clearable
-            v-model="form.beginTime"
-            type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            format="yyyy-MM-dd HH:mm:ss"
-            placeholder="请选择会议开始时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间" prop="endTime">
-          <el-date-picker clearable
-            v-model="form.endTime"
-            type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            format="yyyy-MM-dd HH:mm:ss"
-            placeholder="请选择会议结束时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="会议地点" prop="location">
-          <el-input v-model="form.location" placeholder="请输入会议地点" />
-        </el-form-item>
-        <el-form-item label="封面海报图" prop="url">
-          <el-upload
-            ref="uploadMeetingRef"
-            drag
-            action=""
-            class="upload-demo"
-            :http-request="httpRequest"
-            :multiple="false"
-            :limit="1"
-            :auto-upload="false"
-            :file-list="form.file"
-          >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
-        </el-form-item>
-      </el-form>
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+      <el-row :gutter="15">
+        <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+          <el-col :span="24">
+            <el-form-item label="会议名称" prop="title">
+              <el-input v-model="form.title" placeholder="请输入会议名称" clearable :style="{width: '100%'}"/>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="开始时间" prop="beginTime">
+              <el-date-picker
+                clearable
+                v-model="form.beginTime"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd HH:mm:ss"
+                :style="{width: '100%'}"
+                placeholder="请选择会议开始时间">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="结束时间" prop="endTime">
+              <el-date-picker
+                clearable
+                v-model="form.endTime"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd HH:mm:ss"
+                :style="{width: '100%'}"
+                placeholder="请选择会议结束时间">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="会议地点" prop="location">
+              <el-input v-model="form.location" placeholder="请输入会议地点" />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
+            <el-form-item label="封面海报图" prop="url">
+              <el-upload
+                ref="uploadMeetingRef"
+                drag
+                action=""
+                class="upload-demo"
+                :http-request="httpRequest"
+                :multiple="false"
+                :limit="1"
+                :auto-upload="false"
+                :file-list="form.file"
+              >
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="8">
+            <el-form-item label="会议类型" prop="type">
+              <el-select v-model="form.type" placeholder="请选择会议类型" clearable :style="{width: '100%'}">
+                <el-option
+                  v-for="(item, index) in typeOptions"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="会议类型" prop="meetingType">
+              <el-select
+                v-model="form.meetingType"
+                placeholder="请选择会议类型"
+                clearable
+                :style="{width: '100%'}">
+                <el-option
+                  v-for="(item, index) in meetingTypeOptions"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开启直播" prop="live" required>
+              <el-switch v-model="form.live"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="会议简介" prop="remark">
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入会议简介"
+                :autosize="{minRows: 4, maxRows: 4}"
+                :style="{width: '100%'}"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
@@ -223,6 +306,26 @@ export default {
         3: '行业峰会' ,
         4: '新品发布'
       },
+      typeOptions: [{
+        "label": "技术会议",
+        "value": 1
+      }, {
+        "label": "学术会议",
+        "value": 2
+      }, {
+        "label": "行业峰会",
+        "value": 3
+      }, {
+        "label": "新品发布",
+        "value": 4
+      }],
+      meetingTypeOptions: [{
+        "label": "线下会议",
+        "value": 1
+      }, {
+        "label": "线上会议",
+        "value": 2
+      }],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -314,6 +417,11 @@ export default {
         this.loading = false;
       });
     },
+
+    handleUploadClip(row) {
+      this.$router.push({path: `/meeting/agenda/${row.id}/${1}`})
+    },
+
     // 取消按钮
     cancel() {
       this.open = false;
@@ -417,3 +525,14 @@ export default {
   }
 };
 </script>
+
+
+<style scoped>
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409EFF;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+</style>

@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -33,6 +35,7 @@ public class CosServiceImpl implements CosService {
     private static final String AVATAR_PREFIX = "avatar/";
     private static final String SYSTEM_PREFIX  = "system/";
     private static final String COMMON_PREFIX  = "common/";
+    private static final String FILE_PREFIX = "file/";
 
 
     @Override
@@ -97,5 +100,43 @@ public class CosServiceImpl implements CosService {
         int i = imageMapper.deleteImageById(imageId);
         return i == 1;
     }
+
+    @Override
+    public boolean removeClip(String url) {
+        String[] split = url.split("/");
+        String imageFileName = split[split.length - 1];
+        String prefix = split[split.length - 2];
+        String key = prefix + "/" + imageFileName;
+        cosClient.deleteObject(new DeleteObjectRequest(cosConfig.getBucketName(), key));
+        return true;
+    }
+
+
+    @Override
+    public Map<String, Object> uploadClip(MultipartFile file) {
+        String key = "";
+        String filename = file.getOriginalFilename();
+        String extend = filename.substring(filename.lastIndexOf(".") + 1);
+        key += CosServiceImpl.FILE_PREFIX + filename;
+
+        try {
+            String bucketName = cosConfig.getBucketName();
+            InputStream inputStream = file.getInputStream();
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream, null);
+            cosClient.putObject(putObjectRequest);
+        } catch (Exception e) {
+            throw new RuntimeException("文件上传失败");
+        }
+        Map<String, Object> map = new HashMap<>();
+
+        String url = "https://jn-1306384632.cos.ap-nanjing.myqcloud.com/" + CosServiceImpl.FILE_PREFIX + filename;
+        map.put("url", url);
+        map.put("fileName", filename);
+        map.put("fileType", extend);
+        map.put("fileSize", file.getSize());
+
+        return map;
+    }
+
 
 }
