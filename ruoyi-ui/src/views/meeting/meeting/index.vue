@@ -91,7 +91,11 @@
           <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="会议地点" align="center" prop="location" />
+      <el-table-column label="会议地点" align="center" prop="location" >
+        <template slot-scope="scope">
+          <span>{{ scope.row.location.formattedAddress }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="会议封面海报图" align="center" prop="url" >
         <template slot-scope="scope">
           <img loading="lazy" :src="scope.row.url" style="width: 80px;height: 60px;"/>
@@ -205,8 +209,8 @@
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="会议地点" prop="location">
-              <el-input v-model="form.location" placeholder="请输入会议地点" />
+            <el-form-item label="会议地点">
+              <el-input v-model="form.path" placeholder="请输入会议地点" />
             </el-form-item>
           </el-col>
 
@@ -261,7 +265,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开启直播" prop="live" required>
+            <el-form-item label="开启直播">
               <el-switch v-model="form.live"></el-switch>
             </el-form-item>
           </el-col>
@@ -378,6 +382,7 @@ export default {
         remark: null,
         imageId: null,
         file: null,
+        path: null,
       },
       // 表单校验
       rules: {
@@ -390,7 +395,7 @@ export default {
         endTime: [
           { required: true, message: "会议结束时间不能为空", trigger: "blur" }
         ],
-        location: [
+        path: [
           { required: true, message: "会议地点不能为空", trigger: "blur" }
         ],
       }
@@ -412,6 +417,7 @@ export default {
     getList() {
       this.loading = true;
       listMeeting(this.queryParams).then(response => {
+        console.log(response)
         this.meetingList = response.rows;
         this.total = response.total;
         this.loading = false;

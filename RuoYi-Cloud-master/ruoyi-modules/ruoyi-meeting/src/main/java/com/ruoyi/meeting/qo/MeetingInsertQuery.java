@@ -24,6 +24,7 @@ public class MeetingInsertQuery extends BaseEntity {
     private Date endTime;
 
     /** 会议地点 */
+    private String path;
     private String location;
 
     /** 会议封面海报图 */
@@ -89,6 +90,14 @@ public class MeetingInsertQuery extends BaseEntity {
         this.location = location;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -151,5 +160,25 @@ public class MeetingInsertQuery extends BaseEntity {
 
     public void setFile(MultipartFile file) {
         this.file = file;
+    }
+
+    @Override
+    public String toString() {
+        return "MeetingInsertQuery{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", beginTime=" + beginTime +
+                ", endTime=" + endTime +
+                ", path='" + path + '\'' +
+                ", location='" + location + '\'' +
+                ", url='" + url + '\'' +
+                ", views=" + views +
+                ", type=" + type +
+                ", status=" + status +
+                ", meetingType=" + meetingType +
+                ", delFlag='" + delFlag + '\'' +
+                ", imageId='" + imageId + '\'' +
+                ", file=" + file +
+                '}';
     }
 }
