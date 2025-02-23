@@ -1,0 +1,63 @@
+package com.ruoyi.meeting.component;
+
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+@Slf4j
+@Component
+public class GeoMapComponent {
+
+    @Value("${aliyun.market.appcode}")
+    private String appCode;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private static final String postForGeoUrl = "https://jmgeocode.market.alicloudapi.com";
+    private String geoCodePath = "/geocode/geo/query";
+
+    public Object geoCodeQuery(String address, String city){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "APPCODE " + appCode);
+        // headers.add("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+
+        MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
+        paramsMap.add("address", address);
+        paramsMap.add("city", city);
+        paramsMap.add("output", "JSON");
+
+        RequestEntity requestEntity = RequestEntity
+                .post("")
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .accept(MediaType.ALL)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .body(paramsMap);
+
+        // 构建完整的请求 URL
+        String url = postForGeoUrl + geoCodePath;
+
+        ResponseEntity<String> mapResponseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
+        //返回状态码
+        HttpStatus statusCode = mapResponseEntity.getStatusCode();
+        //返回数据
+        String body = mapResponseEntity.getBody();
+        Map<String,Object> map = JSON.parseObject(body, Map.class);
+        return map;
+    }
+
+}
