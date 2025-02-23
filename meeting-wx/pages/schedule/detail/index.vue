@@ -70,12 +70,12 @@
             <view class="event-date">
               <text class="meta-msg">会议地点</text>
             </view>
-            <text class="event-meta">{{ event.location }}</text>
+            <text class="event-meta">{{ event.location.formattedAddress }}</text>
           </view>
         </view>
       </view>
 
-      <view class="map-icon">
+      <view class="map-icon" @click="handleNavigateGeoMap">
         <uni-icons type="map" size="20"></uni-icons>
         <text class="map-text">导航</text>
       </view>
@@ -601,7 +601,9 @@ export default {
   data() {
     return {
       // 会议详细信息
-      event: {},
+      event: {
+        location: {formattedAddress: null}
+      },
       // 会议状态 联动 event.type
       eventStatus: 'upcoming', // 可以是 'upcoming', 'ongoing', 'ended'
       // tabs选择
@@ -671,6 +673,11 @@ export default {
     gotoLivingRoom() {
       uni.navigateTo({
 				url: `/pages/live/index?id=${this.roomId}`
+			});
+    },
+    handleNavigateGeoMap() {
+      uni.navigateTo({
+				url: `/pages/map/index?id=${this.event.location.id}`
 			});
     }
   }

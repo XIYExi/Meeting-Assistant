@@ -15,7 +15,7 @@
 							<text class="begin-time"><img src="@/static/images/clock.png" class="clock-png" />{{ event.beginTime }}</text>
 						</view>
 						<text class="event-name">{{ event.title }}</text>
-						<text class="event-location">{{ event.location }}</text>
+						<text class="event-location">{{ event.location.formattedAddress }}</text>
 					</view>
 				</view>
 			</view>

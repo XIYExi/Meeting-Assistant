@@ -83,7 +83,7 @@
 								<text class="meeting_card_meta_begintime">{{elem.beginTime}}</text>
 							</view>
 							<view class="meeting_card_meta_icon_wrapper">
-								<text class="meeting_card_meta_location">{{elem.location}}</text>
+								<text class="meeting_card_meta_location">{{elem.location.formattedAddress}}</text>
 							</view>
 						</view>
 						<view class="meeting_card_details_btn">详细</view>

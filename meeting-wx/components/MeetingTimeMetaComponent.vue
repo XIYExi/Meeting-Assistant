@@ -18,7 +18,7 @@
             <view class="left-wrapper">
                 <uni-icons type="location" size="15"></uni-icons>
                 <text class="event-time event-text">会议地点</text>
-                <text class="event-location">{{ location }}</text>
+                <text class="event-location">{{ location.formattedAddress }}</text>
             </view>
         </view>
     </view>
@@ -36,7 +36,7 @@ export default {
             type: String,
         },
         location: {
-            type: String,
+            type: Object,
         }
     }
 }
