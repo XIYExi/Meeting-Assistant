@@ -116,6 +116,12 @@
     "style": {
       "navigationBarTitleText": "排行榜"
     }
+  },
+  {
+    "path": "pages/map/index",
+    "style": {
+      "navigationBarTitleText": "导航"
+    }
   }
   ],
   "tabBar": {
