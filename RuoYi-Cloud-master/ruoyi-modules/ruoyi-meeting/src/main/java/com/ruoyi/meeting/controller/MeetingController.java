@@ -56,16 +56,12 @@ public class MeetingController extends BaseController {
     private RemoteCosService remoteCosService;
     @Resource
     private RemoteSysJobService remoteSysJobService;
-
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
     private IMeetingClipService meetingClipService;
-
     @Resource
     private IMeetingGeoService meetingGeoService;
-    @Resource
-    private GeoMapComponent geoMapComponent;
 
 
     @PostMapping("/addClip")
@@ -174,7 +170,14 @@ public class MeetingController extends BaseController {
     @RequiresPermissions("meeting:meeting:query")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
-        return success(meetingService.selectMeetingById(id));
+        Meeting meeting = meetingService.selectMeetingById(id);
+        MeetingResponse meetingResponse = new MeetingResponse();
+        BeanUtils.copyProperties(meeting, meetingResponse);
+
+        long locationId = Long.parseLong(meeting.getLocation());
+        MeetingGeo meetingGeo = meetingGeoService.selectMeetingGeoById(locationId);
+        meetingResponse.setLocation(meetingGeo);
+        return success(meetingResponse);
     }
 
     /**
@@ -255,6 +258,7 @@ public class MeetingController extends BaseController {
             if (!meetingEditQuery.getFile().isEmpty())
                 meeting.setUrl(CosConstant.COS_PATH + "common/" + meetingEditQuery.getImageId() + "." + extend);
         }
+        meeting.setRemark(null);
         updateMeeting = meetingService.updateMeeting(meeting);
 
         // TODO 修改定时任务
@@ -277,10 +281,8 @@ public class MeetingController extends BaseController {
             }
 
         }catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
-
-
         return toAjax(updateMeeting == 1);
     }
 
