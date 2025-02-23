@@ -11,13 +11,18 @@ import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.job.api.RemoteSysJobService;
+import com.ruoyi.meeting.component.GeoMapComponent;
 import com.ruoyi.meeting.constant.CosConstant;
 import com.ruoyi.meeting.constant.MeetingConstant;
 import com.ruoyi.meeting.constant.MeetingRedisKeyBuilder;
 import com.ruoyi.meeting.domain.MeetingClip;
+import com.ruoyi.meeting.domain.MeetingGeo;
+import com.ruoyi.meeting.entity.MeetingRequest;
+import com.ruoyi.meeting.entity.MeetingResponse;
 import com.ruoyi.meeting.entity.SimplePartUser;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
 import com.ruoyi.meeting.service.IMeetingClipService;
+import com.ruoyi.meeting.service.IMeetingGeoService;
 import com.ruoyi.meeting.service.impl.MeetingServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -56,6 +61,11 @@ public class MeetingController extends BaseController {
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
     private IMeetingClipService meetingClipService;
+
+    @Resource
+    private IMeetingGeoService meetingGeoService;
+    @Resource
+    private GeoMapComponent geoMapComponent;
 
 
     @PostMapping("/addClip")
@@ -135,7 +145,15 @@ public class MeetingController extends BaseController {
     public TableDataInfo list(Meeting meeting) {
         startPage();
         List<Meeting> list = meetingService.selectMeetingList(meeting);
-        return getDataTable(list);
+        List<MeetingResponse> collect = list.stream().map(elem -> {
+            MeetingResponse meetingGeo = new MeetingResponse();
+            BeanUtils.copyProperties(elem, meetingGeo);
+            Long locationId = Long.parseLong(elem.getLocation());
+            MeetingGeo meetingGeo1 = meetingGeoService.selectMeetingGeoById(locationId);
+            meetingGeo.setLocation(meetingGeo1);
+            return meetingGeo;
+        }).collect(Collectors.toList());
+        return getDataTable(collect);
     }
 
     /**
@@ -165,7 +183,12 @@ public class MeetingController extends BaseController {
     @RequiresPermissions("meeting:meeting:add")
     @Log(title = "会议", businessType = BusinessType.INSERT)
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody Meeting meeting) {
+    public AjaxResult add(@RequestBody MeetingRequest meetingRequest) {
+        // 为了判断路径
+        Meeting meeting = new Meeting();
+        BeanUtils.copyProperties(meetingRequest, meeting);
+        meeting.setLocation(meetingRequest.getPath()); // 获取路径
+
         // 如果传了图片就调用然后更新
         meeting.setCreateTime(DateUtils.getNowDate());
         return toAjax(meetingService.insertMeeting(meeting));
@@ -212,6 +235,20 @@ public class MeetingController extends BaseController {
 
         Meeting meeting = new Meeting();
         BeanUtils.copyProperties(meetingEditQuery, meeting);
+        // 修改地图！
+        if (meetingEditQuery.getPath() != null) {
+            // 1. 先拿到原本map location里面存的meeting_geo id，去把原本的数据删掉
+            // System.err.println(meetingEditQuery);
+            Long locationId = Long.parseLong(meetingEditQuery.getLocation());
+            meetingGeoService.deleteMeetingGeoById(locationId);
+
+            // 2. 调用resttemplate重复新的插入逻辑，获取到最新的数据
+            MeetingGeo meetingGeo = meetingService.transferMeetingGeo(meetingEditQuery.getPath());
+
+            // 3. 调换掉新的meeting中的location为最新的location id
+            meeting.setLocation(String.valueOf(meetingGeo.getId()));
+        }
+
         if (meetingEditQuery.getFile() != null) {
             String filename = meetingEditQuery.getFile().getOriginalFilename();
             String extend = filename.substring(filename.lastIndexOf(".") + 1);
@@ -222,7 +259,6 @@ public class MeetingController extends BaseController {
 
         // TODO 修改定时任务
         try {
-
             if (meetingEditQuery.getBeginTime() != null) {
                 // 修改会议自动开始时间
                 AjaxResult editJobBeginResult = remoteSysJobService.editByMeetingId(

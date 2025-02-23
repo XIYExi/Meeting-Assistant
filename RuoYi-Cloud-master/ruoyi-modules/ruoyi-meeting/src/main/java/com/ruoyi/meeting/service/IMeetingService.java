@@ -2,6 +2,7 @@ package com.ruoyi.meeting.service;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.Meeting;
+import com.ruoyi.meeting.domain.MeetingGeo;
 import com.ruoyi.meeting.entity.SimplePartUser;
 
 /**
@@ -12,6 +13,8 @@ import com.ruoyi.meeting.entity.SimplePartUser;
  */
 public interface IMeetingService 
 {
+
+    public MeetingGeo transferMeetingGeo(String location);
 
     public SimplePartUser getPartUserAvatarById(Long id);
 

@@ -3,12 +3,21 @@ package com.ruoyi.meeting.service.impl;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.core.web.domain.AjaxResult;
+import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.job.api.RemoteSysJobService;
 import com.ruoyi.job.api.domain.SysJob;
+import com.ruoyi.meeting.component.GeoMapComponent;
+import com.ruoyi.meeting.domain.MeetingGeo;
 import com.ruoyi.meeting.entity.SimplePartUser;
+import com.ruoyi.meeting.mapper.MeetingGeoMapper;
 import com.ruoyi.meeting.mapper.MeetingScheduleMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +44,10 @@ public class MeetingServiceImpl implements IMeetingService
     private RemoteSysJobService remoteSysJobService;
     @Autowired
     private MeetingScheduleMapper meetingScheduleMapper;
+    @Autowired
+    private GeoMapComponent geoMapComponent;
+    @Autowired
+    private MeetingGeoMapper meetingGeoMapper;
 
     @Override
     public SimplePartUser getPartUserAvatarById(Long id) {
@@ -86,7 +99,17 @@ public class MeetingServiceImpl implements IMeetingService
     {
         meeting.setCreateTime(DateUtils.getNowDate());
 
+        String location =  meeting.getLocation();
+        MeetingGeo meetingGeo = this.transferMeetingGeo(location);
+        if (meetingGeo == null) {
+            return 0;
+        }
+
+        meeting.setLocation(String.valueOf(meetingGeo.getId()));
         int i = meetingMapper.insertMeeting(meeting);
+
+        return i;
+        /* // TODO 测试
         if (1 == i) {
             // 添加 自动开始 定时任务
             SysJob sysJobQuery = new SysJob();
@@ -127,7 +150,42 @@ public class MeetingServiceImpl implements IMeetingService
         }
         else
             return 0;
+
+         */
     }
+
+    @Override
+    public MeetingGeo transferMeetingGeo(String location) {
+        // 最外层 {msg, code, data}
+        Map geo = JSON.parseObject(JSONObject.toJSONString(geoMapComponent.geoCodeQuery(location, "")), Map.class);
+        // 内一层 data:{count, geocodes}
+        Map geoBody = JSON.parseObject(JSONObject.toJSONString(geo.get("data")), Map.class);
+        Integer geoCount = (Integer)geoBody.get("count");
+        if (geoCount < 1) {
+            log.error("[MeetingServiceImpl-insertMeeting-geoMapComponent] 获取地理位置错误");
+            return null;
+        }
+
+        JSONArray geocodes = JSONArray.parseArray(JSONArray.toJSONString(geoBody.get("geocodes")));
+        Map geocode = JSON.parseObject(JSONObject.toJSONString(geocodes.get(0)), Map.class);
+        MeetingGeo meetingGeo = new MeetingGeo();
+        meetingGeo.setCountry(String.valueOf(geocode.get("country")));
+        meetingGeo.setFormattedAddress(String.valueOf(geocode.get("formatted_address")));
+        meetingGeo.setCity(String.valueOf(geocode.get("city")));
+        meetingGeo.setAdcode(String.valueOf(geocode.get("adcode")));
+        meetingGeo.setNumber(String.valueOf(geocode.get("number")));
+        meetingGeo.setProvince(String.valueOf(geocode.get("province")));
+        meetingGeo.setCitycode(String.valueOf(geocode.get("citycode")));
+        meetingGeo.setStreet(String.valueOf(geocode.get("street")));
+        meetingGeo.setDistrict(String.valueOf(geocode.get("district")));
+        meetingGeo.setLocation(String.valueOf(geocode.get("location")));
+        meetingGeo.setCreateTime(DateUtils.getNowDate());
+        meetingGeo.setCreateBy(SecurityUtils.getUsername());
+        meetingGeoMapper.insertMeetingGeo(meetingGeo);
+
+        return meetingGeo; // 这个时候插入完成，有id！
+    }
+
 
     public static String convertToCron(Date dateTime) {
         try {
@@ -178,6 +236,13 @@ public class MeetingServiceImpl implements IMeetingService
             if (!url.equals("null")) {
                 remoteCosService.removeImage(url);
             }
+
+            String location = meeting.getLocation();
+            if (location != null) {
+                Long locationId = Long.parseLong(location);
+                meetingGeoMapper.deleteMeetingGeoById(locationId);
+            }
+
             try {
                 AjaxResult ajaxRemoveSysJobResult = remoteSysJobService.removeByMeetingId(meetingId);
                 log.info("删除成功 {}", ajaxRemoveSysJobResult.toString());
@@ -201,6 +266,12 @@ public class MeetingServiceImpl implements IMeetingService
         String url = meeting.getUrl();
         if (!url.equals("null")) {
             remoteCosService.removeImage(url);
+        }
+
+        String location = meeting.getLocation();
+        if (location != null) {
+            Long locationId = Long.parseLong(location);
+            meetingGeoMapper.deleteMeetingGeoById(locationId);
         }
         try {
             AjaxResult ajaxRemoveSysJobResult = remoteSysJobService.removeByMeetingId(id);
