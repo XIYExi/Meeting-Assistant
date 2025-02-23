@@ -60,3 +60,11 @@ export function getRank() {
 		method: 'get'
 	})
 }
+
+
+export function getGeoMapInfo(id) {
+	return request({
+		url: `/meeting/geo/getInfo?id=${id}`,
+		method: 'get'
+	})
+}
