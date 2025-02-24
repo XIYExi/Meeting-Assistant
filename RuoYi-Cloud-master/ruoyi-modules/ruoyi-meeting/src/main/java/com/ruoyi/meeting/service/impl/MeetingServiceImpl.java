@@ -108,8 +108,6 @@ public class MeetingServiceImpl implements IMeetingService
         meeting.setLocation(String.valueOf(meetingGeo.getId()));
         int i = meetingMapper.insertMeeting(meeting);
 
-        return i;
-        /* // TODO 测试
         if (1 == i) {
             // 添加 自动开始 定时任务
             SysJob sysJobQuery = new SysJob();
@@ -131,7 +129,6 @@ public class MeetingServiceImpl implements IMeetingService
                 e.printStackTrace();
             }
 
-
             // 再添加 自动结束 定时任务
             sysJobQuery.setJobName(meeting.getTitle() + " 会议结束任务");
             sysJobQuery.setInvokeTarget(String.format("ryTask.autoInjectMeetingEndTask(%dL)", meeting.getId()));
@@ -150,8 +147,6 @@ public class MeetingServiceImpl implements IMeetingService
         }
         else
             return 0;
-
-         */
     }
 
     @Override

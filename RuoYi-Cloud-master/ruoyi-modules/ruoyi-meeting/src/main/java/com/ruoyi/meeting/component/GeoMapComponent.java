@@ -32,6 +32,7 @@ public class GeoMapComponent {
 
     private static final String postForDistanceUrl = "https://jmlxgh.market.alicloudapi.com";
     private String distancePath = "/route/distance-measurement";
+    private String routerPlanningPath = "/route/drive";
 
 
     /**
@@ -96,6 +97,47 @@ public class GeoMapComponent {
 
         // 构建完整的请求 URL
         String url = postForDistanceUrl + distancePath;
+
+        ResponseEntity<String> mapResponseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
+        //返回状态码
+        HttpStatus statusCode = mapResponseEntity.getStatusCode();
+        //返回数据
+        String body = mapResponseEntity.getBody();
+        Map<String,Object> map = JSON.parseObject(body, Map.class);
+        return map;
+    }
+
+
+    /**
+     * 开车路径规划，获取api结果
+     * @param origins 起始点经纬度
+     * @param distributions 终点经纬度
+     * @return
+     */
+    public Object getPathPlanning(String origins, String distributions){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "APPCODE " + appCode);
+        // headers.add("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+
+        MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
+        paramsMap.add("origin", origins);
+        paramsMap.add("destination", distributions);
+        //paramsMap.add("origin", "116.406243,39.901403");
+        //paramsMap.add("destination", "120.228209,30.209501");
+        paramsMap.add("carType", "0");
+        paramsMap.add("ferry", "1");
+        paramsMap.add("showFields", "polyline");
+
+        RequestEntity requestEntity = RequestEntity
+                .post("")
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .accept(MediaType.ALL)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .body(paramsMap);
+
+        // 构建完整的请求 URL
+        String url = postForDistanceUrl + routerPlanningPath;
 
         ResponseEntity<String> mapResponseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
         //返回状态码

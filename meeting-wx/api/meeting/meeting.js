@@ -76,3 +76,10 @@ export function calDistance(origins, distributions) {
 		method: 'get'
 	})
 }
+
+export function caloPathPlanning(origins, distributions) {
+	return request({
+		url: `/meeting/geo/pathPlanning?origins=${origins}&distributions=${distributions}`,
+		method: 'get'
+	})
+}

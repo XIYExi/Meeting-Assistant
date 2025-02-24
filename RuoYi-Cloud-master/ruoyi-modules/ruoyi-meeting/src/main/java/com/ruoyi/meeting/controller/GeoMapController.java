@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/geo")
@@ -40,5 +42,11 @@ public class GeoMapController {
     public AjaxResult calDistance(@RequestParam("origins") String origins, @RequestParam("distributions") String distributions) {
         Object carDistanceAndTime = geoMapComponent.getCarDistanceAndTime(origins, distributions);
         return AjaxResult.success(carDistanceAndTime);
+    }
+
+    @GetMapping("/pathPlanning")
+    public AjaxResult pathPlanning(@RequestParam("origins") String origins, @RequestParam("distributions") String distributions) {
+        List list = meetingGeoService.calPathPlanning(origins, distributions);
+        return AjaxResult.success(list);
     }
 }

@@ -1,6 +1,9 @@
 package com.ruoyi.meeting.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.ruoyi.meeting.domain.MeetingGeo;
 
 /**
@@ -11,6 +14,14 @@ import com.ruoyi.meeting.domain.MeetingGeo;
  */
 public interface IMeetingGeoService 
 {
+
+    /**
+     * 路径规划，计算驾车路径
+     * @return
+     */
+    public List calPathPlanning(String origins, String distributions);
+
+
     /**
      * 查询会议地图
      * 
