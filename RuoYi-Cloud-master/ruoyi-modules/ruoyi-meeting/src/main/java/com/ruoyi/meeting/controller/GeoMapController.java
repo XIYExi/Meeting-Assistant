@@ -35,4 +35,10 @@ public class GeoMapController {
         MeetingGeo meetingGeo = meetingGeoService.selectMeetingGeoById(id);
         return AjaxResult.success(meetingGeo);
     }
+
+    @GetMapping("/calDistance")
+    public AjaxResult calDistance(@RequestParam("origins") String origins, @RequestParam("distributions") String distributions) {
+        Object carDistanceAndTime = geoMapComponent.getCarDistanceAndTime(origins, distributions);
+        return AjaxResult.success(carDistanceAndTime);
+    }
 }

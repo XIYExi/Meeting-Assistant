@@ -68,3 +68,11 @@ export function getGeoMapInfo(id) {
 		method: 'get'
 	})
 }
+
+
+export function calDistance(origins, distributions) {
+	return request({
+		url: `/meeting/geo/calDistance?origins=${origins}&distributions=${distributions}`,
+		method: 'get'
+	})
+}

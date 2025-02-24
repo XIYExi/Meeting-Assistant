@@ -6,13 +6,13 @@
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
-		"orientation": [
-			"portrait-primary",
-			"portrait-secondary",
-			"landscape-primary",
-			"landscape-secondary",
-			"default"
-		],
+        "orientation" : [
+            "portrait-primary",
+            "portrait-secondary",
+            "landscape-primary",
+            "landscape-secondary",
+            "default"
+        ],
         "usingComponents" : true,
         "nvueCompiler" : "uni-app",
         "splashscreen" : {
@@ -71,6 +71,13 @@
         "router" : {
             "mode" : "hash",
             "base" : "./"
+        },
+        "sdkConfigs" : {
+            "maps" : {
+                "tencent" : {
+                    "key" : "TK5BZ-DBUC6-OAOS4-ELRVY-M3PIZ-DJFWX"
+                }
+            }
         }
     }
 }

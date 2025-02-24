@@ -30,6 +30,16 @@ public class GeoMapComponent {
     private static final String postForGeoUrl = "https://jmgeocode.market.alicloudapi.com";
     private String geoCodePath = "/geocode/geo/query";
 
+    private static final String postForDistanceUrl = "https://jmlxgh.market.alicloudapi.com";
+    private String distancePath = "/route/distance-measurement";
+
+
+    /**
+     * 根据实际位置名称获取信息（经纬度等）
+     * @param address
+     * @param city
+     * @return
+     */
     public Object geoCodeQuery(String address, String city){
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "APPCODE " + appCode);
@@ -50,6 +60,42 @@ public class GeoMapComponent {
 
         // 构建完整的请求 URL
         String url = postForGeoUrl + geoCodePath;
+
+        ResponseEntity<String> mapResponseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
+        //返回状态码
+        HttpStatus statusCode = mapResponseEntity.getStatusCode();
+        //返回数据
+        String body = mapResponseEntity.getBody();
+        Map<String,Object> map = JSON.parseObject(body, Map.class);
+        return map;
+    }
+
+
+    /**
+     * 查询当前位置到目标位置之间的距离
+     * @param origins 当前位置
+     * @param destination 目标位置
+     * @return
+     */
+    public Object getCarDistanceAndTime(String origins, String destination) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "APPCODE " + appCode);
+        // headers.add("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+
+        MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
+        paramsMap.add("origins", origins);
+        paramsMap.add("destination", destination);
+
+        RequestEntity requestEntity = RequestEntity
+                .post("")
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .accept(MediaType.ALL)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .body(paramsMap);
+
+        // 构建完整的请求 URL
+        String url = postForDistanceUrl + distancePath;
 
         ResponseEntity<String> mapResponseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
         //返回状态码
