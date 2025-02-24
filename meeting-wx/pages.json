@@ -122,6 +122,24 @@
     "style": {
       "navigationBarTitleText": "导航"
     }
+  },
+  {
+    "path": "pages/mine/points/details",
+    "style": {
+      "navigationBarTitleText": "积分详细"
+    }
+  },
+  {
+    "path": "pages/mine/points/goods",
+    "style": {
+      "navigationBarTitleText": "积分兑换"
+    }
+  },
+  {
+    "path": "pages/mine/points/rules",
+    "style": {
+      "navigationBarTitleText": "积分规则"
+    }
   }
   ],
   "tabBar": {

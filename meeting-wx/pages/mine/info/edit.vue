@@ -84,6 +84,8 @@
         this.$refs.form.validate().then(res => {
           updateUserProfile(this.user).then(response => {
             this.$modal.msgSuccess("修改成功")
+            // 提交,修改之后重新查询并保存用户信息,同步修改
+            this.$store.dispatch('GetInfo');
           })
         })
       }

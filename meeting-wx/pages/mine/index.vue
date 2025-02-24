@@ -3,20 +3,20 @@
     <!-- 用户信息容器 -->
     <view class="user-container">
       <view class="gap-space"></view>
-      <image class="avatar" :src="userInfo.avatar" @click="handleToAvatar"></image>
+      <img class="avatar" :src="userInfo.avatar" @click="handleToAvatar" />
       <view class="name-container">
-        <text class="name">{{ userInfo.name }}</text>
+        <text class="name">{{ userInfo.nickname }}</text>
         <button class="daily-points" @click="handleSignIn">{{ signInText }}</button>
       </view>
       <view class="stats">
         <view class="stat-item">
           <text class="stat-label">我的积分</text>
-          <text class="stat-value">{{ userInfo.points }}</text>
+          <text class="stat-value">{{ points }}</text>
         </view>
         <view class="divider"></view>
         <view class="stat-item">
           <text class="stat-label">我的订阅</text>
-          <text class="stat-value">{{ userInfo.subscriptions }}</text>
+          <text class="stat-value">{{ subscriptions }}</text>
         </view>
       </view>
     </view>
@@ -28,10 +28,6 @@
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
-      <view class="menu-item" @click="handleToDownload">
-        <text class="menu-text">海报下载</text>
-        <uni-icons type="right" class="menu-icon"></uni-icons>
-      </view>
       <view class="divider"></view>
       <view class="menu-item" @click="handleToSubscribe">
         <text class="menu-text">我的订阅</text>
@@ -49,28 +45,69 @@
       </view>
     </view>
 
-    <!-- 退出登录按钮 -->
-    <button class="logout-button" @click="handleLogout">
-      <text class="logout-text">退出登录</text>
-      <uni-icons type="arrow-right" size="18" color="white"></uni-icons>
-    </button>
+    <view class="menu-container">
+      <view class="menu-item" @click="handleToEditInfo">
+        <text class="menu-text">我的预约</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToDownload">
+        <text class="menu-text">海报下载</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToSubscribe">
+        <text class="menu-text">文档下载</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToPoints">
+        <text class="menu-text">大会须知</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToGoods">
+        <text class="menu-text">语音工具</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToGoods">
+        <text class="menu-text">会议助理</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+    </view>
 
+    <!-- 退出登录按钮 -->
+    <view class="menu-container">
+      <view class="menu-item" @click="handleToSubscribe">
+        <text class="menu-text">关于</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToPoints">
+        <text class="menu-text">系统偏好</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleLogout">
+        <text class="menu-text">退出登录</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+    </view>
+    
   </view>
 </template>
 
 <script>
 export default {
   mounted() {
-    
+    console.log(this.$store.state.user);
   },
   data() {
     return {
-      userInfo: {
-        avatar: "/static/images/profile.jpg",
-        name: "David Silbia",
-        points: 350,
-        subscriptions: 3,
-      },
+      userInfo: this.$store.state.user,
+      points: 300,
+      subscriptions: 4,
       isSignedIn: false,
       signInText: '每日签到',
     };
@@ -79,9 +116,11 @@ export default {
     this.checkSignInStatus(); // 检查是否已签到
   },
   methods: {
+    // 修改头像
     handleToAvatar() {
       this.$tab.navigateTo('/pages/mine/avatar/index')
     },
+    // 跳转到个人中心
     handleToEditInfo() {
       this.$tab.navigateTo('/pages/mine/info/edit')
     },
@@ -128,7 +167,7 @@ export default {
 </script>
 
 
-<style>
+<style scope>
 /* 用户信息容器 */
 .user-container {
   background-color: #fff;
@@ -220,9 +259,8 @@ export default {
 .menu-container {
   background-color: #fff;
   margin-top: 10px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  height: 200px;
-  /* 固定高度 */
 }
 
 .menu-item {

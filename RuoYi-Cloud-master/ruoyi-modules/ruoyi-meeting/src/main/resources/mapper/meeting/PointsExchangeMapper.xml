@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.meeting.mapper.PointsExchangeMapper">
+    
+    <resultMap type="PointsExchange" id="PointsExchangeResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="itemId"    column="item_id"    />
+        <result property="cost"    column="cost"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPointsExchangeVo">
+        select id, user_id, item_id, cost, del_flag, create_by, create_time, update_by, update_time from points_exchange
+    </sql>
+
+    <select id="selectPointsExchangeList" parameterType="PointsExchange" resultMap="PointsExchangeResult">
+        <include refid="selectPointsExchangeVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="itemId != null "> and item_id = #{itemId}</if>
+            <if test="cost != null "> and cost = #{cost}</if>
+        </where>
+    </select>
+    
+    <select id="selectPointsExchangeById" parameterType="Long" resultMap="PointsExchangeResult">
+        <include refid="selectPointsExchangeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPointsExchange" parameterType="PointsExchange" useGeneratedKeys="true" keyProperty="id">
+        insert into points_exchange
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="itemId != null">item_id,</if>
+            <if test="cost != null">cost,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="itemId != null">#{itemId},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePointsExchange" parameterType="PointsExchange">
+        update points_exchange
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePointsExchangeById" parameterType="Long">
+        delete from points_exchange where id = #{id}
+    </delete>
+
+    <delete id="deletePointsExchangeByIds" parameterType="String">
+        delete from points_exchange where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

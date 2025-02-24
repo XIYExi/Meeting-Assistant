@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.meeting.mapper.PointsItemsMapper">
+    
+    <resultMap type="PointsItems" id="PointsItemsResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="description"    column="description"    />
+        <result property="cost"    column="cost"    />
+        <result property="remaining"    column="remaining"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="url" column="url" />
+    </resultMap>
+
+    <sql id="selectPointsItemsVo">
+        select id, title, description, cost, remaining, url, del_flag, create_by, create_time, update_by, update_time from points_items
+    </sql>
+
+    <select id="selectPointsItemsList" parameterType="PointsItems" resultMap="PointsItemsResult">
+        <include refid="selectPointsItemsVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="cost != null "> and cost = #{cost}</if>
+            <if test="remaining != null "> and remaining = #{remaining}</if>
+        </where>
+    </select>
+    
+    <select id="selectPointsItemsById" parameterType="Long" resultMap="PointsItemsResult">
+        <include refid="selectPointsItemsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPointsItems" parameterType="PointsItems" useGeneratedKeys="true" keyProperty="id">
+        insert into points_items
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="description != null">description,</if>
+            <if test="cost != null">cost,</if>
+            <if test="remaining != null">remaining,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="description != null">#{description},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="remaining != null">#{remaining},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePointsItems" parameterType="PointsItems">
+        update points_items
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="remaining != null">remaining = #{remaining},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePointsItemsById" parameterType="Long">
+        delete from points_items where id = #{id}
+    </delete>
+
+    <delete id="deletePointsItemsByIds" parameterType="String">
+        delete from points_items where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
