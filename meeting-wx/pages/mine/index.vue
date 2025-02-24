@@ -1,198 +1,274 @@
 <template>
-  <view class="mine-container" :style="{height: `${windowHeight}px`}">
-    <!--顶部个人信息栏-->
-    <view class="header-section">
-      <view class="flex padding justify-between">
-        <view class="flex align-center">
-          <view v-if="!avatar" class="cu-avatar xl round bg-white">
-            <view class="iconfont icon-people text-gray icon"></view>
-          </view>
-          <image v-if="avatar" @click="handleToAvatar" :src="avatar" class="cu-avatar xl round" mode="widthFix">
-          </image>
-          <view v-if="!name" @click="handleToLogin" class="login-tip">
-            点击登录
-          </view>
-          <view v-if="name" @click="handleToInfo" class="user-info">
-            <view class="u_title">
-              用户名：{{ name }}
-            </view>
-          </view>
+  <view>
+    <!-- 用户信息容器 -->
+    <view class="user-container">
+      <view class="gap-space"></view>
+      <image class="avatar" :src="userInfo.avatar" @click="handleToAvatar"></image>
+      <view class="name-container">
+        <text class="name">{{ userInfo.name }}</text>
+        <button class="daily-points" @click="handleSignIn">{{ signInText }}</button>
+      </view>
+      <view class="stats">
+        <view class="stat-item">
+          <text class="stat-label">我的积分</text>
+          <text class="stat-value">{{ userInfo.points }}</text>
         </view>
-        <view @click="handleToInfo" class="flex align-center">
-          <text>个人信息</text>
-          <view class="iconfont icon-right"></view>
+        <view class="divider"></view>
+        <view class="stat-item">
+          <text class="stat-label">我的订阅</text>
+          <text class="stat-value">{{ userInfo.subscriptions }}</text>
         </view>
       </view>
     </view>
 
-    <view class="content-section">
-      <view class="mine-actions grid col-4 text-center">
-        <view class="action-item" @click="handleJiaoLiuQun">
-          <view class="iconfont icon-friendfill text-pink icon"></view>
-          <text class="text">交流群</text>
-        </view>
-        <view class="action-item" @click="handleBuilding">
-          <view class="iconfont icon-service text-blue icon"></view>
-          <text class="text">在线客服</text>
-        </view>
-        <view class="action-item" @click="handleBuilding">
-          <view class="iconfont icon-community text-mauve icon"></view>
-          <text class="text">反馈社区</text>
-        </view>
-        <view class="action-item" @click="handleBuilding">
-          <view class="iconfont icon-dianzan text-green icon"></view>
-          <text class="text">点赞我们</text>
-        </view>
+    <!-- 功能菜单容器 -->
+    <view class="menu-container">
+      <view class="menu-item" @click="handleToEditInfo">
+        <text class="menu-text">个人资料</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
-
-      <view class="menu-list">
-        <view class="list-cell list-cell-arrow" @click="handleToEditInfo">
-          <view class="menu-item-box">
-            <view class="iconfont icon-user menu-icon"></view>
-            <view>编辑资料</view>
-          </view>
-        </view>
-        <view class="list-cell list-cell-arrow" @click="handleHelp">
-          <view class="menu-item-box">
-            <view class="iconfont icon-help menu-icon"></view>
-            <view>常见问题</view>
-          </view>
-        </view>
-        <view class="list-cell list-cell-arrow" @click="handleAbout">
-          <view class="menu-item-box">
-            <view class="iconfont icon-aixin menu-icon"></view>
-            <view>关于我们</view>
-          </view>
-        </view>
-        <view class="list-cell list-cell-arrow" @click="handleToSetting">
-          <view class="menu-item-box">
-            <view class="iconfont icon-setting menu-icon"></view>
-            <view>应用设置</view>
-          </view>
-        </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToDownload">
+        <text class="menu-text">海报下载</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
-
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToSubscribe">
+        <text class="menu-text">我的订阅</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToPoints">
+        <text class="menu-text">我的积分</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
+      <view class="divider"></view>
+      <view class="menu-item" @click="handleToGoods">
+        <text class="menu-text">积分兑换</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
     </view>
+
+    <!-- 退出登录按钮 -->
+    <button class="logout-button" @click="handleLogout">
+      <text class="logout-text">退出登录</text>
+      <uni-icons type="arrow-right" size="18" color="white"></uni-icons>
+    </button>
+
   </view>
 </template>
 
 <script>
-  import storage from '@/utils/storage'
-  
-  export default {
-    data() {
-      return {
-        name: this.$store.state.user.name,
-        version: getApp().globalData.config.appInfo.version
-      }
+export default {
+  mounted() {
+    
+  },
+  data() {
+    return {
+      userInfo: {
+        avatar: "/static/images/profile.jpg",
+        name: "David Silbia",
+        points: 350,
+        subscriptions: 3,
+      },
+      isSignedIn: false,
+      signInText: '每日签到',
+    };
+  },
+  created() {
+    this.checkSignInStatus(); // 检查是否已签到
+  },
+  methods: {
+    handleToAvatar() {
+      this.$tab.navigateTo('/pages/mine/avatar/index')
     },
-    computed: {
-      avatar() {
-        return this.$store.state.user.avatar
-      },
-      windowHeight() {
-        return uni.getSystemInfoSync().windowHeight - 50
-      }
+    handleToEditInfo() {
+      this.$tab.navigateTo('/pages/mine/info/edit')
     },
-    methods: {
-      handleToInfo() {
-        this.$tab.navigateTo('/pages/mine/info/index')
-      },
-      handleToEditInfo() {
-        this.$tab.navigateTo('/pages/mine/info/edit')
-      },
-      handleToSetting() {
-        this.$tab.navigateTo('/pages/mine/setting/index')
-      },
-      handleToLogin() {
-        this.$tab.reLaunch('/pages/login')
-      },
-      handleToAvatar() {
-        this.$tab.navigateTo('/pages/mine/avatar/index')
-      },
-      handleLogout() {
-        this.$modal.confirm('确定注销并退出系统吗？').then(() => {
-          this.$store.dispatch('LogOut').then(() => {
-            this.$tab.reLaunch('/pages/index')
-          })
+    handleToDownload() {
+      this.$tab.navigateTo('/pages/mine/poster/index')
+    },
+    handleToSubscribe() {
+      this.$tab.navigateTo('/pages/mine/subscribe/index')
+    },
+    handleToPoints() {
+      this.$tab.navigateTo('/pages/mine/points/rules')
+    },
+    handleToGoods() {
+      this.$tab.navigateTo('/pages/mine/points/goods')
+    },
+    handleLogout() {
+      this.$modal.confirm('确定注销并退出系统吗？').then(() => {
+        this.$store.dispatch('LogOut').then(() => {
+          this.$tab.reLaunch('/pages/index')
         })
-      },
-      handleHelp() {
-        this.$tab.navigateTo('/pages/mine/help/index')
-      },
-      handleAbout() {
-        this.$tab.navigateTo('/pages/mine/about/index')
-      },
-      handleJiaoLiuQun() {
-        this.$modal.showToast('QQ群：①133713780、②146013835')
-      },
-      handleBuilding() {
-        this.$modal.showToast('模块建设中~')
+      })
+    },
+    handleSignIn() {
+      if (this.isSignedIn) {
+        this.$modal.showToast('您已经签到了！');
+      } else {
+        this.isSignedIn = true;
+        this.signInText = '已签到';
+        this.$modal.showToast('签到成功！');
       }
-    }
-  }
+    },
+    checkSignInStatus() {
+      const today = new Date().toISOString().split('T')[0];
+      const savedDate = localStorage.getItem('lastSignInDate');
+
+      if (savedDate === today) {
+        this.isSignedIn = true;
+        this.signInText = '已签到';
+      }
+    },
+
+  },
+};
 </script>
 
-<style lang="scss">
-  page {
-    background-color: #f5f6f7;
-  }
 
-  .mine-container {
-    width: 100%;
-    height: 100%;
+<style>
+/* 用户信息容器 */
+.user-container {
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 220px;
+}
 
+.gap-space {
+  width: 100%px;
+  height: 50px;
+}
 
-    .header-section {
-      padding: 15px 15px 45px 15px;
-      background-color: #3c96f3;
-      color: white;
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
 
-      .login-tip {
-        font-size: 18px;
-        margin-left: 10px;
-      }
+.name-container {
+  display: flex;
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  margin-top: 10px;
+  position: relative;
+  /* 为子元素定位提供参考 */
+}
 
-      .cu-avatar {
-        border: 2px solid #eaeaea;
+.name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
 
-        .icon {
-          font-size: 40px;
-        }
-      }
+.daily-points {
+  background-color: #8a2be2;
+  color: #fff;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 30px;
+  border: none;
+  height: 27px;
+  width: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: calc(50% + 80px);
+}
 
-      .user-info {
-        margin-left: 15px;
+.stats {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  /* 固定高度 */
+  margin-top: 15px;
+}
 
-        .u_title {
-          font-size: 18px;
-          line-height: 30px;
-        }
-      }
-    }
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+}
 
-    .content-section {
-      position: relative;
-      top: -50px;
+.stat-label {
+  font-size: 12px;
+  color: #666;
+}
 
-      .mine-actions {
-        margin: 15px 15px;
-        padding: 20px 0px;
-        border-radius: 8px;
-        background-color: white;
+.stat-value {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+}
 
-        .action-item {
-          .icon {
-            font-size: 28px;
-          }
+.divider {
+  width: 1px;
+  height: 30px;
+  background-color: #eee;
+}
 
-          .text {
-            display: block;
-            font-size: 13px;
-            margin: 8px 0px;
-          }
-        }
-      }
-    }
-  }
+/* 功能菜单容器 */
+.menu-container {
+  background-color: #fff;
+  margin-top: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 200px;
+  /* 固定高度 */
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 18px;
+  height: 40px;
+  /* 固定高度 */
+}
+
+.menu-text {
+  font-size: 13px;
+  color: #333;
+}
+
+.menu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.menu-container .divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 0 20px;
+}
+
+/* 退出登录按钮 */
+.logout-button {
+  width: 120px;
+  background-color: #8a2be2;
+  color: #fff;
+  font-size: 16px;
+  padding: 15px;
+  border: none;
+  margin-top: 60px;
+  border-radius: 30px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.logout-text {
+  color: #fff;
+  font-size: 16px;
+}
 </style>
