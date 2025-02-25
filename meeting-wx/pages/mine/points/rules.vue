@@ -1,33 +1,41 @@
 <template>
   <view class="container">
-   <view class="gap-space">
-    <view class="header">
-      <image class="avatar" src="/static/avatar.png"></image>
-      <view class="user-info">
-        <text class="username">{{ username }}</text>
-        <text class="points">我的积分 {{ points }}</text>
+    <view class="gap-space">
+      <view class="header">
+        <img class="avatar" :src="userInfo.avatar" />
+        <view class="user-info">
+          <text class="username">{{ userInfo.nickname }}</text>
+          <text class="points">我的积分 {{ wallet }}</text>
+        </view>
+        <button class="points-detail" @click="goToDetails">积分明细</button>
       </view>
-      <button class="points-detail" @click="goToDetails">积分明细</button>
-	  </view>
     </view>
 
     <!-- 积分规则标题 -->
     <view class="table-header">
       <text class="title">积分规则</text>
-	  <view class="exchange-container">
-      <text class="exchange" @click="handleToGoods">兑换积分</text>
-	   <uni-icons type="right" size="12"></uni-icons>
-	   </view>
+      <view class="exchange-container">
+        <text class="exchange" @click="handleToGoods">兑换积分</text>
+        <uni-icons type="right" size="12"></uni-icons>
+      </view>
     </view>
 
     <!-- 积分规则表格 -->
     <view class="points-rules">
       <view class="table">
         <view class="row" v-for="(item, index) in rules" :key="index">
-          <text class="points-value">{{ item.points }}</text>
-          <text class="description">{{ item.desc }}</text>
-          <button :class="['action-btn', item.completed ? 'completed' : 'pending']">
-            {{ item.completed ? item.doneText : item.actionText }}
+          <text class="points-value">+{{ item.point }}积分</text>
+          <view class="points-text-wrapper">
+            <text class="title">{{ item.title }}<text class="title-raw">（{{ item.type === 1 ? '只能完成一次' : '每日一次' }}）</text></text>
+            <text class="description">{{ item.description }}</text>
+          </view>
+          
+          <button
+            :class="['action-btn', !item.canComplete ? 'completed' : 'pending']"
+            :disabled="!item.canComplete"
+            @click="handleSubmitTask(item)"
+          >
+            {{ !item.canComplete ? '已完成' : '去完成' }}
           </button>
         </view>
       </view>
@@ -49,27 +57,54 @@
 </template>
 
 <script>
+import {getUserWalletPoint,  getUserPointList,submitTaskForPoint} from '@/api/point/index.js';
+
 export default {
+  mounted() {
+    this.getUserPointAndList();
+  },
   data() {
     return {
-      username: "用户名",
-      points: 500,
-      rules: [
-        { points: "+100积分", desc: "注册账号即送100积分", completed: true, actionText: "去注册", doneText: "已注册" },
-        { points: "+100积分", desc: "签到即送100积分（每日仅限一次）", completed: true, actionText: "去签到", doneText: "已签到" },
-        { points: "+1500积分", desc: "完善信息即送1500积分（仅限一次）", completed: false, actionText: "完善信息", doneText: "已完善" },
-        { points: "+2000积分", desc: "观看直播5分钟以上 即送2000积分", completed: false, actionText: "观看直播", doneText: "已观看" },
-        { points: "+200积分", desc: "微信/短信分享活动即送200积分（每日仅限一次）", completed: false, actionText: "邀请好友", doneText: "已邀请" }
-      ]
+      userInfo: this.$store.state.user,
+      wallet: 0,
+      rules: []
     };
   },
   methods: {
+      getUserPointAndList() {
+        getUserWalletPoint(this.$store.state.user.userId).then(resp => {
+        this.wallet = resp.data.total;
+      });
+
+      getUserPointList(this.$store.state.user.userId).then(resp => {
+        this.rules = resp.data;
+      })
+    },
     goToDetails() {
       this.$tab.navigateTo('/pages/mine/points/details')
     },
-	handleToGoods(){
-		this.$tab.navigateTo('/pages/mine/points/goods')
-	},
+    handleToGoods() {
+      this.$tab.navigateTo('/pages/mine/points/goods')
+    },
+    handleSubmitTask(point) {
+      console.log('point : ', point)
+      if (point.canComplete) {
+        submitTaskForPoint(point.id, this.userInfo.userId).then(resp => {
+          console.log('提交resp', resp)
+          if (resp.code === 200) {
+            this.$modal.msg("任务完成");
+            this.getUserPointAndList()
+          }
+          else {
+            this.$modal.msgError("任务提交错误");
+            return;
+          }
+        })
+      }
+      else {
+        this.$modal.msgError("任务提交错误");
+      }
+    }
   }
 };
 </script>
@@ -90,9 +125,9 @@ export default {
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   display: flex;
-  align-items:flex-end;
+  align-items: flex-end;
   justify-content: space-between;
-  height:170px;
+  height: 170px;
 }
 
 
@@ -108,9 +143,9 @@ export default {
 /* 用户信息 */
 .user-info {
   display: flex;
-  flex-direction: column; 
-  justify-content: flex-start; 
-  align-items: flex-start; 
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .username {
@@ -120,13 +155,13 @@ export default {
 
 .points {
   font-size: 14px;
-  margin-top: 5px; 
+  margin-top: 5px;
 }
 
 
 .points-detail {
   font-size: 12px;
-  height:30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +170,7 @@ export default {
   background-color: white;
   color: #8a2be2;
   border: none;
-  margin-right:20px;
+  margin-right: 20px;
 }
 
 
@@ -150,12 +185,16 @@ export default {
   font-size: 16px;
   font-weight: bold;
 }
+.title-raw{
+  font-weight: 400;
+  font-size: 12px;
+}
 
-.exchange-container{
-	display: flex;
-	flex-direction:row;
-	justify-content: center;
-	align-items: center;
+.exchange-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .exchange {
@@ -185,32 +224,50 @@ export default {
   justify-content: space-between;
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
-  height: 50px; /* 表格高度自适应 */
+  height: 50px;
+  /* 表格高度自适应 */
 }
 
 /* 每列宽度固定 */
 .points-value {
   font-size: 14px;
   font-weight: bold;
-  width: 80px; /* 固定宽度 */
+  width: 80px;
+  /* 固定宽度 */
+}
+.points-text-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .description {
   flex: 1;
   font-size: 12px;
   color: #666;
-  width: 200px; /* 固定宽度 */
+  width: 200px;
+  /* 固定宽度 */
+}
+.title {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  width: 200px;
+  font-weight: 600;
 }
 
 .action-btn {
   padding: 4px 10px;
   font-size: 10px;
-  border-radius: 12px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
-  width: 60px; /* 固定宽度 */
-  height:30px;
-  margin-left:8px;
+  width: 60px;
+  /* 固定宽度 */
+  height: 26px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin-left: 8px;
 }
 
 .pending {

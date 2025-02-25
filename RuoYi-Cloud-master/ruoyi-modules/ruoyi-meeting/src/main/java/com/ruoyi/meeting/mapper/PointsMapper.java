@@ -2,7 +2,10 @@ package com.ruoyi.meeting.mapper;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.Points;
+import com.ruoyi.meeting.domain.PointsRecord;
+import com.ruoyi.meeting.entity.PointsRecordResponse;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 积分Mapper接口
@@ -60,4 +63,8 @@ public interface PointsMapper
      * @return 结果
      */
     public int deletePointsByIds(Long[] ids);
+
+    List<PointsRecordResponse> selectHistoryPointsRecord(@Param("userId") Long userId);
+
+
 }

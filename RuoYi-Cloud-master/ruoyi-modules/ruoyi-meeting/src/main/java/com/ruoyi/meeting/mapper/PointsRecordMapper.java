@@ -3,6 +3,7 @@ package com.ruoyi.meeting.mapper;
 import java.util.List;
 import com.ruoyi.meeting.domain.PointsRecord;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 积分记录Mapper接口
@@ -13,6 +14,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PointsRecordMapper 
 {
+
+    List<PointsRecord> selectDailySignIn(@Param("pointId") Long pointId);
+
+    public List<PointsRecord> selectUserDailyCompleteList(@Param("userId") Long userId, @Param("pointId") Long pointId);
     /**
      * 查询积分记录
      * 

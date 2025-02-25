@@ -21,6 +21,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, title, description, point, type, del_flag, create_by, create_time, update_by, update_time from points
     </sql>
 
+    <select id="selectHistoryPointsRecord" resultType="com.ruoyi.meeting.entity.PointsRecordResponse">
+        SELECT
+            p.title as title,
+            p.point as point,
+            pr.create_time as createTime
+        FROM points_record pr, points p where pr.point_id = p.id and pr.user_id = #{userId} order by pr.create_time desc
+    </select>
+
     <select id="selectPointsList" parameterType="Points" resultMap="PointsResult">
         <include refid="selectPointsVo"/>
         <where>  

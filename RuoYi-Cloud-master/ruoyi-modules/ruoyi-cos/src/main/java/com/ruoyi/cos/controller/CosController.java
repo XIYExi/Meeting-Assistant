@@ -2,11 +2,15 @@ package com.ruoyi.cos.controller;
 
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.cos.constant.CosType;
+import com.ruoyi.cos.domain.Image;
+import com.ruoyi.cos.mapper.ImageMapper;
 import com.ruoyi.cos.service.CosService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @RestController
@@ -15,6 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class CosController {
 
     private CosService cosService;
+
+    private ImageMapper imageMapper;
+
+    @GetMapping("/imageDownloadList")
+    public AjaxResult imageDownloadList() {
+        List<Image> images = imageMapper.selectImageList(new Image());
+        return AjaxResult.success(images);
+    }
 
 
     @PostMapping("/removeImage")

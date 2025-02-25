@@ -2,6 +2,9 @@ package com.ruoyi.meeting.service;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.Points;
+import com.ruoyi.meeting.domain.PointsWallet;
+import com.ruoyi.meeting.entity.PointResponse;
+import com.ruoyi.meeting.entity.PointsRecordResponse;
 
 /**
  * 积分Service接口
@@ -58,4 +61,14 @@ public interface IPointsService
      * @return 结果
      */
     public int deletePointsById(Long id);
+
+    PointsWallet selectUserWalletById(Long userId);
+
+    List<PointResponse> selectUserPointList(Long userId);
+
+    boolean submitTaskForPoint(Long pointId, Long userId);
+
+    List<PointsRecordResponse> getHistoryPointRecords(Long userId);
+
+    boolean dailySignIn(Long userId);
 }

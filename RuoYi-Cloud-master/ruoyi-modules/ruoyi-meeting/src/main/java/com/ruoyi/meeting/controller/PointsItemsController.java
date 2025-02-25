@@ -39,7 +39,7 @@ public class PointsItemsController extends BaseController
     /**
      * 查询积分物品列表
      */
-    @RequiresPermissions("meeting:items:list")
+    // @RequiresPermissions("meeting:items:list")
     @GetMapping("/list")
     public TableDataInfo list(PointsItems pointsItems)
     {
@@ -48,13 +48,19 @@ public class PointsItemsController extends BaseController
         return getDataTable(list);
     }
 
+    @GetMapping("/itemExchange")
+    public AjaxResult itemExchange(@RequestParam("userId") Long userId, @RequestParam("itemId") Long itemId) {
+        boolean exchange = pointsItemsService.itemExchange(userId, itemId);
+        return exchange ? AjaxResult.success() : AjaxResult.error();
+    }
+
     @RequiresPermissions("meeting:items:add")
     @PostMapping("/addImage")
     public AjaxResult add(@RequestPart(value = "file", required = false) MultipartFile file, @RequestParam("imageId") String imageId) {
         String url = null;
         if (file != null) {
             if (!file.isEmpty()) {
-                AjaxResult ajaxResult = remoteCosService.uploadFileCommon(file, imageId);
+                AjaxResult ajaxResult = remoteCosService.uploadFileSystem(file, imageId);
                 if (ajaxResult.get("code").toString().equals("200")) {
                     String filename = file.getOriginalFilename();
                     String extend = filename.substring(filename.lastIndexOf(".") + 1);
@@ -112,7 +118,7 @@ public class PointsItemsController extends BaseController
         // 如果传了图片就调用然后更新
         if (pointItemRequest.getFile() != null) {
             if (!pointItemRequest.getFile().isEmpty()) {
-                AjaxResult ajaxResult = remoteCosService.uploadFileCommon(pointItemRequest.getFile(), pointItemRequest.getImageId());
+                AjaxResult ajaxResult = remoteCosService.uploadFileSystem(pointItemRequest.getFile(), pointItemRequest.getImageId());
                 if (ajaxResult.get("code").toString().equals("200")) {
                     // 走到这里image库里面插入了一条新的数据，现在删除老的图片
                     if (pointItemRequest.getUrl().startsWith("https")) {

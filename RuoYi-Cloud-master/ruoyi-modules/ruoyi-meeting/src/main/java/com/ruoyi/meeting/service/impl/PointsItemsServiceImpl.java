@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.domain.PointsWallet;
+import com.ruoyi.meeting.mapper.PointsWalletMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class PointsItemsServiceImpl implements IPointsItemsService
     private PointsItemsMapper pointsItemsMapper;
     @Resource
     private RemoteCosService remoteCosService;
+    @Resource
+    private PointsWalletMapper pointsWalletMapper;
 
     /**
      * 查询积分物品
@@ -114,5 +118,22 @@ public class PointsItemsServiceImpl implements IPointsItemsService
             remoteCosService.removeImage(url);
         }
         return pointsItemsMapper.deletePointsItemsById(id);
+    }
+
+    @Override
+    public boolean itemExchange(Long userId, Long itemId) {
+        PointsItems pointsItems = pointsItemsMapper.selectPointsItemsById(itemId);
+
+        PointsWallet pointsWallet = pointsWalletMapper.selectUserWalletById(userId);
+        if (pointsWallet.getTotal() < pointsItems.getCost()) return false;
+        pointsWallet.setTotal(pointsWallet.getTotal() - pointsItems.getCost());
+
+        if (pointsItems.getRemaining() <= 0) return false;
+        pointsItems.setRemaining(pointsItems.getRemaining() - 1);
+
+        pointsWalletMapper.updatePointsWallet(pointsWallet);
+        pointsItemsMapper.updatePointsItems(pointsItems);
+
+        return true;
     }
 }

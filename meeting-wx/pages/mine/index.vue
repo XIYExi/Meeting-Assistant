@@ -6,12 +6,12 @@
       <img class="avatar" :src="userInfo.avatar" @click="handleToAvatar" />
       <view class="name-container">
         <text class="name">{{ userInfo.nickname }}</text>
-        <button class="daily-points" @click="handleSignIn">{{ signInText }}</button>
+        <button class="daily-points" @click="handleSignIn">{{ canDaily ? '每日签到' : '已签到' }}</button>
       </view>
       <view class="stats">
         <view class="stat-item">
           <text class="stat-label">我的积分</text>
-          <text class="stat-value">{{ points }}</text>
+          <text class="stat-value">{{ wallet }}</text>
         </view>
         <view class="divider"></view>
         <view class="stat-item">
@@ -20,19 +20,14 @@
         </view>
       </view>
     </view>
-
+    
     <!-- 功能菜单容器 -->
     <view class="menu-container">
       <view class="menu-item" @click="handleToEditInfo">
         <text class="menu-text">个人资料</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
-      <view class="divider"></view>
-      <view class="divider"></view>
-      <view class="menu-item" @click="handleToSubscribe">
-        <text class="menu-text">我的订阅</text>
-        <uni-icons type="right" class="menu-icon"></uni-icons>
-      </view>
+
       <view class="divider"></view>
       <view class="menu-item" @click="handleToPoints">
         <text class="menu-text">我的积分</text>
@@ -94,26 +89,38 @@
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
     </view>
-    
+
   </view>
 </template>
 
 <script>
+import { getUserWalletPoint, dailySignIn, submitTaskForPoint } from '@/api/point/index.js';
+
 export default {
   mounted() {
     console.log(this.$store.state.user);
+    getUserWalletPoint(this.$store.state.user.userId).then(resp => {
+      this.wallet = resp.data.total;
+    });
+
+    dailySignIn(this.$store.state.user.userId).then(resp => {
+      // console.log('can daily sign in?', resp)
+      this.canDaily = resp.data;
+    })
   },
   data() {
     return {
       userInfo: this.$store.state.user,
-      points: 300,
       subscriptions: 4,
       isSignedIn: false,
       signInText: '每日签到',
+      // 积分总数
+      wallet: 0,
+      canDaily: false
     };
   },
   created() {
-    this.checkSignInStatus(); // 检查是否已签到
+
   },
   methods: {
     // 修改头像
@@ -144,24 +151,18 @@ export default {
       })
     },
     handleSignIn() {
-      if (this.isSignedIn) {
+      if (!this.canDaily) {
         this.$modal.showToast('您已经签到了！');
+        return;
       } else {
-        this.isSignedIn = true;
-        this.signInText = '已签到';
+        this.canDaily = false;
+
+        // 提交后端
+        submitTaskForPoint(202, this.userInfo.userId);
+
         this.$modal.showToast('签到成功！');
       }
     },
-    checkSignInStatus() {
-      const today = new Date().toISOString().split('T')[0];
-      const savedDate = localStorage.getItem('lastSignInDate');
-
-      if (savedDate === today) {
-        this.isSignedIn = true;
-        this.signInText = '已签到';
-      }
-    },
-
   },
 };
 </script>

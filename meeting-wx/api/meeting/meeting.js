@@ -83,3 +83,11 @@ export function caloPathPlanning(origins, distributions) {
 		method: 'get'
 	})
 }
+
+
+export function imageDownloadList() {
+	return request({
+		url: `/cos/cos/imageDownloadList`,
+		method: 'get'
+	})
+}

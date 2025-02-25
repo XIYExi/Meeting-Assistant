@@ -1,6 +1,8 @@
 package com.ruoyi.cos.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.annotation.Excel;
@@ -13,6 +15,8 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @date 2025-01-19
  */
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Image extends BaseEntity
 {
     private static final long serialVersionUID = 1L;

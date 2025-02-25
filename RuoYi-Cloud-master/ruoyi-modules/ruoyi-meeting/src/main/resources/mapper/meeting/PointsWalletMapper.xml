@@ -19,6 +19,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, user_id, total, del_flag, create_by, create_time, update_by, update_time from points_wallet
     </sql>
 
+    <select id="selectUserWalletById" resultMap="PointsWalletResult">
+        <include refid="selectPointsWalletVo"/>
+        where user_id=#{userId}
+    </select>
+
     <select id="selectPointsWalletList" parameterType="PointsWallet" resultMap="PointsWalletResult">
         <include refid="selectPointsWalletVo"/>
         <where>  

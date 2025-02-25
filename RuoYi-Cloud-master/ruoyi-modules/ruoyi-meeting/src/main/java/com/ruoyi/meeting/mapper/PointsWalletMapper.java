@@ -3,6 +3,7 @@ package com.ruoyi.meeting.mapper;
 import java.util.List;
 import com.ruoyi.meeting.domain.PointsWallet;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户积分Mapper接口
@@ -13,6 +14,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PointsWalletMapper 
 {
+
+    public PointsWallet selectUserWalletById(@Param("userId") Long userId);
     /**
      * 查询用户积分
      * 

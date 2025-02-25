@@ -58,4 +58,6 @@ public interface IPointsItemsService
      * @return 结果
      */
     public int deletePointsItemsById(Long id);
+
+    boolean itemExchange(Long userId, Long itemId);
 }

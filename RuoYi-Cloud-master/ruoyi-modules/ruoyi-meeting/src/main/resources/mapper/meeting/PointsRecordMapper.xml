@@ -20,6 +20,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, user_id, point_id, get_points, del_flag, create_by, create_time, update_by, update_time from points_record
     </sql>
 
+    <select id="selectUserDailyCompleteList" resultMap="PointsRecordResult">
+        <include refid="selectPointsRecordVo" />
+        WHERE DATE(create_time) = CURDATE() and user_id=#{userId} and point_id=#{pointId};
+    </select>
+
+    <select id="selectDailySignIn" resultMap="PointsRecordResult">
+        <include refid="selectPointsRecordVo" />
+         where point_id = #{pointId} and date(create_time) = CURDATE()
+    </select>
+
     <select id="selectPointsRecordList" parameterType="PointsRecord" resultMap="PointsRecordResult">
         <include refid="selectPointsRecordVo"/>
         <where>  

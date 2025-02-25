@@ -2,15 +2,15 @@
   <view class="container">
     <view class="product-grid">
       <view v-for="(item, index) in products" :key="index" class="product-item">
-        <image :src="item.image" class="product-image"></image>
+        <img :src="item.url" class="product-image" />
         <view class="product-info">
-          <view class="product-name">{{ item.name }}</view>
-          <view class="product-desc">{{ item.desc }}</view>
+          <view class="product-name">{{ item.title }}<text class="remaining">(剩余{{  item.remaining }}个)</text></view>
+          <view class="product-desc">{{ item.description }}</view>
         </view>
         <view class="product-bottom">
-          <view class="product-points">兑换积分：<span>{{ item.points }}</span></view>
-          <view class="status" :class="{ soldout: item.soldout }">
-            {{ item.soldout ? '已抢光' : '可兑换' }}
+          <view class="product-points">兑换积分：<span>{{ item.cost }}</span></view>
+          <view class="status" :class="{ soldout: item.remaining > 0 }" @click="handleSubRemaining(item)">
+            {{ item.remaining == 0 ? '已抢光' : '可兑换' }}
           </view>
         </view>
       </view>
@@ -20,7 +20,15 @@
 
 
 <script>
+import  {getPointItems, itemExchange} from '@/api/point/index.js';
+
 export default {
+  mounted() {
+    getPointItems().then(resp => {
+      console.log('items', resp)
+      this.products = resp.rows;
+    })
+  },
   data() {
     return {
       products: [
@@ -31,36 +39,24 @@ export default {
           image: "",
           soldout: false
         },
-        {
-          name: "安恒手提帆布包",
-          desc: "退货包运费",
-          points: 6887,
-          image: "",
-          soldout: false
-        },
-        {
-          name: "《数据安全与隐私计算》",
-          desc: "全店已拼500万+件",
-          points: 499,
-          image: "",
-          soldout: false
-        },
-        {
-          name: "遛遛水豚卡通毛绒玩具",
-          desc: "全店已拼1.1万+件",
-          points: 2750,
-          image: "",
-          soldout: true
-        },
-		{
-		  name: "遛遛水豚卡通毛绒玩具",
-		  desc: "全店已拼1.1万+件",
-		  points: 2750,
-		  image: "",
-		  soldout: true
-		}
       ]
     };
+  },
+  methods: {
+    handleSubRemaining(item) {
+      console.log('出库', item)
+      if(item.remaining > 0) {
+        itemExchange(this.$store.state.user.userId, item.id).then(resp => {
+          if(resp.code === 200) 
+            this.$modal.msg("出库成功");
+          else
+            this.$modal.msgError("出库失败");
+        });
+      }
+      else {
+        this.$modal.msgError("无库存");
+      }
+    }
   }
 };
 </script>
@@ -104,6 +100,12 @@ export default {
   font-size: 14px;
   font-weight: bold;
   color: #333;
+}
+.remaining {
+  font-size: 12px;
+  margin-left: 10px;
+  font-weight: 400;
+  color: #999;
 }
 
 .product-desc {

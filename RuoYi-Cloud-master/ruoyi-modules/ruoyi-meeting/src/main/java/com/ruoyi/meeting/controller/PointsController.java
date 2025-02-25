@@ -3,15 +3,14 @@ package com.ruoyi.meeting.controller;
 import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.meeting.domain.PointsRecord;
+import com.ruoyi.meeting.domain.PointsWallet;
+import com.ruoyi.meeting.entity.PointResponse;
+import com.ruoyi.meeting.entity.PointsRecordResponse;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
@@ -34,6 +33,60 @@ public class PointsController extends BaseController
 {
     @Autowired
     private IPointsService pointsService;
+
+    /**
+     * 查询个人积分
+     * @param userId
+     * @return
+     */
+    @GetMapping("/wallet")
+    public AjaxResult wallet(@RequestParam("userId") Long userId) {
+        PointsWallet pointsWallet = pointsService.selectUserWalletById(userId);
+        return AjaxResult.success(pointsWallet);
+    }
+
+
+    /**
+     * 查询当前用户可以完成的任务列表
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getUserPointList")
+    public AjaxResult getUserPointList(@RequestParam("userId") Long userId) {
+        List<PointResponse> pointResponseList = pointsService.selectUserPointList(userId);
+        return AjaxResult.success(pointResponseList);
+    }
+
+
+    @GetMapping("/submitTaskForPoint")
+    public AjaxResult submitTaskForPoint(@RequestParam("pointId") Long pointId, @RequestParam("userId") Long userId) {
+        boolean result = pointsService.submitTaskForPoint(pointId, userId);
+        return result ? AjaxResult.success() : AjaxResult.error();
+    }
+
+
+    /**
+     * 获得历史积分获取列表
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getHistoryPointRecords")
+    public AjaxResult getHistoryPointRecords(@RequestParam("userId") Long userId) {
+        List<PointsRecordResponse> recordReponse = pointsService.getHistoryPointRecords(userId);
+        return AjaxResult.success(recordReponse);
+    }
+
+    /**
+     * 查询每日打卡是否完成
+     * @param userId
+     * @return
+     */
+    @GetMapping("/dailySignIn")
+    public AjaxResult dailySignIn(@RequestParam("userId") Long userId) {
+        boolean isSignIn = pointsService.dailySignIn(userId);
+        return AjaxResult.success(isSignIn);
+    }
+
 
     /**
      * 查询积分列表

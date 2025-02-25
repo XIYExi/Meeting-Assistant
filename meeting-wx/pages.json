@@ -140,6 +140,12 @@
     "style": {
       "navigationBarTitleText": "积分规则"
     }
+  },
+  {
+    "path": "pages/mine/poster/index",
+    "style": {
+      "navigationBarTitleText": "海报下载"
+    }
   }
   ],
   "tabBar": {
