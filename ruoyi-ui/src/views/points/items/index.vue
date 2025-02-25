@@ -9,30 +9,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="物品描述" prop="description">
-        <el-input
-          v-model="queryParams.description"
-          placeholder="请输入物品描述"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="对话花费" prop="cost">
-        <el-input
-          v-model="queryParams.cost"
-          placeholder="请输入对话花费"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="剩余存量" prop="remaining">
-        <el-input
-          v-model="queryParams.remaining"
-          placeholder="请输入剩余存量"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -87,11 +63,15 @@
 
     <el-table v-loading="loading" :data="itemsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="物品名称" align="center" prop="title" />
       <el-table-column label="物品描述" align="center" prop="description" />
-      <el-table-column label="对话花费" align="center" prop="cost" />
+      <el-table-column label="兑换积分" align="center" prop="cost" />
       <el-table-column label="剩余存量" align="center" prop="remaining" />
+      <el-table-column label="商品图片" align="center" prop="url" >
+        <template slot-scope="scope">
+          <img :src="scope.row.url" loading="lazy" style="width: 80px;height: 60px;object-fit: fill;"/>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -111,7 +91,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -129,14 +109,30 @@
         <el-form-item label="物品描述" prop="description">
           <el-input v-model="form.description" placeholder="请输入物品描述" />
         </el-form-item>
-        <el-form-item label="对话花费" prop="cost">
-          <el-input v-model="form.cost" placeholder="请输入对话花费" />
+
+        <el-form-item label="物品图片" prop="url">
+          <el-upload
+            ref="uploadPointItemRef"
+            drag
+            action=""
+            class="upload-demo"
+            :http-request="httpRequest"
+            :multiple="false"
+            :limit="1"
+            :auto-upload="false"
+            :file-list="form.file"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="兑换积分" prop="cost">
+          <el-input v-model="form.cost" placeholder="请输入兑换积分" />
         </el-form-item>
         <el-form-item label="剩余存量" prop="remaining">
           <el-input v-model="form.remaining" placeholder="请输入剩余存量" />
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -149,6 +145,7 @@
 
 <script>
 import { listItems, getItems, delItems, addItems, updateItems } from "@/api/meeting/items";
+import {uuid} from "@/utils/uuid";
 
 export default {
   name: "Items",
@@ -182,7 +179,9 @@ export default {
         remaining: null,
       },
       // 表单参数
-      form: {},
+      form: {
+        file: null,
+      },
       // 表单校验
       rules: {
       }
@@ -196,6 +195,7 @@ export default {
     getList() {
       this.loading = true;
       listItems(this.queryParams).then(response => {
+        console.log('res items', response)
         this.itemsList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -218,9 +218,14 @@ export default {
         createBy: null,
         createTime: null,
         updateBy: null,
-        updateTime: null
+        updateTime: null,
+        file: null,
+        imageId: null,
       };
       this.resetForm("form");
+    },
+    httpRequest(param) {
+      this.form.file = param.file
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -256,6 +261,9 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      this.$refs.uploadPointItemRef.submit();
+      this.form.imageId = uuid(8, 16);
+
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {

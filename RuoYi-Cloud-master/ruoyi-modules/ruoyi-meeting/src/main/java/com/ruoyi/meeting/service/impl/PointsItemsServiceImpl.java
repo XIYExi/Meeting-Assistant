@@ -1,12 +1,18 @@
 package com.ruoyi.meeting.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
+import com.ruoyi.cos.api.RemoteCosService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.PointsItemsMapper;
 import com.ruoyi.meeting.domain.PointsItems;
 import com.ruoyi.meeting.service.IPointsItemsService;
+
+import javax.annotation.Resource;
 
 /**
  * 积分物品Service业务层处理
@@ -17,8 +23,12 @@ import com.ruoyi.meeting.service.IPointsItemsService;
 @Service
 public class PointsItemsServiceImpl implements IPointsItemsService 
 {
+    private static final Logger logger = LoggerFactory.getLogger(PointsItemsServiceImpl.class);
+
     @Autowired
     private PointsItemsMapper pointsItemsMapper;
+    @Resource
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询积分物品
@@ -79,6 +89,13 @@ public class PointsItemsServiceImpl implements IPointsItemsService
     @Override
     public int deletePointsItemsByIds(Long[] ids)
     {
+        Arrays.stream(ids).forEach(pointItemId -> {
+            PointsItems pointsItems = pointsItemsMapper.selectPointsItemsById(pointItemId);
+            String url = pointsItems.getUrl();
+            if (!url.equals("null")) {
+                remoteCosService.removeImage(url);
+            }
+        });
         return pointsItemsMapper.deletePointsItemsByIds(ids);
     }
 
@@ -91,6 +108,11 @@ public class PointsItemsServiceImpl implements IPointsItemsService
     @Override
     public int deletePointsItemsById(Long id)
     {
+        PointsItems pointsItems = pointsItemsMapper.selectPointsItemsById(id);
+        String url = pointsItems.getUrl();
+        if (!url.equals("null")) {
+            remoteCosService.removeImage(url);
+        }
         return pointsItemsMapper.deletePointsItemsById(id);
     }
 }

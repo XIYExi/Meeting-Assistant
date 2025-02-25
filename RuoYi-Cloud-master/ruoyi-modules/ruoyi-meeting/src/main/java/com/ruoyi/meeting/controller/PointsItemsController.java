@@ -1,17 +1,15 @@
 package com.ruoyi.meeting.controller;
 
 import java.util.List;
-import java.io.IOException;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.constant.CosConstant;
+import com.ruoyi.meeting.entity.PointItemRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
@@ -21,6 +19,7 @@ import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 积分物品Controller
@@ -34,6 +33,8 @@ public class PointsItemsController extends BaseController
 {
     @Autowired
     private IPointsItemsService pointsItemsService;
+    @Resource
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询积分物品列表
@@ -45,6 +46,23 @@ public class PointsItemsController extends BaseController
         startPage();
         List<PointsItems> list = pointsItemsService.selectPointsItemsList(pointsItems);
         return getDataTable(list);
+    }
+
+    @RequiresPermissions("meeting:items:add")
+    @PostMapping("/addImage")
+    public AjaxResult add(@RequestPart(value = "file", required = false) MultipartFile file, @RequestParam("imageId") String imageId) {
+        String url = null;
+        if (file != null) {
+            if (!file.isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileCommon(file, imageId);
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    String filename = file.getOriginalFilename();
+                    String extend = filename.substring(filename.lastIndexOf(".") + 1);
+                    url = CosConstant.COS_PATH + "common/" + imageId + "." + extend;
+                }
+            }
+        }
+        return AjaxResult.success(url);
     }
 
     /**
@@ -75,9 +93,10 @@ public class PointsItemsController extends BaseController
      */
     @RequiresPermissions("meeting:items:add")
     @Log(title = "积分物品", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody PointsItems pointsItems)
     {
+
         return toAjax(pointsItemsService.insertPointsItems(pointsItems));
     }
 
@@ -86,10 +105,34 @@ public class PointsItemsController extends BaseController
      */
     @RequiresPermissions("meeting:items:edit")
     @Log(title = "积分物品", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody PointsItems pointsItems)
+    @PostMapping("/edit")
+    public AjaxResult edit(PointItemRequest pointItemRequest)
     {
-        return toAjax(pointsItemsService.updatePointsItems(pointsItems));
+        int updatePointItem = 0;
+        // 如果传了图片就调用然后更新
+        if (pointItemRequest.getFile() != null) {
+            if (!pointItemRequest.getFile().isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileCommon(pointItemRequest.getFile(), pointItemRequest.getImageId());
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    // 走到这里image库里面插入了一条新的数据，现在删除老的图片
+                    if (pointItemRequest.getUrl().startsWith("https")) {
+                        // 如果url开头，那么就说明开始的时候插入了数据，需要去Image库里面删除
+                        remoteCosService.removeImage(pointItemRequest.getUrl());
+                    }
+                }
+            }
+        }
+        PointsItems pointsItems = new PointsItems();
+        BeanUtils.copyProperties(pointItemRequest, pointsItems);
+
+        if (pointItemRequest.getFile() != null) {
+            String filename = pointItemRequest.getFile().getOriginalFilename();
+            String extend = filename.substring(filename.lastIndexOf(".") + 1);
+            if (!pointItemRequest.getFile().isEmpty())
+                pointsItems.setUrl(CosConstant.COS_PATH + "common/" + pointItemRequest.getImageId() + "." + extend);
+        }
+        updatePointItem = pointsItemsService.updatePointsItems(pointsItems);
+        return toAjax(updatePointItem == 1);
     }
 
     /**

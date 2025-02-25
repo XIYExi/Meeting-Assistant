@@ -24,7 +24,7 @@ export function addMeeting(data) {
     if (data[key] instanceof Array) {
       // 如果是数组就循环加入表单，key保持相同即可，这就是表达单的数组
       data[key].forEach(item => {
-        console.log(key, item)
+        // console.log(key, item)
         fd.append(key, item)
       })
     } else {

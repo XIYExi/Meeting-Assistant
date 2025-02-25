@@ -1,26 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="积分任务名称" prop="title">
+      <el-form-item label="任务名称" prop="title">
         <el-input
           v-model="queryParams.title"
-          placeholder="请输入积分任务名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="疾风任务描述" prop="description">
-        <el-input
-          v-model="queryParams.description"
-          placeholder="请输入疾风任务描述"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="任务奖励积分数量" prop="point">
-        <el-input
-          v-model="queryParams.point"
-          placeholder="请输入任务奖励积分数量"
+          placeholder="请输入任务名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -79,11 +63,14 @@
 
     <el-table v-loading="loading" :data="pointsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="积分任务名称" align="center" prop="title" />
-      <el-table-column label="疾风任务描述" align="center" prop="description" />
-      <el-table-column label="任务奖励积分数量" align="center" prop="point" />
-      <el-table-column label="任务可获取次数 1-仅可完成一次 2-每日一次" align="center" prop="type" />
+      <el-table-column label="任务名称" align="center" prop="title" />
+      <el-table-column label="任务描述" align="center" prop="description" />
+      <el-table-column label="积分奖励" align="center" prop="point" />
+      <el-table-column label="任务类型" align="center" prop="type" >
+        <template slot-scope="scope">
+          <span>{{scope.row.type == 1 ? '仅能完成一次' : '每日一次'}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -103,7 +90,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -115,19 +102,28 @@
     <!-- 添加或修改积分对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="积分任务名称" prop="title">
-          <el-input v-model="form.title" placeholder="请输入积分任务名称" />
+        <el-form-item label="任务名称" prop="title">
+          <el-input v-model="form.title" placeholder="请输入任务名称" />
         </el-form-item>
-        <el-form-item label="疾风任务描述" prop="description">
-          <el-input v-model="form.description" placeholder="请输入疾风任务描述" />
+        <el-form-item label="任务描述" prop="description">
+          <el-input v-model="form.description" placeholder="请输入任务描述" />
         </el-form-item>
-        <el-form-item label="任务奖励积分数量" prop="point">
-          <el-input v-model="form.point" placeholder="请输入任务奖励积分数量" />
+        <el-form-item label="积分奖励" prop="point">
+          <el-input v-model="form.point" placeholder="请输入积分奖励数量" />
         </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
+        <el-form-item label="任务类型" prop="type">
+          <el-select v-model="form.type" placeholder="请选择任务类型" clearable :style="{width: '100%'}">
+            <el-option
+              v-for="(item, index) in typeOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
@@ -143,6 +139,13 @@ export default {
   name: "Points",
   data() {
     return {
+      typeOptions: [{
+        "label": "仅能完成一次",
+        "value": 1
+      }, {
+        "label": "每日一次",
+        "value": 2
+      }],
       // 遮罩层
       loading: true,
       // 选中数组
