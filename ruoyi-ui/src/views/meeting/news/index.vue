@@ -83,7 +83,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            @click="handleNavigateNewsEditor(scope.row)"
             v-hasPermi="['meeting:news:edit']"
           >文章</el-button>
           <el-button
@@ -215,6 +215,9 @@ export default {
         imageId: null,
       };
       this.resetForm("form");
+    },
+    handleNavigateNewsEditor(row) {
+      this.$router.push({path: `/meeting/news/${row.id}`})
     },
     httpRequest(param) {
       this.form.file = param.file

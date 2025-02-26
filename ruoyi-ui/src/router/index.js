@@ -137,6 +137,22 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/meeting/news/:id(\\d+)',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/',
+        component: () => import('@/views/meeting/news/editor/index'),
+        name: 'Editor',
+        noRedirect: true,
+        meta: {
+          title: '编辑器'
+        }
+      }
+    ]
+  },
 ]
 
 // 动态路由，基于用户权限动态去加载
