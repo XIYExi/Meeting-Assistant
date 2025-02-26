@@ -84,7 +84,7 @@ public class NewsController extends BaseController
                 if (ajaxResult.get("code").toString().equals("200")) {
                     String filename = file.getOriginalFilename();
                     String extend = filename.substring(filename.lastIndexOf(".") + 1);
-                    url = CosConstant.COS_PATH + "social/" + imageId + "." + extend;
+                    url = CosConstant.COS_PATH + "article/" + imageId + "." + extend;
                 }
             }
         }
@@ -131,7 +131,7 @@ public class NewsController extends BaseController
             String filename = newsRequest.getFile().getOriginalFilename();
             String extend = filename.substring(filename.lastIndexOf(".") + 1);
             if (!newsRequest.getFile().isEmpty())
-                newsItem.setUrl(CosConstant.COS_PATH + "social/" + newsRequest.getImageId() + "." + extend);
+                newsItem.setUrl(CosConstant.COS_PATH + "article/" + newsRequest.getImageId() + "." + extend);
         }
         updateNewsItem = newsService.updateNews(newsItem);
         return toAjax(updateNewsItem == 1);

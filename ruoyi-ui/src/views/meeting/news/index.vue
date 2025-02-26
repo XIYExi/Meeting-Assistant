@@ -111,9 +111,6 @@
         <el-form-item label="新闻标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入新闻标题" />
         </el-form-item>
-        <el-form-item label="作者" prop="author">
-          <el-input v-model="form.author" placeholder="请输入作者" />
-        </el-form-item>
         <el-form-item label="封面" prop="url">
           <el-upload
             ref="uploadNewsRef"
@@ -256,7 +253,7 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs.uploadPointItemRef.submit();
+      this.$refs.uploadNewsRef.submit();
       this.form.imageId = uuid(8, 16);
 
       this.$refs["form"].validate(valid => {
