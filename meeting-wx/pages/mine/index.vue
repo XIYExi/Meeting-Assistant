@@ -51,7 +51,7 @@
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
-      <view class="menu-item" @click="handleToSubscribe">
+      <view class="menu-item" @click="handleToFile">
         <text class="menu-text">文档下载</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
@@ -133,6 +133,9 @@ export default {
     },
     handleToDownload() {
       this.$tab.navigateTo('/pages/mine/poster/index')
+    },
+    handleToFile() {
+      this.$tab.navigateTo('/pages/mine/file/index')
     },
     handleToSubscribe() {
       this.$tab.navigateTo('/pages/mine/subscribe/index')

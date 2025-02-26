@@ -146,6 +146,12 @@
     "style": {
       "navigationBarTitleText": "海报下载"
     }
+  },
+  {
+    "path": "pages/mine/file/index",
+    "style": {
+      "navigationBarTitleText": "文档下载"
+    }
   }
   ],
   "tabBar": {

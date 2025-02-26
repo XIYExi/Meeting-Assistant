@@ -63,6 +63,12 @@ public class MeetingController extends BaseController {
     @Resource
     private IMeetingGeoService meetingGeoService;
 
+    @GetMapping("/clipList")
+    public AjaxResult clipList() {
+        List<MeetingClip> meetingClips = meetingClipService.selectMeetingClipList(new MeetingClip());
+        return AjaxResult.success(meetingClips);
+    }
+
 
     @PostMapping("/addClip")
     public AjaxResult addClip(@RequestBody List<MeetingClip> meetingClip) {

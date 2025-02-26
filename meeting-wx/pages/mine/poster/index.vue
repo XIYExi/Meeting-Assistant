@@ -52,7 +52,7 @@ export default {
       this.showModal = false;
     },
     downloadPoster() {
-      uni.showToast({ title: '下载功能暂未实现', icon: 'none' });
+      // uni.showToast({ title: '下载功能暂未实现', icon: 'none' });
       uni.downloadFile({
 				  url: this.currentPoster.url, // 这里是你接口地址 若要传参 直接 url拼接参数即可
 					header:{
