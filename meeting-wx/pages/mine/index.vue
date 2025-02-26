@@ -38,6 +38,10 @@
         <text class="menu-text">积分兑换</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
+      <view class="menu-item" @click="handleToRules">
+        <text class="menu-text">积分明细</text>
+        <uni-icons type="right" class="menu-icon"></uni-icons>
+      </view>
     </view>
 
     <view class="menu-container">
@@ -145,6 +149,9 @@ export default {
     },
     handleToGoods() {
       this.$tab.navigateTo('/pages/mine/points/goods')
+    },
+    handleToRules() {
+      this.$tab.navigateTo('/pages/mine/points/details')
     },
     handleLogout() {
       this.$modal.confirm('确定注销并退出系统吗？').then(() => {

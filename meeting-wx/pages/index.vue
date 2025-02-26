@@ -24,7 +24,7 @@
 				<view class="router_elem_wrapper" @click="gotoTestPage">
 					<text class="router_elem">关于大会</text>
 				</view>
-				<view class="router_elem_wrapper">
+				<view class="router_elem_wrapper" @click="gotoNewsPage">
 					<text class="router_elem">新闻中心 </text>
 				</view>
 				<view class="router_elem_wrapper">
@@ -148,6 +148,11 @@
 				url:'/pages/rank/index'
 			})
 		},
+		gotoNewsPage() {
+			uni.navigateTo({
+				url:'/pages/news/newsList'
+			})
+		}
 	}
   }
 </script>

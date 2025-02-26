@@ -152,6 +152,18 @@
     "style": {
       "navigationBarTitleText": "文档下载"
     }
+  },
+  {
+    "path": "pages/news/newsList",
+    "style": {
+      "navigationBarTitleText": "新闻"
+    }
+  },
+  {
+    "path": "pages/news/newsArticle",
+    "style": {
+      "navigationBarTitleText": "文章"
+    }
   }
   ],
   "tabBar": {

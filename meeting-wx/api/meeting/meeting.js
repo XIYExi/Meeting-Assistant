@@ -91,3 +91,10 @@ export function imageDownloadList() {
 		method: 'get'
 	})
 }
+
+export function fileDownloadList() {
+	return request({
+		url: `/meeting/meeting/clipList`,
+		method: 'get'
+	})
+}
