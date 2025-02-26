@@ -1,10 +1,10 @@
 package com.ruoyi.meeting.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.meeting.domain.MeetingGeo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,21 +12,11 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MeetingRequest implements Serializable {
+public class NewsRequest implements Serializable {
     private Long id;
     private String title;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date beginTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date endTime;
-
-    private String path;
-
+    private String author;
     private String url;
-    private Long views;
-    private Long type;
-    private Long status;
-    private Long meetingType;
     private String delFlag;
     private String createBy;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -35,4 +25,7 @@ public class MeetingRequest implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
     private String remark;
+
+    private String imageId;
+    private MultipartFile file;
 }

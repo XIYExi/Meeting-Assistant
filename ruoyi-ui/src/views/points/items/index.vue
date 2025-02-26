@@ -195,7 +195,7 @@ export default {
     getList() {
       this.loading = true;
       listItems(this.queryParams).then(response => {
-        console.log('res items', response)
+        //console.log('res items', response)
         this.itemsList = response.rows;
         this.total = response.total;
         this.loading = false;

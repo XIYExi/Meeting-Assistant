@@ -24,7 +24,7 @@ export function addItems(data) {
     if (data[key] instanceof Array) {
       // 如果是数组就循环加入表单，key保持相同即可，这就是表达单的数组
       data[key].forEach(item => {
-        console.log(key, item)
+        //console.log(key, item)
         fd.append(key, item)
       })
     } else {
@@ -53,7 +53,6 @@ export function addItems(data) {
 
 // 修改积分物品
 export function updateItems(data) {
-  console.log(data)
   const fd = new FormData();
   Object.keys(data).forEach(key => {
     if (data[key] instanceof Array) {

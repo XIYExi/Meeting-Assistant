@@ -1,12 +1,20 @@
 package com.ruoyi.meeting.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
+import com.ruoyi.common.security.utils.SecurityUtils;
+import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.domain.PointsItems;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.NewsMapper;
 import com.ruoyi.meeting.domain.News;
 import com.ruoyi.meeting.service.INewsService;
+
+import javax.annotation.Resource;
 
 /**
  * 新闻管理Service业务层处理
@@ -17,8 +25,11 @@ import com.ruoyi.meeting.service.INewsService;
 @Service
 public class NewsServiceImpl implements INewsService 
 {
+    private static final Logger logger = LoggerFactory.getLogger(NewsServiceImpl.class);
     @Autowired
     private NewsMapper newsMapper;
+    @Resource
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询新闻管理
@@ -54,6 +65,8 @@ public class NewsServiceImpl implements INewsService
     public int insertNews(News news)
     {
         news.setCreateTime(DateUtils.getNowDate());
+        news.setCreateTime(DateUtils.getNowDate());
+        news.setAuthor(SecurityUtils.getUsername());
         return newsMapper.insertNews(news);
     }
 
@@ -67,6 +80,7 @@ public class NewsServiceImpl implements INewsService
     public int updateNews(News news)
     {
         news.setUpdateTime(DateUtils.getNowDate());
+        news.setAuthor(SecurityUtils.getUsername());
         return newsMapper.updateNews(news);
     }
 
@@ -79,6 +93,13 @@ public class NewsServiceImpl implements INewsService
     @Override
     public int deleteNewsByIds(Long[] ids)
     {
+        Arrays.stream(ids).forEach(newsId -> {
+            News news = newsMapper.selectNewsById(newsId);
+            String url = news.getUrl();
+            if (!url.equals("null")) {
+                remoteCosService.removeImage(url);
+            }
+        });
         return newsMapper.deleteNewsByIds(ids);
     }
 
@@ -91,6 +112,11 @@ public class NewsServiceImpl implements INewsService
     @Override
     public int deleteNewsById(Long id)
     {
+        News news = newsMapper.selectNewsById(id);
+        String url = news.getUrl();
+        if (!url.equals("null")) {
+            remoteCosService.removeImage(url);
+        }
         return newsMapper.deleteNewsById(id);
     }
 }

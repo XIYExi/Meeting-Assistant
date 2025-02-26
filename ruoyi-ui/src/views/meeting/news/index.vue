@@ -9,22 +9,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="作者" prop="author">
-        <el-input
-          v-model="queryParams.author"
-          placeholder="请输入作者"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="封面" prop="url">
-        <el-input
-          v-model="queryParams.url"
-          placeholder="请输入封面"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -79,10 +63,13 @@
 
     <el-table v-loading="loading" :data="newsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="新闻标题" align="center" prop="title" />
       <el-table-column label="作者" align="center" prop="author" />
-      <el-table-column label="封面" align="center" prop="url" />
+      <el-table-column label="封面图片" align="center" prop="url" >
+        <template slot-scope="scope">
+          <img loading="lazy" :src="scope.row.url" style="width: 80px;height: 60px;"/>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -95,6 +82,13 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['meeting:news:edit']"
+          >文章</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['meeting:news:remove']"
@@ -102,7 +96,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -121,10 +115,21 @@
           <el-input v-model="form.author" placeholder="请输入作者" />
         </el-form-item>
         <el-form-item label="封面" prop="url">
-          <el-input v-model="form.url" placeholder="请输入封面" />
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
+          <el-upload
+            ref="uploadNewsRef"
+            drag
+            action=""
+            class="upload-demo"
+            :http-request="httpRequest"
+            :multiple="false"
+            :limit="1"
+            :auto-upload="false"
+            :file-list="form.file"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -137,6 +142,7 @@
 
 <script>
 import { listNews, getNews, delNews, addNews, updateNews } from "@/api/meeting/news";
+import {uuid} from "@/utils/uuid";
 
 export default {
   name: "News",
@@ -169,7 +175,10 @@ export default {
         url: null,
       },
       // 表单参数
-      form: {},
+      form: {
+        file: null,
+        imageId: null,
+      },
       // 表单校验
       rules: {
       }
@@ -204,9 +213,14 @@ export default {
         createBy: null,
         createTime: null,
         updateBy: null,
-        updateTime: null
+        updateTime: null,
+        file: null,
+        imageId: null,
       };
       this.resetForm("form");
+    },
+    httpRequest(param) {
+      this.form.file = param.file
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -242,6 +256,9 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      this.$refs.uploadPointItemRef.submit();
+      this.form.imageId = uuid(8, 16);
+
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {

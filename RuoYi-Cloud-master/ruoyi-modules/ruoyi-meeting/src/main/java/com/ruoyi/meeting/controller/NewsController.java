@@ -2,16 +2,16 @@ package com.ruoyi.meeting.controller;
 
 import java.util.List;
 import java.io.IOException;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.constant.CosConstant;
+import com.ruoyi.meeting.domain.PointsItems;
+import com.ruoyi.meeting.entity.NewsRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
@@ -21,6 +21,7 @@ import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 新闻管理Controller
@@ -34,6 +35,8 @@ public class NewsController extends BaseController
 {
     @Autowired
     private INewsService newsService;
+    @Resource
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询新闻管理列表
@@ -70,12 +73,30 @@ public class NewsController extends BaseController
         return success(newsService.selectNewsById(id));
     }
 
+
+    @RequiresPermissions("meeting:news:add")
+    @PostMapping("/addImage")
+    public AjaxResult addImage(@RequestPart(value = "file", required = false) MultipartFile file, @RequestParam("imageId") String imageId) {
+        String url = null;
+        if (file != null) {
+            if (!file.isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileSocial(file, imageId);
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    String filename = file.getOriginalFilename();
+                    String extend = filename.substring(filename.lastIndexOf(".") + 1);
+                    url = CosConstant.COS_PATH + "social/" + imageId + "." + extend;
+                }
+            }
+        }
+        return AjaxResult.success(url);
+    }
+
     /**
      * 新增新闻管理
      */
     @RequiresPermissions("meeting:news:add")
     @Log(title = "新闻管理", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody News news)
     {
         return toAjax(newsService.insertNews(news));
@@ -86,10 +107,34 @@ public class NewsController extends BaseController
      */
     @RequiresPermissions("meeting:news:edit")
     @Log(title = "新闻管理", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody News news)
+    @PostMapping("/edit")
+    public AjaxResult edit(NewsRequest newsRequest)
     {
-        return toAjax(newsService.updateNews(news));
+        int updateNewsItem = 0;
+        // 如果传了图片就调用然后更新
+        if (newsRequest.getFile() != null) {
+            if (!newsRequest.getFile().isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileSystem(newsRequest.getFile(), newsRequest.getImageId());
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    // 走到这里image库里面插入了一条新的数据，现在删除老的图片
+                    if (newsRequest.getUrl().startsWith("https")) {
+                        // 如果url开头，那么就说明开始的时候插入了数据，需要去Image库里面删除
+                        remoteCosService.removeImage(newsRequest.getUrl());
+                    }
+                }
+            }
+        }
+        News newsItem = new News();
+        BeanUtils.copyProperties(newsRequest, newsItem);
+
+        if (newsRequest.getFile() != null) {
+            String filename = newsRequest.getFile().getOriginalFilename();
+            String extend = filename.substring(filename.lastIndexOf(".") + 1);
+            if (!newsRequest.getFile().isEmpty())
+                newsItem.setUrl(CosConstant.COS_PATH + "social/" + newsRequest.getImageId() + "." + extend);
+        }
+        updateNewsItem = newsService.updateNews(newsItem);
+        return toAjax(updateNewsItem == 1);
     }
 
     /**
