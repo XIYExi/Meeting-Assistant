@@ -1,38 +1,14 @@
 <template>
 	<view class="main">
-	  <!-- 搜索框部分 -->
-	  <view class="search-box" v-cloak>
-		<image src="/static/logo.png" class="search-span"></image> 
-		<input 
-		  type="text" 
-		  class="search-input" 
-		  placeholder="请输入搜索内容" 
-		  v-model="keyword"
-		  @input="handleSearch"
-		/>
-		<button 
-		  class="search-btn"
-		  @click="clearSearch"
-		  v-if="keyword"
-		>清除</button>
-	  </view>
-  
-	  <!-- 搜索结果提示 -->
-	  <view class="search-tip" v-if="filteredNews.length === 0 && keyword">
-		未找到"{{ keyword }}"相关结果
-	  </view>
-  
-	  <view class="discover">
-		Discover
-	  </view>
-      <view v-for="item in filteredNews" :key="item.id" @click="handleToArticle">
+
+      <view v-for="item in filteredNews" :key="item.id" @click="handleToArticle(item.id)">
 		<view class="news">
-			<img :src='item.src' alt="" class="news-img"/>
+			<img :src='item.url' alt="" class="news-img"/>
 			<view class="info">
 			  <text class="title">{{ item.title }}</text>
 			  <view class="detail">
-			  	<text>{{ item.author }}</text>
-			  	<text>{{ item.time }}</text>
+			  	<view class="author">作者：{{ item.author }}</view>
+			  	<view>{{ new Date(item.createTime).getMonth() + 1 }}月{{  new Date(item.createTime).getDate() }}日</view>
 			  </view>
 			</view>
 		</view>
@@ -41,18 +17,19 @@
 </template>
 
 <script>
+import {getNewsList} from '@/api/meeting/meeting';
 
 export default {
   name:'newsList',
+  mounted() {
+	getNewsList().then(resp => {
+		console.log('news', resp.data);
+		this.news = resp.data;
+	})
+  },
   data() {
     return {
-      news: [
-		 { src:"/static/news.png",id: 1, title:"西湖论剑演讲实录|吴世忠院士：迎接人工智能的安全挑战", author:"中国信息安全",time:'2024-05-22'},
-		 { src:"/static/news.png",id: 2, title:"论剑演讲实录|吴世忠院士：迎接人工智能的安全挑战", author:"中国信息安全",time:'2024-05-22'},
-		 { src:"/static/news.png",id: 3, title:"演讲实录|吴世忠院士：迎接人工智能的安全挑战", author:"中国信息安全",time:'2024-05-22'},
-		 { src:"/static/news.png",id: 4, title:"实录|吴世忠院士：迎接人工智能的安全挑战", author:"中国信息安全",time:'2024-05-22'},
-		 { src:"/static/news.png",id: 5, title:"|吴世忠院士：迎接人工智能的安全挑战", author:"中国信息安全",time:'2024-05-22'},
-	  ],
+      news: [],
 	  keyword: '',
     }
   },
@@ -68,8 +45,8 @@ export default {
 	  }
 	},
   methods:{
-	  handleToArticle() {
-	    this.$tab.navigateTo('/pages/news/newsArticle')
+	  handleToArticle(newsId) {
+	    this.$tab.navigateTo(`/pages/news/newsArticle?newsId=${newsId}`)
 	  },
 	  clearSearch() {
 	    this.keyword = '';
@@ -84,40 +61,9 @@ export default {
 
 <style scoped>
 	.main{
-		padding: 10px;
-	}
-	.search-box{
-		display: flex;
-		width: 100%;
-		height: 10vw;
-		background-color:#dededf ;
-		border-radius: 10px;
-		margin-top: 1vh;
-	}
-	.search-span{
-		width: 10vw ;
-		height: 100%;
-		margin-left: 1vw;
-	}
-	.search-input{
-		width: 65%;
-		height: 100%;
-		margin-left: 3vw;
-		font-size: 4vw;
-	}
-	.search-btn{
-		height: 100%;
-		margin-right: 0;
-		background-color:#dededf ;
-		font-size: 4vw;
-	}
-	.discover{
-		font-family: Georgia, 'Times New Roman', Times, serif;
-		font-style: italic;
-		font-size: 7vw;
-		margin: 2.5vh 0;
-		text-decoration-line: underline;
-		text-underline-offset: 1vh;
+		padding: 20px 10px;
+		background-color: white;
+		min-height: 100vh;
 	}
 	.news{
 		display: flex;
@@ -125,28 +71,37 @@ export default {
 		margin-bottom: 3vh;
 	}
 	.news-img{
-		width: 40vw;
-		height: 11vh;
+		width: 36vw;
+		height: 10vh;
 		object-fit: cover;
+		border-radius: 8px;
+		box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 	}
 	.info{
-		margin-left: 2vw;
+		margin-left: 5vw;
 		display: flex;
 		flex-direction: column;
-		height: 11vh;
 		justify-content: space-between;
 		flex: 1;
 	}
 	.title{
-		font-size: 2vh;
+		font-size: 16PX;
+		font-weight: 500;
+		color: #333;
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 		-webkit-line-clamp: 3;
 		overflow: hidden;
 	}
 	.detail{
+
 		display: flex;
-		gap: 3vw;
-		font-size: 1.5vh;
+		font-size: 13px;
+		color: #999;
+		font-weight: 300;
+		flex-direction: column;
+	}
+	.author {
+		margin-top: 24px;
 	}
 </style>

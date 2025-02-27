@@ -1,12 +1,17 @@
 package com.ruoyi.meeting.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
+import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.domain.News;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.MeetingActivitySectorMapper;
 import com.ruoyi.meeting.domain.MeetingActivitySector;
 import com.ruoyi.meeting.service.IMeetingActivitySectorService;
+
+import javax.annotation.Resource;
 
 /**
  * 会议活动板块Service业务层处理
@@ -19,6 +24,8 @@ public class MeetingActivitySectorServiceImpl implements IMeetingActivitySectorS
 {
     @Autowired
     private MeetingActivitySectorMapper meetingActivitySectorMapper;
+    @Resource
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询会议活动板块
@@ -79,6 +86,13 @@ public class MeetingActivitySectorServiceImpl implements IMeetingActivitySectorS
     @Override
     public int deleteMeetingActivitySectorByIds(Long[] ids)
     {
+        Arrays.stream(ids).forEach(newsId -> {
+            MeetingActivitySector meetingActivitySector = meetingActivitySectorMapper.selectMeetingActivitySectorById(newsId);
+            String url = meetingActivitySector.getUrl();
+            if (!url.equals("null")) {
+                remoteCosService.removeImage(url);
+            }
+        });
         return meetingActivitySectorMapper.deleteMeetingActivitySectorByIds(ids);
     }
 
@@ -91,6 +105,11 @@ public class MeetingActivitySectorServiceImpl implements IMeetingActivitySectorS
     @Override
     public int deleteMeetingActivitySectorById(Long id)
     {
+        MeetingActivitySector meetingActivitySector = meetingActivitySectorMapper.selectMeetingActivitySectorById(id);
+        String url = meetingActivitySector.getUrl();
+        if (!url.equals("null")) {
+            remoteCosService.removeImage(url);
+        }
         return meetingActivitySectorMapper.deleteMeetingActivitySectorById(id);
     }
 }

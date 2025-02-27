@@ -45,8 +45,8 @@
     </view>
 
     <view class="menu-container">
-      <view class="menu-item" @click="handleToEditInfo">
-        <text class="menu-text">我的预约</text>
+      <view class="menu-item" >
+        <text class="menu-text" style="color: red;">我的预约</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
@@ -60,17 +60,17 @@
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
-      <view class="menu-item" @click="handleToPoints">
-        <text class="menu-text">大会须知</text>
+      <view class="menu-item">
+        <text class="menu-text" style="color: red;">大会须知</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
-      <view class="menu-item" @click="handleToGoods">
-        <text class="menu-text">语音工具</text>
+      <view class="menu-item">
+        <text class="menu-text" style="color: red;">语音工具</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
-      <view class="menu-item" @click="handleToGoods">
+      <view class="menu-item" @click="handleToAgent">
         <text class="menu-text">会议助理</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
@@ -78,13 +78,13 @@
 
     <!-- 退出登录按钮 -->
     <view class="menu-container">
-      <view class="menu-item" @click="handleToSubscribe">
-        <text class="menu-text">关于</text>
+      <view class="menu-item">
+        <text class="menu-text" style="color: red;">关于</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
-      <view class="menu-item" @click="handleToPoints">
-        <text class="menu-text">系统偏好</text>
+      <view class="menu-item">
+        <text class="menu-text" style="color: red;">系统偏好</text>
         <uni-icons type="right" class="menu-icon"></uni-icons>
       </view>
       <view class="divider"></view>
@@ -152,6 +152,9 @@ export default {
     },
     handleToRules() {
       this.$tab.navigateTo('/pages/mine/points/details')
+    },
+    handleToAgent() {
+      this.$tab.navigateTo('/pages/chat/chat')
     },
     handleLogout() {
       this.$modal.confirm('确定注销并退出系统吗？').then(() => {

@@ -2,16 +2,16 @@ package com.ruoyi.meeting.controller;
 
 import java.util.List;
 import java.io.IOException;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.constant.CosConstant;
+import com.ruoyi.meeting.domain.News;
+import com.ruoyi.meeting.entity.MeetingActivityRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
@@ -21,6 +21,7 @@ import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 会议活动Controller
@@ -34,6 +35,8 @@ public class MeetingActivityController extends BaseController
 {
     @Autowired
     private IMeetingActivityService meetingActivityService;
+    @Resource
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询会议活动列表
@@ -70,12 +73,28 @@ public class MeetingActivityController extends BaseController
         return success(meetingActivityService.selectMeetingActivityById(id));
     }
 
+    @RequiresPermissions("meeting:activity:add")
+    @PostMapping("/addImage")
+    public AjaxResult addImage(@RequestPart(value = "file", required = false) MultipartFile file, @RequestParam("imageId") String imageId) {
+        String url = null;
+        if (file != null) {
+            if (!file.isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileSocial(file, imageId);
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    String filename = file.getOriginalFilename();
+                    String extend = filename.substring(filename.lastIndexOf(".") + 1);
+                    url = CosConstant.COS_PATH + "article/" + imageId + "." + extend;
+                }
+            }
+        }
+        return AjaxResult.success(url);
+    }
     /**
      * 新增会议活动
      */
     @RequiresPermissions("meeting:activity:add")
     @Log(title = "会议活动", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody MeetingActivity meetingActivity)
     {
         return toAjax(meetingActivityService.insertMeetingActivity(meetingActivity));
@@ -86,10 +105,34 @@ public class MeetingActivityController extends BaseController
      */
     @RequiresPermissions("meeting:activity:edit")
     @Log(title = "会议活动", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody MeetingActivity meetingActivity)
+    @PostMapping("/edit")
+    public AjaxResult edit(MeetingActivityRequest meetingActivityRequest)
     {
-        return toAjax(meetingActivityService.updateMeetingActivity(meetingActivity));
+        int updateMeetingActivityItem = 0;
+        // 如果传了图片就调用然后更新
+        if (meetingActivityRequest.getFile() != null) {
+            if (!meetingActivityRequest.getFile().isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileSystem(meetingActivityRequest.getFile(), meetingActivityRequest.getImageId());
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    // 走到这里image库里面插入了一条新的数据，现在删除老的图片
+                    if (meetingActivityRequest.getUrl().startsWith("https")) {
+                        // 如果url开头，那么就说明开始的时候插入了数据，需要去Image库里面删除
+                        remoteCosService.removeImage(meetingActivityRequest.getUrl());
+                    }
+                }
+            }
+        }
+        MeetingActivity meetingActivity = new MeetingActivity();
+        BeanUtils.copyProperties(meetingActivityRequest, meetingActivity);
+
+        if (meetingActivityRequest.getFile() != null) {
+            String filename = meetingActivityRequest.getFile().getOriginalFilename();
+            String extend = filename.substring(filename.lastIndexOf(".") + 1);
+            if (!meetingActivityRequest.getFile().isEmpty())
+                meetingActivity.setUrl(CosConstant.COS_PATH + "article/" + meetingActivityRequest.getImageId() + "." + extend);
+        }
+        updateMeetingActivityItem = meetingActivityService.updateMeetingActivity(meetingActivity);
+        return toAjax(updateMeetingActivityItem == 1);
     }
 
     /**

@@ -6,15 +6,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.constant.CosConstant;
+import com.ruoyi.meeting.domain.News;
+import com.ruoyi.meeting.entity.MeetingActivitySectorRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
@@ -24,6 +21,7 @@ import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 会议活动板块Controller
@@ -75,6 +73,23 @@ public class MeetingActivitySectorController extends BaseController
         return success(meetingActivitySectorService.selectMeetingActivitySectorById(id));
     }
 
+
+    @RequiresPermissions("meeting:sector:add")
+    @PostMapping("/addImage")
+    public AjaxResult addImage(@RequestPart(value = "file", required = false) MultipartFile file, @RequestParam("imageId") String imageId) {
+        String url = null;
+        if (file != null) {
+            if (!file.isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileSocial(file, imageId);
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    String filename = file.getOriginalFilename();
+                    String extend = filename.substring(filename.lastIndexOf(".") + 1);
+                    url = CosConstant.COS_PATH + "article/" + imageId + "." + extend;
+                }
+            }
+        }
+        return AjaxResult.success(url);
+    }
     /**
      * 新增会议活动板块
      */
@@ -92,9 +107,33 @@ public class MeetingActivitySectorController extends BaseController
     @RequiresPermissions("meeting:sector:edit")
     @Log(title = "会议活动板块", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody MeetingActivitySector meetingActivitySector)
+    public AjaxResult edit(MeetingActivitySectorRequest meetingActivitySectorRequest)
     {
-        return toAjax(meetingActivitySectorService.updateMeetingActivitySector(meetingActivitySector));
+        int updateSectorItem = 0;
+        // 如果传了图片就调用然后更新
+        if (meetingActivitySectorRequest.getFile() != null) {
+            if (!meetingActivitySectorRequest.getFile().isEmpty()) {
+                AjaxResult ajaxResult = remoteCosService.uploadFileSystem(meetingActivitySectorRequest.getFile(), meetingActivitySectorRequest.getImageId());
+                if (ajaxResult.get("code").toString().equals("200")) {
+                    // 走到这里image库里面插入了一条新的数据，现在删除老的图片
+                    if (meetingActivitySectorRequest.getUrl().startsWith("https")) {
+                        // 如果url开头，那么就说明开始的时候插入了数据，需要去Image库里面删除
+                        remoteCosService.removeImage(meetingActivitySectorRequest.getUrl());
+                    }
+                }
+            }
+        }
+        MeetingActivitySector meetingActivitySector = new MeetingActivitySector();
+        BeanUtils.copyProperties(meetingActivitySectorRequest, meetingActivitySector);
+
+        if (meetingActivitySectorRequest.getFile() != null) {
+            String filename = meetingActivitySectorRequest.getFile().getOriginalFilename();
+            String extend = filename.substring(filename.lastIndexOf(".") + 1);
+            if (!meetingActivitySectorRequest.getFile().isEmpty())
+                meetingActivitySector.setUrl(CosConstant.COS_PATH + "article/" + meetingActivitySectorRequest.getImageId() + "." + extend);
+        }
+        updateSectorItem = meetingActivitySectorService.updateMeetingActivitySector(meetingActivitySector);
+        return toAjax(updateSectorItem == 1);
     }
 
     /**

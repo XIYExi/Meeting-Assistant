@@ -164,6 +164,18 @@
     "style": {
       "navigationBarTitleText": "文章"
     }
+  },
+  {
+    "path": "pages/media/imageList",
+    "style": {
+      "navigationBarTitleText": "活动"
+    }
+  },
+  {
+    "path": "pages/media/videoList",
+    "style": {
+      "navigationBarTitleText": "视频"
+    }
   }
   ],
   "tabBar": {
