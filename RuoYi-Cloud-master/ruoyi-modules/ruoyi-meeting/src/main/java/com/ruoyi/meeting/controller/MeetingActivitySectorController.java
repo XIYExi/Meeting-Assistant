@@ -113,7 +113,7 @@ public class MeetingActivitySectorController extends BaseController
         // 如果传了图片就调用然后更新
         if (meetingActivitySectorRequest.getFile() != null) {
             if (!meetingActivitySectorRequest.getFile().isEmpty()) {
-                AjaxResult ajaxResult = remoteCosService.uploadFileSystem(meetingActivitySectorRequest.getFile(), meetingActivitySectorRequest.getImageId());
+                AjaxResult ajaxResult = remoteCosService.uploadFileSocial(meetingActivitySectorRequest.getFile(), meetingActivitySectorRequest.getImageId());
                 if (ajaxResult.get("code").toString().equals("200")) {
                     // 走到这里image库里面插入了一条新的数据，现在删除老的图片
                     if (meetingActivitySectorRequest.getUrl().startsWith("https")) {
