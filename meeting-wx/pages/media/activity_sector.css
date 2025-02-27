@@ -1,0 +1,39 @@
+.main {
+    padding: 10px;
+}
+
+.sector {
+    margin-top: 12px;
+    display: flex;
+    padding-bottom: 26px;
+}
+
+/* 16:9 */
+.sector-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.sector-font-wrapper {
+    margin-left: 10px;
+    padding-bottom: 10px;
+}
+
+.sector-title {
+    margin-top: 4px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.sector-desc {
+    margin-top: 15px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    color: #666;
+}
