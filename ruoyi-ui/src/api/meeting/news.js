@@ -89,3 +89,19 @@ export function delNews(id) {
     method: 'delete'
   })
 }
+
+
+export function submitNews(data) {
+  return request({
+    url: '/meeting/news/submitNewEditor',
+    method: 'post',
+    data: data
+  })
+}
+
+export function selectNewEditor(id) {
+  return request({
+    url: `/meeting/news/selectNewEditor?newsId=${id}`,
+    method: 'get'
+  })
+}

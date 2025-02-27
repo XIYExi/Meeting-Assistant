@@ -2,7 +2,10 @@ package com.ruoyi.meeting.controller;
 
 import java.util.List;
 import java.io.IOException;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.cos.api.RemoteCosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +37,8 @@ public class MeetingActivitySectorController extends BaseController
 {
     @Autowired
     private IMeetingActivitySectorService meetingActivitySectorService;
+    @Resource
+    private RemoteCosService remoteCosService;
 
     /**
      * 查询会议活动板块列表
@@ -75,7 +80,7 @@ public class MeetingActivitySectorController extends BaseController
      */
     @RequiresPermissions("meeting:sector:add")
     @Log(title = "会议活动板块", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody MeetingActivitySector meetingActivitySector)
     {
         return toAjax(meetingActivitySectorService.insertMeetingActivitySector(meetingActivitySector));
@@ -86,7 +91,7 @@ public class MeetingActivitySectorController extends BaseController
      */
     @RequiresPermissions("meeting:sector:edit")
     @Log(title = "会议活动板块", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody MeetingActivitySector meetingActivitySector)
     {
         return toAjax(meetingActivitySectorService.updateMeetingActivitySector(meetingActivitySector));

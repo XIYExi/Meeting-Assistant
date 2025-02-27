@@ -2,6 +2,8 @@ package com.ruoyi.meeting.service;
 
 import java.util.List;
 import com.ruoyi.meeting.domain.News;
+import com.ruoyi.meeting.domain.NewsEditor;
+import com.ruoyi.meeting.entity.NewsEditorRequest;
 
 /**
  * 新闻管理Service接口
@@ -58,4 +60,8 @@ public interface INewsService
      * @return 结果
      */
     public int deleteNewsById(Long id);
+
+    boolean modifyNewsEditorInMongodb(NewsEditorRequest newsEditorRequest);
+
+    NewsEditor selectNewEditor(Long newsId);
 }

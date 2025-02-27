@@ -74,6 +74,11 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+
 
         <!-- 远程服务调用 -->
         <!-- 桶存储，图片资源云存储 -->

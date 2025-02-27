@@ -1,13 +1,14 @@
 package com.ruoyi.meeting.controller;
 
 import java.util.List;
-import java.io.IOException;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.cos.api.RemoteCosService;
 import com.ruoyi.meeting.constant.CosConstant;
-import com.ruoyi.meeting.domain.PointsItems;
+import com.ruoyi.meeting.domain.NewsEditor;
+import com.ruoyi.meeting.entity.NewsEditorRequest;
 import com.ruoyi.meeting.entity.NewsRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,34 @@ public class NewsController extends BaseController
     private INewsService newsService;
     @Resource
     private RemoteCosService remoteCosService;
+
+
+
+    @PostMapping("/submitNewEditor")
+    public AjaxResult submitNewEditor(@RequestBody String newsEditorRequest) {
+        // System.err.println(newsEditorRequest.getContent());
+        NewsEditorRequest newsEditorRequest1 = JSON.parseObject(newsEditorRequest, NewsEditorRequest.class);
+        boolean b = newsService.modifyNewsEditorInMongodb(newsEditorRequest1);
+        return b ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    @GetMapping("/selectNewEditor")
+    public AjaxResult selectNewEditor(@RequestParam("newsId") Long newsId) {
+        NewsEditor newsEditor = newsService.selectNewEditor(newsId);
+        return newsEditor == null ? AjaxResult.error() : AjaxResult.success(newsEditor);
+    }
+
+    @GetMapping("/getNewsList")
+    public AjaxResult getNewsList() {
+        List<News> news = newsService.selectNewsList(new News());
+        return AjaxResult.success(news);
+    }
+
+    @GetMapping("/getNewsDetails")
+    public AjaxResult getNewsDetails(@RequestParam("newsId") Long newsId) {
+        News news = newsService.selectNewsById(newsId);
+        return AjaxResult.success(news);
+    }
 
     /**
      * 查询新闻管理列表

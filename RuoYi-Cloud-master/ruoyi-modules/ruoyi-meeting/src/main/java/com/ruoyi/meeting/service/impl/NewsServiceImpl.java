@@ -5,10 +5,16 @@ import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.cos.api.RemoteCosService;
+import com.ruoyi.meeting.domain.NewsEditor;
 import com.ruoyi.meeting.domain.PointsItems;
+import com.ruoyi.meeting.entity.NewsEditorRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.NewsMapper;
 import com.ruoyi.meeting.domain.News;
@@ -30,6 +36,8 @@ public class NewsServiceImpl implements INewsService
     private NewsMapper newsMapper;
     @Resource
     private RemoteCosService remoteCosService;
+    @Resource
+    private MongoTemplate mongoTemplate;
 
     /**
      * 查询新闻管理
@@ -118,5 +126,29 @@ public class NewsServiceImpl implements INewsService
             remoteCosService.removeImage(url);
         }
         return newsMapper.deleteNewsById(id);
+    }
+
+    @Override
+    public boolean modifyNewsEditorInMongodb(NewsEditorRequest newsEditorRequest) {
+        NewsEditor newsEditors = mongoTemplate.findById(newsEditorRequest.getNewsId(), NewsEditor.class);
+        if (newsEditors == null) {
+            NewsEditor newsEditor = new NewsEditor();
+            newsEditor.setNewsId(newsEditorRequest.getNewsId());
+            newsEditor.setContent(newsEditorRequest.getContent());
+            mongoTemplate.save(newsEditor);
+        }
+        else {
+            mongoTemplate.remove(newsEditors);
+            NewsEditor _newsEditor = new NewsEditor();
+            _newsEditor.setNewsId(newsEditorRequest.getNewsId());
+            _newsEditor.setContent(newsEditorRequest.getContent());
+            mongoTemplate.save(_newsEditor);
+        }
+        return true;
+    }
+
+    @Override
+    public NewsEditor selectNewEditor(Long newsId) {
+        return mongoTemplate.findById(newsId, NewsEditor.class);
     }
 }

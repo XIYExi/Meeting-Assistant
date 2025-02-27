@@ -11,9 +11,11 @@ aliyun:
     smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
 
 
-
 # Spring
 spring:
+  data:
+    mongodb:
+      uri: mongodb://root:123456@192.168.31.94:27017/meeting?authSource=admin&authMechanism=SCRAM-SHA-1
   application:
     # 应用名称
     name: ruoyi-meeting
