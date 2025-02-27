@@ -50,6 +50,14 @@ public class MeetingActivityController extends BaseController
         return getDataTable(list);
     }
 
+    @GetMapping("/getActivityList")
+    public AjaxResult getActivityList(@RequestParam("sectorId") Long sectorId) {
+        MeetingActivity meetingActivity = new MeetingActivity();
+        meetingActivity.setSectorId(sectorId);
+        List<MeetingActivity> meetingActivities = meetingActivityService.selectMeetingActivityList(meetingActivity);
+        return AjaxResult.success(meetingActivities);
+    }
+
     /**
      * 导出会议活动列表
      */

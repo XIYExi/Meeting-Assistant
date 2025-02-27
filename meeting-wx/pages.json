@@ -166,9 +166,15 @@
     }
   },
   {
-    "path": "pages/media/imageList",
+    "path": "pages/media/activity_sector",
     "style": {
-      "navigationBarTitleText": "活动"
+      "navigationBarTitleText": "活动板块"
+    }
+  },
+  {
+    "path": "pages/media/activity",
+    "style": {
+      "navigationBarTitleText": "活动详细"
     }
   },
   {

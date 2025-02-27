@@ -122,3 +122,18 @@ export function getNewsContent(newsId) {
 		method: 'get'
 	});
 }
+
+
+export function getSectorList() {
+	return request({
+		url: `/meeting/sector/getSectorList`,
+		method: 'get'
+	});
+}
+
+export function getActivityList(sectorId) {
+	return request({
+		url: `/meeting/activity/getActivityList?sectorId=${sectorId}`,
+		method: 'get'
+	});
+}

@@ -29,6 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectMeetingActivityVo"/>
         <where>
             <if test="title != null  and title != ''"> and title like "%"#{title}"%"</if>
+            <if test="sectorId != null  and sectorId != ''"> and sector_id = #{sectorId}</if>
             <if test="time != null "> and time = #{time}</if>
         </where>
     </select>

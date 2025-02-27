@@ -65,7 +65,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="活动板块id" align="center" prop="id" />
       <el-table-column label="板块标题" align="center" prop="title" />
-      <el-table-column label="板块图片" align="center" prop="url" />
+      <el-table-column label="板块图片" align="center" prop="url" >
+        <template slot-scope="scope">
+          <img loading="lazy" :src="scope.row.url" style="width: 80px;height: 60px;"/>
+        </template>
+      </el-table-column>
       <el-table-column label="板块内容" align="center" prop="description" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -109,7 +113,21 @@
           <el-input v-model="form.title" placeholder="请输入板块标题" />
         </el-form-item>
         <el-form-item label="板块图片" prop="url">
-          <el-input v-model="form.url" placeholder="请输入板块图片" />
+          <el-upload
+            ref="uploadSectorRef"
+            drag
+            action=""
+            class="upload-demo"
+            :http-request="httpRequest"
+            :multiple="false"
+            :limit="1"
+            :auto-upload="false"
+            :file-list="form.file"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
         </el-form-item>
         <el-form-item label="板块内容" prop="description">
           <el-input v-model="form.description" type="textarea" placeholder="请输入内容" />
@@ -125,6 +143,7 @@
 
 <script>
 import { listSector, getSector, delSector, addSector, updateSector } from "@/api/meeting/sector";
+import {uuid} from "@/utils/uuid";
 
 export default {
   name: "Sector",
@@ -156,14 +175,14 @@ export default {
         description: null,
       },
       // 表单参数
-      form: {},
+      form: {
+        file: null,
+        imageId: null,
+      },
       // 表单校验
       rules: {
         title: [
           { required: true, message: "板块标题不能为空", trigger: "blur" }
-        ],
-        url: [
-          { required: true, message: "板块图片不能为空", trigger: "blur" }
         ],
         description: [
           { required: true, message: "板块内容不能为空", trigger: "blur" }
@@ -207,7 +226,9 @@ export default {
         createTime: null,
         updateBy: null,
         updateTime: null,
-        remark: null
+        remark: null,
+        file: null,
+        imageId: null,
       };
       this.resetForm("form");
     },
@@ -215,6 +236,9 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
+    },
+    httpRequest(param) {
+      this.form.file = param.file
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -245,6 +269,8 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      this.$refs.uploadSectorRef.submit();
+      this.form.imageId = uuid(8, 16);
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {

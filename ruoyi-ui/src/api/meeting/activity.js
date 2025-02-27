@@ -20,18 +20,59 @@ export function getActivity(id) {
 // 新增会议活动
 export function addActivity(data, sectorId) {
   data['sectorId'] = sectorId;
+  const fd = new FormData();
+  Object.keys(data).forEach(key => {
+    if (data[key] instanceof Array) {
+      // 如果是数组就循环加入表单，key保持相同即可，这就是表达单的数组
+      data[key].forEach(item => {
+        //console.log(key, item)
+        fd.append(key, item)
+      })
+    } else {
+      // 如果不是数组就直接追加进去
+      fd.append(key, data[key])
+    }
+  });
   return request({
-    url: '/meeting/activity',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    url: '/meeting/activity/addImage',
     method: 'post',
-    data: data
-  })
+    data: fd
+  }).then(response => {
+    data['url'] = response.msg ? response.msg : 'null';
+    request({
+      url: '/meeting/activity/add',
+      method: 'post',
+      data: data
+    })
+  });
 }
 
 // 修改会议活动
 export function updateActivity(data) {
+  const fd = new FormData();
+  Object.keys(data).forEach(key => {
+    if (data[key] instanceof Array) {
+      // 如果是数组就循环加入表单，key保持相同即可，这就是表达单的数组
+      data[key].forEach(item => {
+        console.log(key, item)
+        fd.append(key, item)
+      })
+    } else {
+      // 如果不是数组就直接追加进去
+      fd.append(key, data[key])
+    }
+  });
+
+
   return request({
-    url: '/meeting/activity',
-    method: 'put',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    url: '/meeting/activity/edit',
+    method: 'post',
     data: data
   })
 }

@@ -28,7 +28,7 @@
 						<text class="router_elem">新闻中心 </text>
 					</view>
 					<view class="router_elem_wrapper" @click="handleNavigateToActivityPage">
-						<text class="router_elem">成果发布</text>
+						<text class="router_elem">活动板块</text>
 					</view>
 					<view class="router_elem_wrapper"  @click="handleNavigateToVideoPage">
 						<text class="router_elem">参会指南</text>
@@ -119,14 +119,14 @@ import { getMeetingListOrderByAsc, getGuestListOrderByDate } from '@/api/meeting
 export default {
 	onLoad: function () {
 		getMeetingListOrderByAsc().then(resp => {
-			console.log(resp.rows);
+			//console.log(resp.rows);
 			if (resp.code === 200) {
 				this.meetingList = resp.rows;
 			}
 		});
 
 		getGuestListOrderByDate().then(resp => {
-			console.log(resp)
+			//console.log(resp)
 			if (resp.code === 200) {
 				this.guestList = resp.rows;
 			}
@@ -147,7 +147,7 @@ export default {
 		},
 		handleNavigateToActivityPage() {
 			uni.navigateTo({
-				url: '/pages/media/imageList'
+				url: '/pages/media/activity_sector'
 			})
 		},
 		handleNavigateToRankPage() {

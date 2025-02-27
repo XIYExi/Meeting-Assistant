@@ -50,6 +50,12 @@ public class MeetingActivitySectorController extends BaseController
         return getDataTable(list);
     }
 
+    @GetMapping("/getSectorList")
+    public AjaxResult getSectorList() {
+        List<MeetingActivitySector> meetingActivitySectors = meetingActivitySectorService.selectMeetingActivitySectorList(new MeetingActivitySector());
+        return AjaxResult.success(meetingActivitySectors);
+    }
+
     /**
      * 导出会议活动板块列表
      */
