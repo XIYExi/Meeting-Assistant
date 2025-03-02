@@ -163,7 +163,6 @@ public class DemoController {
     }
 
 
-
     public static QuestionEntity convertEntityToMessage(ResponseEntity<Map> responseEntity) {
         Map body = responseEntity.getBody();
         Map responseWrapper = JSON.parseObject(JSONObject.toJSONString(body), Map.class);
