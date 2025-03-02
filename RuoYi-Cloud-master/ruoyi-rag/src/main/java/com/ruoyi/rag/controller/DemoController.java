@@ -163,16 +163,6 @@ public class DemoController {
     }
 
 
-    @Tool("获取当前时间")
-    public String dateUtil() {
-        return DateUtils.getNowDate().toString();
-    }
-    @GetMapping("/tools")
-    public AjaxResult tools() throws Exception{
-
-        return AjaxResult.success();
-    }
-
 
     public static QuestionEntity convertEntityToMessage(ResponseEntity<Map> responseEntity) {
         Map body = responseEntity.getBody();
