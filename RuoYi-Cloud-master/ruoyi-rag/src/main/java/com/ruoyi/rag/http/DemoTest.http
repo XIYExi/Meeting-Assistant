@@ -1,0 +1,31 @@
+### 直接使用RestTemplate API请求
+GET http://localhost:9999/demo/query
+
+### 封装langchain4j 走generate请求
+GET http://localhost:9999/demo/custom
+
+### 试试看单信息 走generate请求
+GET http://localhost:9999/demo/chat
+
+### 提交UserMessage，测试对话
+GET http://localhost:9999/demo/userMessage
+
+### ChatMessage...多条消息
+GET http://localhost:9999/demo/history
+
+### 提交ChatMemory 测试历史消息对话
+GET http://localhost:9999/demo/chatMemory
+
+### 使用自定义的CustomChatMemory 目前集成Redis
+GET http://localhost:9999/demo/customChatMemory
+
+### 使用Agent接口 1
+GET http://localhost:9999/rag/chat?question=告诉我教育系统数据安全专题会议中AI如何“加”网络安全部分的主要内容？
+
+
+### 使用Agent接口 2
+GET http://localhost:9999/rag/chat?question=查询恒脑大模型发布会上宇凡关于大模型生态发展的汇报内容
+
+
+### 使用Agent接口 3
+GET http://localhost:9999/rag/chat?question=跳转到用户个人中心

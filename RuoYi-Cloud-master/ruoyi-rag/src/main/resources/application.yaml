@@ -1,0 +1,21 @@
+
+mybatis-plus:
+  # 搜索指定包别名
+  typeAliasesPackage: com.ruoyi.rag
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath:mapper/*.xml
+
+hengnao:
+  appKey: hengnaoj9yvrMgfcM5uc0CTat76
+  appSecret: tmebar6bqvbixn3u8xwu4q58z7opu0ko
+
+spring:
+  redis:
+    host: 1.13.154.224
+    port: 6379
+    password:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ry-cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
