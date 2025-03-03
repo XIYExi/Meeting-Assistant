@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <langchain4j.version>0.35.0</langchain4j.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
+        <milvus.version>2.0.0</milvus.version>
     </properties>
 
     <dependencies>
@@ -120,6 +121,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.milvus</groupId>
+            <artifactId>milvus-sdk-java</artifactId>
+            <version>${milvus.version}</version>
         </dependency>
 
     </dependencies>
