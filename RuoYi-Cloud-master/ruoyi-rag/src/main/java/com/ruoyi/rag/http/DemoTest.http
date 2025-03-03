@@ -29,3 +29,9 @@ GET http://localhost:9999/rag/chat?question=查询恒脑大模型发布会上宇
 
 ### 使用Agent接口 3
 GET http://localhost:9999/rag/chat?question=跳转到用户个人中心
+
+### 测试embedding
+GET http://localhost:9999/demo/embeddings
+
+### 封装EmbeddingModel 集成到spring中
+GET http://localhost:9999/demo/envelopeEmbeddings

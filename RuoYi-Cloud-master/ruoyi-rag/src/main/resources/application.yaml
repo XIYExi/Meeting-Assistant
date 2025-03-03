@@ -9,6 +9,11 @@ hengnao:
   appKey: hengnaoj9yvrMgfcM5uc0CTat76
   appSecret: tmebar6bqvbixn3u8xwu4q58z7opu0ko
 
+qwen:
+  apiKey: sk-47912a5b978c442c8b21e8c6a41324d4
+  textEmbedding: text-embedding-v2
+  textDimensions: 1024
+
 spring:
   redis:
     host: 1.13.154.224

@@ -11,14 +11,17 @@ import com.ruoyi.rag.config.RagParamConfig;
 import com.ruoyi.rag.config.RagRequestPath;
 import com.ruoyi.rag.entity.QuestionEntity;
 import com.ruoyi.rag.model.CustomChatMemory;
+import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.model.DomesticModel;
 import com.ruoyi.rag.utils.SignUtils;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.agent.tool.ToolSpecifications;
+import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -38,6 +41,7 @@ import javax.annotation.Resource;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/demo")
@@ -53,6 +57,8 @@ public class DemoController {
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
     private RagCacheKeyBuilder cacheKeyBuilder;
+    @Resource
+    private DomesticEmbeddingModel domesticEmbeddingModel;
 
     @Deprecated
     @GetMapping("/query")
@@ -160,6 +166,40 @@ public class DemoController {
         chatMemory.add(result);
 
         return AjaxResult.success(result.text());
+    }
+
+    @GetMapping("/embeddings")
+    public AjaxResult embeddings() {
+        String executeUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings";
+         String apiKey = "sk-47912a5b978c442c8b21e8c6a41324d4";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", "Bearer " + apiKey);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("model", "text-embedding-v2");
+        requestBody.put("input", "风急天高猿啸哀，渚清沙白鸟飞回，无边落木萧萧下，不尽长江滚滚来");
+        requestBody.put("dimensions", 1024);
+        requestBody.put("encoding_format", "float");
+
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<Map> responseEntity = restTemplate.postForEntity(executeUrl, requestEntity, Map.class);
+
+        Map result = responseEntity.getBody();
+
+        return AjaxResult.success(result);
+    }
+
+    @GetMapping("/envelopeEmbeddings")
+    public AjaxResult envelopeEmbeddings() {
+        // EmbeddingModel 封装Qwen Api
+        TextSegment segment = TextSegment.from("网络安全大会");
+        Response<List<Embedding>> listResponse = domesticEmbeddingModel.embedAll(Collections.singletonList(segment));
+        List<Embedding> content = listResponse.content();
+        List<Float> floats = content.get(0).vectorAsList();
+        return AjaxResult.success(floats);
     }
 
 
