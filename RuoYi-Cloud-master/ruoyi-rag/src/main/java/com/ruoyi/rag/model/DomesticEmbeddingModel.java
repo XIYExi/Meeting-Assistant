@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,13 @@ public class DomesticEmbeddingModel implements EmbeddingModel {
         return Response.from(collect);
     }
 
+    @Override
+    public Response<Embedding> embed(String text) {
+        TextSegment from = TextSegment.from(text);
+        Response<List<Embedding>> listResponse = embedAll(Collections.singletonList(from));
+        List<Embedding> content = listResponse.content();
+        return Response.from(content.get(0));
+    }
 
     @Override
     public int dimension() {
