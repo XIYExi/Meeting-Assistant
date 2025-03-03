@@ -14,10 +14,7 @@
     <description>
         不接入ruoyi框架，不进行打包，仅dev阶段用来测试模块
     </description>
-    <modules>
-        <module>dev-push-server</module>
-        <module>dev-pull-server</module>
-    </modules>
+
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
