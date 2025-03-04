@@ -2,11 +2,14 @@ package com.ruoyi.meeting.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.core.utils.DateUtils;
+import com.ruoyi.rag.api.RemoteRagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.MeetingAgendaMapper;
 import com.ruoyi.meeting.domain.MeetingAgenda;
 import com.ruoyi.meeting.service.IMeetingAgendaService;
+
+import javax.annotation.Resource;
 
 /**
  * 会议议程Service业务层处理
@@ -19,6 +22,8 @@ public class MeetingAgendaServiceImpl implements IMeetingAgendaService
 {
     @Autowired
     private MeetingAgendaMapper meetingAgendaMapper;
+    @Resource
+    private RemoteRagService remoteRagService;
 
     /**
      * 查询会议议程
@@ -59,7 +64,10 @@ public class MeetingAgendaServiceImpl implements IMeetingAgendaService
     public int insertMeetingAgenda(MeetingAgenda meetingAgenda)
     {
         meetingAgenda.setCreateTime(DateUtils.getNowDate());
-        return meetingAgendaMapper.insertMeetingAgenda(meetingAgenda);
+        int i = meetingAgendaMapper.insertMeetingAgenda(meetingAgenda);
+        // 2025.03.04 会议创建成功之后插入 Milvus
+        remoteRagService.insert(meetingAgenda.getId(), 2L, meetingAgenda.getContent());
+        return i;
     }
 
     /**

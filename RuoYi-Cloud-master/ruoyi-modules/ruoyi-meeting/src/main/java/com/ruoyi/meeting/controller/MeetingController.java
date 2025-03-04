@@ -1,5 +1,6 @@
 package com.ruoyi.meeting.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,17 +16,21 @@ import com.ruoyi.meeting.component.GeoMapComponent;
 import com.ruoyi.meeting.constant.CosConstant;
 import com.ruoyi.meeting.constant.MeetingConstant;
 import com.ruoyi.meeting.constant.MeetingRedisKeyBuilder;
+import com.ruoyi.meeting.domain.MeetingAgenda;
 import com.ruoyi.meeting.domain.MeetingClip;
 import com.ruoyi.meeting.domain.MeetingGeo;
+import com.ruoyi.meeting.entity.MeetingMilvusEntity;
 import com.ruoyi.meeting.entity.MeetingRequest;
 import com.ruoyi.meeting.entity.MeetingResponse;
 import com.ruoyi.meeting.entity.SimplePartUser;
 import com.ruoyi.meeting.qo.MeetingInsertQuery;
+import com.ruoyi.meeting.service.IMeetingAgendaService;
 import com.ruoyi.meeting.service.IMeetingClipService;
 import com.ruoyi.meeting.service.IMeetingGeoService;
 import com.ruoyi.meeting.service.impl.MeetingServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.web.bind.annotation.*;
@@ -63,12 +68,42 @@ public class MeetingController extends BaseController {
     @Resource
     private IMeetingGeoService meetingGeoService;
 
+
+    @Autowired
+    private IMeetingAgendaService meetingAgendaService;
+
+    @Deprecated
+    @GetMapping("/insertMilvus")
+    public AjaxResult insertMilvus() {
+        List<Meeting> meetings = meetingService.selectMeetingList(new Meeting());
+        List<MeetingMilvusEntity> collect = meetings.stream().map(meeting -> {
+            MeetingMilvusEntity meetingMilvusEntity = new MeetingMilvusEntity();
+            meetingMilvusEntity.setId(meeting.getId());
+            meetingMilvusEntity.setDbType(1L);
+            meetingMilvusEntity.setTitle(meeting.getTitle());
+            return meetingMilvusEntity;
+        }).collect(Collectors.toList());
+        meetingService.insertMilvus(collect);
+
+        List<MeetingAgenda> meetingAgenda = meetingAgendaService.selectMeetingAgendaList(new MeetingAgenda());
+        List<MeetingMilvusEntity> collect1 = meetingAgenda.stream().map(agenda -> {
+            MeetingMilvusEntity meetingMilvusEntity = new MeetingMilvusEntity();
+            meetingMilvusEntity.setId(agenda.getId());
+            meetingMilvusEntity.setDbType(2L);
+            meetingMilvusEntity.setTitle(agenda.getContent());
+            return meetingMilvusEntity;
+        }).collect(Collectors.toList());
+         meetingService.insertMilvus(collect1);
+
+        return AjaxResult.success();
+    }
+
+
     @GetMapping("/clipList")
     public AjaxResult clipList() {
         List<MeetingClip> meetingClips = meetingClipService.selectMeetingClipList(new MeetingClip());
         return AjaxResult.success(meetingClips);
     }
-
 
     @PostMapping("/addClip")
     public AjaxResult addClip(@RequestBody List<MeetingClip> meetingClip) {

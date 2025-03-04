@@ -16,6 +16,7 @@
         <module>ruoyi-api-im</module>
         <module>ruoyi-api-router</module>
         <module>ruoyi-api-live</module>
+        <module>ruoyi-api-rag</module>
     </modules>
 
     <artifactId>ruoyi-api</artifactId>

@@ -3,6 +3,7 @@ package com.ruoyi.meeting.service;
 import java.util.List;
 import com.ruoyi.meeting.domain.Meeting;
 import com.ruoyi.meeting.domain.MeetingGeo;
+import com.ruoyi.meeting.entity.MeetingMilvusEntity;
 import com.ruoyi.meeting.entity.SimplePartUser;
 
 /**
@@ -67,4 +68,5 @@ public interface IMeetingService
      */
     public int deleteMeetingById(Long id);
 
+    void insertMilvus(List<MeetingMilvusEntity> list);
 }

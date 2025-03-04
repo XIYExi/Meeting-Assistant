@@ -53,4 +53,9 @@ public class ServiceNameConstants
      */
     public static final String LIVE_SERVICE = "ruoyi-live";
 
+    /**
+     * RAG 智能体模块 serviceId
+     */
+    public static final String RAG_SERVICE = "ruoyi-rag";
+
 }

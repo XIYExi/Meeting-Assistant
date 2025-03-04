@@ -16,15 +16,19 @@ import com.ruoyi.job.api.RemoteSysJobService;
 import com.ruoyi.job.api.domain.SysJob;
 import com.ruoyi.meeting.component.GeoMapComponent;
 import com.ruoyi.meeting.domain.MeetingGeo;
+import com.ruoyi.meeting.entity.MeetingMilvusEntity;
 import com.ruoyi.meeting.entity.SimplePartUser;
 import com.ruoyi.meeting.mapper.MeetingGeoMapper;
 import com.ruoyi.meeting.mapper.MeetingScheduleMapper;
+import com.ruoyi.rag.api.RemoteRagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.meeting.mapper.MeetingMapper;
 import com.ruoyi.meeting.domain.Meeting;
 import com.ruoyi.meeting.service.IMeetingService;
+
+import javax.annotation.Resource;
 
 /**
  * 会议Service业务层处理
@@ -38,9 +42,9 @@ public class MeetingServiceImpl implements IMeetingService
 {
     @Autowired
     private MeetingMapper meetingMapper;
-    @Autowired
+    @Resource
     private RemoteCosService remoteCosService;
-    @Autowired
+    @Resource
     private RemoteSysJobService remoteSysJobService;
     @Autowired
     private MeetingScheduleMapper meetingScheduleMapper;
@@ -48,6 +52,8 @@ public class MeetingServiceImpl implements IMeetingService
     private GeoMapComponent geoMapComponent;
     @Autowired
     private MeetingGeoMapper meetingGeoMapper;
+    @Resource
+    private RemoteRagService remoteRagService;
 
     @Override
     public SimplePartUser getPartUserAvatarById(Long id) {
@@ -107,6 +113,9 @@ public class MeetingServiceImpl implements IMeetingService
 
         meeting.setLocation(String.valueOf(meetingGeo.getId()));
         int i = meetingMapper.insertMeeting(meeting);
+
+        // 2025.03.04 会议创建成功之后插入 Milvus
+        remoteRagService.insert(meeting.getId(), 1L, meeting.getTitle());
 
         if (1 == i) {
             // 添加 自动开始 定时任务
@@ -275,6 +284,13 @@ public class MeetingServiceImpl implements IMeetingService
             e.printStackTrace();
         }
         return meetingMapper.deleteMeetingById(id);
+    }
+
+    @Override
+    public void insertMilvus(List<MeetingMilvusEntity> list) {
+        list.forEach(item -> {
+            remoteRagService.insert(item.getId(), item.getDbType(), item.getTitle());
+        });
     }
 
 
