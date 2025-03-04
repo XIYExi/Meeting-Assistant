@@ -11,7 +11,7 @@ hengnao:
 
 qwen:
   apiKey: sk-47912a5b978c442c8b21e8c6a41324d4
-  textEmbedding: text-embedding-v2
+  textEmbedding: text-embedding-v3
   textDimensions: 1024
 
 spring:
