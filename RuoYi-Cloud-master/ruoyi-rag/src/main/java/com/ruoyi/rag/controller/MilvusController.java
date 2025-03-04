@@ -3,6 +3,7 @@ package com.ruoyi.rag.controller;
 
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
+import com.ruoyi.rag.utils.IdGenerator;
 import com.ruoyi.rag.utils.MilvusOperateUtils;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/milvus")
@@ -32,5 +36,34 @@ public class MilvusController {
         List<Float> features = embeddings.get(0).vectorAsList();
         long insert = milvus.insert(originalId, dbType, features);
         return AjaxResult.success(insert);
+    }
+
+
+    /**
+     * 预留一个接口，主要用来测试，输入keyword（正常业务中是恒脑分割出来的），
+     * 然后调用embedding计算之后search milvus获得最相似数据
+     * @param keyword
+     * @return
+     */
+    @Deprecated
+    @GetMapping("/search")
+    public AjaxResult search(String keyword) {
+        Response<Embedding> listResponse = domesticEmbeddingModel.embed(keyword);
+        Embedding embeddings = listResponse.content();
+        List<Float> features = embeddings.vectorAsList();
+
+        List<?> meeting = milvus.searchByFeature("meeting_home", features);
+        List<?> composeIds= (List<?>) meeting.get(0);
+
+        List<Map<String, Long>> collect = composeIds.stream().map(composeId -> {
+            long originalId = IdGenerator.getOriginalId((Long) composeId);
+            boolean isMeeting = IdGenerator.isMeeting((Long) composeId);
+            Map<String, Long> parser = new HashMap<>();
+            parser.put("id", originalId);
+            parser.put("dbType", isMeeting ? 1L : 2L);
+            return parser;
+        }).collect(Collectors.toList());
+
+        return AjaxResult.success(collect);
     }
 }

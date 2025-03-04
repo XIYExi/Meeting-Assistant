@@ -35,3 +35,10 @@ GET http://localhost:9999/demo/embeddings
 
 ### 封装EmbeddingModel 集成到spring中
 GET http://localhost:9999/demo/envelopeEmbeddings
+
+
+### 查询Milvus 1
+GET http://localhost:9999/milvus/search?keyword=教育系统数据安全专题会议
+
+### 查询Milvus 2
+GET http://localhost:9999/milvus/search?keyword=AI如何“加”网络安全"
