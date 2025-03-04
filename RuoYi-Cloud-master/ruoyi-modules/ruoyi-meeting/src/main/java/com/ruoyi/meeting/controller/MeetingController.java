@@ -69,36 +69,6 @@ public class MeetingController extends BaseController {
     private IMeetingGeoService meetingGeoService;
 
 
-    @Autowired
-    private IMeetingAgendaService meetingAgendaService;
-
-    @Deprecated
-    @GetMapping("/insertMilvus")
-    public AjaxResult insertMilvus() {
-        List<Meeting> meetings = meetingService.selectMeetingList(new Meeting());
-        List<MeetingMilvusEntity> collect = meetings.stream().map(meeting -> {
-            MeetingMilvusEntity meetingMilvusEntity = new MeetingMilvusEntity();
-            meetingMilvusEntity.setId(meeting.getId());
-            meetingMilvusEntity.setDbType(1L);
-            meetingMilvusEntity.setTitle(meeting.getTitle());
-            return meetingMilvusEntity;
-        }).collect(Collectors.toList());
-        meetingService.insertMilvus(collect);
-
-        List<MeetingAgenda> meetingAgenda = meetingAgendaService.selectMeetingAgendaList(new MeetingAgenda());
-        List<MeetingMilvusEntity> collect1 = meetingAgenda.stream().map(agenda -> {
-            MeetingMilvusEntity meetingMilvusEntity = new MeetingMilvusEntity();
-            meetingMilvusEntity.setId(agenda.getId());
-            meetingMilvusEntity.setDbType(2L);
-            meetingMilvusEntity.setTitle(agenda.getContent());
-            return meetingMilvusEntity;
-        }).collect(Collectors.toList());
-         meetingService.insertMilvus(collect1);
-
-        return AjaxResult.success();
-    }
-
-
     @GetMapping("/clipList")
     public AjaxResult clipList() {
         List<MeetingClip> meetingClips = meetingClipService.selectMeetingClipList(new MeetingClip());
