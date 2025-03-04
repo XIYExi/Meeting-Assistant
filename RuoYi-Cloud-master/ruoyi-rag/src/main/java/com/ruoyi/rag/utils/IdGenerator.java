@@ -20,7 +20,7 @@ public class IdGenerator {
 
     // 解析原始 ID 和类型
     public static boolean isMeeting(long id) {
-        return (id & AGENDA_FLAG) == MEETING_FLAG;
+        return (id & MEETING_FLAG) != 0;
     }
 
     public static long getOriginalId(long id) {
