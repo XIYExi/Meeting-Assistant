@@ -7,6 +7,8 @@ public interface RagRequestPath {
 
     String agentExecuteUrl = "/open/api/v2/agent/execute";
 
+
+
     String qwenTextEmbeddingExecuteUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings";
 
     static String generateRequestPath(String path) {

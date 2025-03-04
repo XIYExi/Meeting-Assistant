@@ -23,6 +23,11 @@ public class RemoteScheduleFallbackFactory implements FallbackFactory<RemoteSche
             public AjaxResult updateMeetingStatus(Long meetingId, int status) {
                return AjaxResult.error("会议状态修改失败:" + throwable.getMessage());
             }
+
+            @Override
+            public AjaxResult getMessageByAgenda(Long id, Long dbType) {
+                return AjaxResult.error("获取Meeting/Agenda数据失败:" + throwable.getMessage());
+            }
         };
     }
 }

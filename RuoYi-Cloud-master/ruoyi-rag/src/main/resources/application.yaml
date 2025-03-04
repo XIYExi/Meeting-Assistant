@@ -14,6 +14,13 @@ qwen:
   textEmbedding: text-embedding-v3
   textDimensions: 1024
 
+
+netty:
+  # 服务器的TCP端口，默认为8080
+  port: 8009
+  sport: 8010
+  host: 127.0.0.1 #客户端用到
+
 spring:
   redis:
     host: 1.13.154.224

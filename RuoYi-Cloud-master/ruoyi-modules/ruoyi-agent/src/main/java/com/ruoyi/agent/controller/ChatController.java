@@ -57,6 +57,8 @@ public class ChatController {
     @ResponseBody
     public AjaxResult flux(@RequestBody ChatReq req) {
         System.err.println(req.getText());
+        // todo 先调用 RAG 模块进行分割
+
         AjaxResult ajax = AjaxResult.success("");
         try {
             String msg = agentChatService.sendFluxMsg(req.getUid(), req.getText());

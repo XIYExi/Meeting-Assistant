@@ -12,6 +12,14 @@
     <artifactId>ruoyi-modules-agent</artifactId>
     <description>
         智能体模块
+        【历史遗留问题】agent早期开发直接使用低代码编排的恒脑agent开发
+        原始模型封闭，系统独立，不能做到强业务，也不能实时获取数据库，接入向量库很麻烦。
+        但是早期开发，此模块和webflux、netty、ws强耦合，决定不进行拆分直接暴露接口，让用户数据先从最新的RAG里面走，再通过feign走agent modules的webflux返回！
+        user input
+            |
+        RAG module chat（第一次调用恒脑，分割抽取解析，分发工具函数，读取数据库）
+            |
+        Agent module flux（第二次调用恒脑，转发请求，把更多信息送给恒脑解析并走ws返回到客户端）
     </description>
 
     <dependencies>

@@ -25,7 +25,7 @@ public class ToolRouteHandler implements ToolSimpleHandler {
     private MilvusOperateUtils milvus;
 
     @Override
-    public void handler(String content) {
-
+    public String handler(String content) {
+        return "";
     }
 }

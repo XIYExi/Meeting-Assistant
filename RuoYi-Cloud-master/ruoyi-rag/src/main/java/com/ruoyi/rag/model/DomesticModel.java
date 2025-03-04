@@ -3,6 +3,7 @@ package com.ruoyi.rag.model;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.rag.config.RagParamConfig;
 import com.ruoyi.rag.config.RagRequestPath;
 import com.ruoyi.rag.entity.QuestionEntity;
@@ -94,7 +95,9 @@ public class DomesticModel implements ChatLanguageModel {
             message.add(messageElement);
 
             requestBody.put("message", message);
-            requestBody.put("uid", "1");
+            // Long userId = SecurityUtils.getUserId();
+            Long userId = 1L;
+            requestBody.put("uid", String.valueOf(userId));
             Map<String, String> intentMap = new HashMap<>();
             intentMap.put("intent", "chat");
             requestBody.put("parameter", intentMap);

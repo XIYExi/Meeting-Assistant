@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ToolChatHandler implements ToolSimpleHandler {
     @Override
-    public void handler(String content) {
+    public String handler(String content) {
 
+        return "";
     }
 }

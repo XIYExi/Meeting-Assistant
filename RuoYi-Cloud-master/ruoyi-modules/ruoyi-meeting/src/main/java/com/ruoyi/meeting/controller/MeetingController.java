@@ -1,8 +1,6 @@
 package com.ruoyi.meeting.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -67,6 +65,8 @@ public class MeetingController extends BaseController {
     private IMeetingClipService meetingClipService;
     @Resource
     private IMeetingGeoService meetingGeoService;
+    @Resource
+    private IMeetingAgendaService meetingAgendaService;
 
 
     @GetMapping("/clipList")
@@ -74,6 +74,31 @@ public class MeetingController extends BaseController {
         List<MeetingClip> meetingClips = meetingClipService.selectMeetingClipList(new MeetingClip());
         return AjaxResult.success(meetingClips);
     }
+
+    @GetMapping("/getMessageByAgenda")
+    public AjaxResult getMessageByAgenda(@RequestParam("id") Long id, @RequestParam("dbType") Long dbType) {
+        Map<String, Object> map = new HashMap<>();
+        if (Objects.equals(dbType, 1L)) {
+            // 查 meeting
+            Meeting meeting = meetingService.selectMeetingById(id);
+            map.put("title", meeting.getTitle());
+            map.put("content", meeting.getRemark());
+            map.put("beginTime", meeting.getBeginTime());
+            map.put("endTime", meeting.getEndTime());
+            map.put("location", meeting.getLocation());
+        }
+        else {
+            // 查 agenda
+            MeetingAgenda meetingAgenda = meetingAgendaService.selectMeetingAgendaById(id);
+            map.put("title", meetingAgenda.getContent());
+            map.put("content", meetingAgenda.getRemark());
+            map.put("beginTime", meetingAgenda.getBeginTime());
+            map.put("endTime", meetingAgenda.getEndTime());
+            map.put("meta", meetingAgenda.getMeta());
+        }
+        return AjaxResult.success(map);
+    }
+
 
     @PostMapping("/addClip")
     public AjaxResult addClip(@RequestBody List<MeetingClip> meetingClip) {

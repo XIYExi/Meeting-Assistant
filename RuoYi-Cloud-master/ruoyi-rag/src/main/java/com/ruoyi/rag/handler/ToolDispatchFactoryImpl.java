@@ -20,9 +20,10 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
     private static Map<String, ToolSimpleHandler> toolMap = new HashMap<>();
 
     @Override
-    public void dispatch(String type, String content) {
+    public String dispatch(String type, String content) {
         ToolSimpleHandler toolSimpleHandler = toolMap.get(type);
-        toolSimpleHandler.handler(content);
+        String prompt = toolSimpleHandler.handler(content);
+        return prompt;
     }
 
     @Override

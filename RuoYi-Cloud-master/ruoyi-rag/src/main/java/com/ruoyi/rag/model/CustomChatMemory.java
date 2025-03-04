@@ -2,7 +2,9 @@ package com.ruoyi.rag.model;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.rag.config.RagCacheKeyBuilder;
+import com.ruoyi.rag.domain.MessagesLogs;
 import com.ruoyi.rag.entity.ChatMessageEntity;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
@@ -41,8 +43,6 @@ public class CustomChatMemory implements ChatMemory {
         ChatMessageEntity chatMessageEntity = new ChatMessageEntity(chatMessage.type().toString().toLowerCase(), chatMessage.text());
         // 载入 redis 缓存
         redisTemplate.opsForList().rightPush(redisKey, chatMessageEntity);
-
-        // TODO 保存到 MySQL 中做持久化
     }
 
     @Override
