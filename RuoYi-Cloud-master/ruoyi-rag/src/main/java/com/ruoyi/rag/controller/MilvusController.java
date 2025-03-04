@@ -53,9 +53,8 @@ public class MilvusController {
         List<Float> features = embeddings.vectorAsList();
 
         List<?> meeting = milvus.searchByFeature("meeting_home", features);
-        List<?> composeIds= (List<?>) meeting.get(0);
 
-        List<Map<String, Long>> collect = composeIds.stream().map(composeId -> {
+        List<Map<String, Long>> collect = meeting.stream().map(composeId -> {
             long originalId = IdGenerator.getOriginalId((Long) composeId);
             boolean isMeeting = IdGenerator.isMeeting((Long) composeId);
             Map<String, Long> parser = new HashMap<>();
