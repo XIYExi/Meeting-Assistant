@@ -9,7 +9,7 @@
 						<view class="ai_logo" />
 						<text class="ai_title">会务智能助理</text>
 					</view>
-					<view class="ai_wrapper_right">
+					<view class="ai_wrapper_right" @click="gotoAgentPage">
 						<text>立即使用</text>
 					</view>
 				</view>
@@ -163,6 +163,11 @@ export default {
 		gotoNewsPage() {
 			uni.navigateTo({
 				url: '/pages/news/newsList'
+			})
+		},
+		gotoAgentPage() {
+			uni.navigateTo({
+				url: '/pages/chat/chat'
 			})
 		}
 	}

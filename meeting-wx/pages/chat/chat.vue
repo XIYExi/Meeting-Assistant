@@ -94,20 +94,39 @@ export default {
 		    this.send(this.uid)
 		},
 		error: function () {
-		    console.log("连接错误")
 		},
 		getMessage: function (msg) {    
+			console.log(this.removeStart(msg.data, "^intent"))
+			
 			const lastAIMsg = {
+				intent: "",
+				tool: "",
 				position: 'left',
-				msg: msg.data,
+				msg: "",
 				user: 'AI',
 				timestamp: Date.now(),
 			};
+			
+			// 先判断是不是思考过程
+			// 1. 第一个过来的肯定是intent（如果正常运行），这个时候最后一条数据肯定是用户提问，position为right
+			// 2. 所以直接修改并且给lastAIMsg的intent赋值就行了
+			if (msg.data.startsWith("^intent")) {
+				lastAIMsg.intent =  this.removeStart(msg.data, "^intent");
+			}
+			
+		
 			if (this.chatMsg[this.chatMsg.length - 1].position === 'right') {
+				// 3. push的时候，肯定是先给intent塞东西！
 				this.chatMsg.push(lastAIMsg);
 			}
 			else {
-				this.chatMsg[this.chatMsg.length - 1].msg = msg.data;
+				// 4. 第二个返回的（如果正常运行）一定是tool总计出来的东西
+				if (msg.data.startsWith("^tool")) {
+					this.chatMsg[this.chatMsg.length - 1].tool = this.removeStart(msg.data, "^tool");
+				}
+				else {
+					this.chatMsg[this.chatMsg.length - 1].msg = msg.data;
+				}
 			}
 			this.scrollToBottom();
 		},
@@ -117,6 +136,12 @@ export default {
 		},
 		close: function () {
 		    console.log("socket已经关闭")
+		},
+		removeStart(str, target) {
+			if (str.startsWith(target)) {
+				return str.slice(target.length);
+			}
+			return str;
 		},
 		
 		
