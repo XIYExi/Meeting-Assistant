@@ -6,6 +6,13 @@
         "navigationBarTitleText": "登录"
       }
     },
+	{
+	  "path": "pages/chat/home",
+	  "style": {
+	    "navigationBarTitleText": "会议助理",
+		"navigationStyle": "custom"
+	  }
+	},
     {
       "path": "pages/register",
       "style": {
@@ -202,12 +209,19 @@
 	    "selectedIconPath": "static/images/tabbar/work_.png",
 	    "text": "会议"
 	  },
+	  {
+	    "pagePath": "pages/chat/home",
+	    "iconPath": "static/images/tabbar/work.png",
+	    "selectedIconPath": "static/images/tabbar/work_.png",
+	    "text": "对话"
+	  },
       {
         "pagePath": "pages/work/index",
         "iconPath": "static/images/tabbar/work.png",
         "selectedIconPath": "static/images/tabbar/work_.png",
         "text": "工作台"
       },
+	  
       {
         "pagePath": "pages/mine/index",
         "iconPath": "static/images/tabbar/mine.png",

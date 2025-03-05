@@ -27,6 +27,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, title, begin_time, end_time, location, url, views, type, status, meeting_type, del_flag, create_by, create_time, update_by, update_time, remark from meeting
     </sql>
 
+    <select id="getLastOneMeeting" resultMap="MeetingResult" >
+        <include refid="selectMeetingVo"/>
+        order by begin_time desc limit 1
+    </select>
+
     <select id="getPartUserAvatarById">
         SELECT
             su.avatar as avatar
@@ -37,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT DATE_FORMAT(begin_time, '%m-%d') FROM meeting
     </select>
 
-       <select id="selectTomorrowMeetingsList" resultMap="MeetingResult" >
+    <select id="selectTomorrowMeetingsList" resultMap="MeetingResult" >
         select * from meeting where DATE(begin_time) = CURDATE() + INTERVAL 1 DAY;
     </select>
 

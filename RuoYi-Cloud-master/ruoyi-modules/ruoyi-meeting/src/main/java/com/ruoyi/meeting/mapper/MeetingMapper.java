@@ -16,6 +16,8 @@ import org.apache.ibatis.annotations.Param;
 public interface MeetingMapper 
 {
 
+    public Meeting getLastOneMeeting();
+
     public List<String> getPartUserAvatarById(@Param("id") Long id);
 
     public List<String> selectMeetingBeginTimeForList();

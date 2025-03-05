@@ -68,6 +68,11 @@ public class MeetingController extends BaseController {
     @Resource
     private IMeetingAgendaService meetingAgendaService;
 
+    @GetMapping("/lastOne")
+    public AjaxResult getLastOneMeeting() {
+        Meeting lastOneMeeting = meetingService.getLastOneMeeting();
+        return AjaxResult.success(lastOneMeeting);
+    }
 
     @GetMapping("/clipList")
     public AjaxResult clipList() {

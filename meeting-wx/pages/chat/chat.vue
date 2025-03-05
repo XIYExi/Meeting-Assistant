@@ -30,7 +30,7 @@
 <script>
 import ChatBox from '@/components/ChatBox';
 import InputBar from '@/components/InputBar';
-import {executeChatMessage, sendFlux} from '@/api/agent/agent.js';
+import { sendFlux } from '@/api/agent/agent.js';
 import {generateUUID} from '@/utils/uuid.js';
 
 export default {
@@ -96,7 +96,7 @@ export default {
 		error: function () {
 		},
 		getMessage: function (msg) {    
-			console.log(this.removeStart(msg.data, "^intent"))
+			// console.log(this.removeStart(msg.data, "^intent"))
 			
 			const lastAIMsg = {
 				intent: "",

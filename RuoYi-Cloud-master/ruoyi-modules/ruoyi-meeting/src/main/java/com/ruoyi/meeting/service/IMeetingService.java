@@ -15,6 +15,8 @@ import com.ruoyi.meeting.entity.SimplePartUser;
 public interface IMeetingService 
 {
 
+    public Meeting getLastOneMeeting();
+
     public MeetingGeo transferMeetingGeo(String location);
 
     public SimplePartUser getPartUserAvatarById(Long id);

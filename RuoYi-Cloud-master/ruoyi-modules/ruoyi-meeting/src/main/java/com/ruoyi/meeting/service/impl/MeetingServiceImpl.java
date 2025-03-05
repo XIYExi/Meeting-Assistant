@@ -159,6 +159,11 @@ public class MeetingServiceImpl implements IMeetingService
     }
 
     @Override
+    public Meeting getLastOneMeeting() {
+        return meetingMapper.getLastOneMeeting();
+    }
+
+    @Override
     public MeetingGeo transferMeetingGeo(String location) {
         // 最外层 {msg, code, data}
         Map geo = JSON.parseObject(JSONObject.toJSONString(geoMapComponent.geoCodeQuery(location, "")), Map.class);
