@@ -20,6 +20,8 @@
         <module>ruoyi-common-datasource</module>
         <module>ruoyi-common-rabbitmq</module>
         <module>ruoyi-common-entity</module>
+        <module>ruoyi-common-json</module>
+        <module>ruoyi-common-encrypt</module>
     </modules>
 
     <artifactId>ruoyi-common</artifactId>

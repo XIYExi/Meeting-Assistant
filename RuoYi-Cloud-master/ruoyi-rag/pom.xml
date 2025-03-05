@@ -134,6 +134,12 @@
             <version>3.6.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-common-encrypt</artifactId>
+            <version>3.6.5</version>
+        </dependency>
+
 
          <!--流式异步响应客户端-->
         <dependency>
