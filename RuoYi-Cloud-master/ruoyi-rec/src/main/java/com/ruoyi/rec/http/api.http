@@ -1,2 +1,6 @@
 ### 测试获取会议列表（全部）
 GET http://localhost:9998/demo/getRecMeeting
+
+
+### 测试 计算判分
+GET http://localhost:9998/demo/calRate

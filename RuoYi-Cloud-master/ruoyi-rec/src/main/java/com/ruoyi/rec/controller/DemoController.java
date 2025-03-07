@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.meeting.api.RemoteScheduleService;
 import com.ruoyi.rag.api.RemoteRagService;
+import com.ruoyi.rec.schedule.LLMRecComponent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,27 +28,37 @@ public class DemoController {
     private RemoteRagService remoteRagService;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private LLMRecComponent llmRecComponent;
+
 
     @GetMapping("/getRecMeeting")
     public AjaxResult getRecMeeting() {
-        //List<Map<String, Object>> listForRec = remoteScheduleService.getListForRec();
-        //redisTemplate.opsForValue().set("dev-rec-meeting", listForRec, 2, TimeUnit.DAYS);
+        List<Map<String, Object>> vv = remoteScheduleService.getListForRec();
+        redisTemplate.opsForValue().set("dev-rec-meeting", vv, 2, TimeUnit.DAYS);
 
         Object devList = redisTemplate.opsForValue().get("dev-rec-meeting");
         List<Map> listForRec = JSONArray.parseArray(JSONArray.toJSONString(devList), Map.class);
         List<Map<String, Object>> collect = listForRec.stream().map(element -> {
             Map<String, Object> map = new HashMap<>();
 
-            String question = "现在你需要为当前会议打分，得分请从新颖程度、创意性、议题深度等多方面考量，给出一个你认为最合适的分数，得分控制在0~100分之间，只需要输入得分数字即可。";
+            String question = "现在你需要为当前会议打分，得分请从新颖程度、创意性、议题深度等多方面考量，给出一个你认为最合适的分数，得分控制在0~100分之间，只需要输出得分数字即可，不需要任何标注，也不需要输出判分理由，判分尺度可以大一点，分数尽量不要一样。";
             String prompt = "当前会议信息【"+ element.get("title") +"】，当前会议会议主题【" + element.get("type") + "】，当前会议开展类型【"+ element.get("meetingType") +"】";
             AjaxResult chat = remoteRagService.chat(question, prompt);
-            Object o = chat.get("data");
+            Object o = chat.get("msg");
             System.err.println(o);
             map.put("id", element.get("id"));
             map.put("score", o);
             return map;
         }).toList();
 
+        return AjaxResult.success(collect);
+    }
+
+
+    @GetMapping("/calRate")
+    public AjaxResult calRate() {
+        llmRecComponent.synchronizeMeetingWeights();
         return AjaxResult.success();
     }
 
