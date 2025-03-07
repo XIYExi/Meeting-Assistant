@@ -27,7 +27,7 @@
 					<text class="tool">{{item.tool}}</text>
 				</view>
 				<view class="msg_wrapper" :class="!show && 'closeMagin'">
-					<text class="msg">{{ item.msg }}</text>
+					<view class="msg" v-html="item.msg"></view>
 				</view>
 				
 			</text>
@@ -52,10 +52,26 @@ export default {
 			show: true
 		}
 	},
+	mounted() {
+		window.handleRoute = (path) => {
+			console.log(path)
+			if(path == 'pages/mine/index' || path == 'pages/schedule/index') {
+				uni.switchTab({
+					url: `/${path}`
+				})
+			}
+			else {
+				uni.navigateTo({
+					url: `/${path}`
+				})
+			}
+				
+		}
+	},
 	methods: {
 		handleThinkHidden() {
 			this.show = !this.show;
-		}
+		},
 	}
 };
 </script>

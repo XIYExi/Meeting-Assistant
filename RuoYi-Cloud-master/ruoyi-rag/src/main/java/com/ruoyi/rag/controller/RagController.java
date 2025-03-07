@@ -85,7 +85,9 @@ public class RagController {
             else {
                 // 解析keywords
                 String[] keywordSplit = split[i].split(": ");
-                keywords = keywordSplit[1];
+                // 判断一下，如果是chat，可能会出现为空的情况
+                if (keywordSplit.length > 1) keywords = keywordSplit[1];
+                else keywords = "";
             }
         }
 
@@ -106,6 +108,11 @@ public class RagController {
         else if (intent.equals("route")){
             finalQuestion = question + "\n" + prompt + "。结合上述内容，并回答问题!不需要重复问题和重读信息内容!只回答一次，不要重复回答！";
             String toolReturn = "智能体助理接入向量库，匹配路由信息, 会务助理将集合上述信息，整合发送给恒脑大模型进行总结后提供跳转链接：\n";
+            nettyServerHandler.sendMsg(null, uid + "&^tool" + toolReturn);
+        }
+        else {
+            finalQuestion = question;
+            String toolReturn = "用户发起对话，助理将调用恒脑大模型进行回答...\n";
             nettyServerHandler.sendMsg(null, uid + "&^tool" + toolReturn);
         }
 
