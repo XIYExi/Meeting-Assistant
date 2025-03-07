@@ -1,10 +1,15 @@
 package com.ruoyi.rag.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.web.domain.AjaxResult;
+import com.ruoyi.rag.domain.EmbeddingRouteMappingMilvus;
+import com.ruoyi.rag.domain.RouteMapping;
+import com.ruoyi.rag.mapper.RouteMappingMapper;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.utils.IdGenerator;
 import com.ruoyi.rag.utils.MilvusOperateUtils;
+import com.ruoyi.rag.utils.RouteMappingOperateUtils;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.output.Response;
@@ -28,6 +33,10 @@ public class MilvusController {
     private DomesticEmbeddingModel domesticEmbeddingModel;
     @Resource
     private MilvusOperateUtils milvus;
+    @Resource
+    private RouteMappingOperateUtils routeMilvus;
+    @Resource
+    private RouteMappingMapper routeMappingMapper;
 
     @GetMapping("/insert")
     public AjaxResult insert(@RequestParam("id") Long originalId, @RequestParam("dbType") Long dbType, @RequestParam("title") String title) {
@@ -36,6 +45,24 @@ public class MilvusController {
         List<Float> features = embeddings.get(0).vectorAsList();
         long insert = milvus.insert(originalId, dbType, features);
         return AjaxResult.success(insert);
+    }
+
+    @GetMapping("/insertRouteMapping")
+    public AjaxResult insertRouteMapping() {
+        List<RouteMapping> routeMappings = routeMappingMapper.selectList(new QueryWrapper<RouteMapping>());
+        int k = 0;
+        for(RouteMapping routeMapping : routeMappings) {
+            String keywords = routeMapping.getKeywords();
+            String[] split = keywords.split(",");
+            for (String keyword : split) {
+                Long originalId = routeMapping.getId();
+                Response<Embedding> embed = domesticEmbeddingModel.embed(TextSegment.textSegment(keyword));
+                List<Float> floats = embed.content().vectorAsList();
+                routeMilvus.insert(k, originalId, floats);
+                k++;
+            }
+        }
+        return AjaxResult.success();
     }
 
 
@@ -64,5 +91,15 @@ public class MilvusController {
         }).collect(Collectors.toList());
 
         return AjaxResult.success(collect);
+    }
+
+    @Deprecated
+    @GetMapping("/searchRoute")
+    public AjaxResult searchRoute(String keyword) {
+        Response<Embedding> listResponse = domesticEmbeddingModel.embed(keyword);
+        Embedding embeddings = listResponse.content();
+        List<Float> features = embeddings.vectorAsList();
+        List<?> routeMapping = routeMilvus.searchByFeature(EmbeddingRouteMappingMilvus.COLLECTION_NAME, features);
+        return AjaxResult.success(routeMapping.get(0));
     }
 }

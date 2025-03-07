@@ -42,3 +42,15 @@ GET http://localhost:9999/milvus/search?keyword=教育系统数据安全专题�
 
 ### 查询Milvus 2
 GET http://localhost:9999/milvus/search?keyword=AI如何“加”网络安全"
+
+### 添加路由表到Milvus的route库
+GET http://localhost:9999/milvus/insertRouteMapping
+
+
+### 测试Milvus查询路由表 1
+GET http://localhost:9999/milvus/searchRoute?keyword=用户个人中心
+
+
+
+### 测试Milvus查询路由表 2
+GET http://localhost:9999/milvus/searchRoute?keyword=用户个人中心

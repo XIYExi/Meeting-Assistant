@@ -137,3 +137,11 @@ export function getActivityList(sectorId) {
 		method: 'get'
 	});
 }
+
+
+export function getLastOne() {
+	return request({
+		url: '/meeting/meeting/lastOne',
+		method: 'get'
+	})
+}

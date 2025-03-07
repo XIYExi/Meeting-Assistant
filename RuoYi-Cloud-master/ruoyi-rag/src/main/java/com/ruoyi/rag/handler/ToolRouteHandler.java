@@ -6,6 +6,8 @@ import com.ruoyi.rag.utils.IdGenerator;
 import com.ruoyi.rag.utils.MilvusOperateUtils;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.model.output.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ToolRouteHandler implements ToolSimpleHandler {
-
+    private static final Logger logger = LoggerFactory.getLogger(ToolRouteHandler.class);
     @Resource
     private DomesticEmbeddingModel domesticEmbeddingModel;
     @Resource
@@ -26,6 +28,10 @@ public class ToolRouteHandler implements ToolSimpleHandler {
 
     @Override
     public String handler(String content) {
+        String[] split = content.split(", ");
+        for (int i=0; i<split.length; i++) {
+
+        }
         return "";
     }
 }
