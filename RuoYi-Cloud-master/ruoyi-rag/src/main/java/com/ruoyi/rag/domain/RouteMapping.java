@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("route_mapping")
+@ToString
 public class RouteMapping {
 
     @TableId(value = "id", type = IdType.AUTO)

@@ -84,7 +84,7 @@ public class RagChatServiceImpl implements RagChatService {
                 }
 
                 String res = agentResult.getContent();
-                System.out.println(res);
+                // System.out.println(res);
                 if (res != null) {
                     resultBuilder.append(res);
                     nettyServerHandler.sendMsg(null, uid + "&" + resultBuilder.toString());

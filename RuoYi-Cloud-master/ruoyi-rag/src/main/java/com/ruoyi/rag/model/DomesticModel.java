@@ -83,9 +83,21 @@ public class DomesticModel implements ChatLanguageModel {
             // requestBody.put("sid", "a5778aec-1109-47d2-b337-c7014992870b");
             List<Map<String, Object>> message = new ArrayList<>();
 
-            String prompt = "作为会议安全助手，你需要帮助抽取并识别以下的内容，并按照下述要求返回结果（有且仅返回下述两点内容！）：\n" +
-                    "1. intent为用户意图：限定为route，action，chat。其中route表示用户想要进入或者跳转到某个指定页面；action表示用户想要执行某些操作，如查询、总结、抽取等；chat表示用户当前内容不符合上述消息，只是单纯的在和大模型进行对话。\n" +
-                    "2. keywords为关键词：只对输入的内容进行信息提取，提取其中最有价值的1~2个信息，用英文逗号分隔，不要分点不要扩充，不要翻译，直接返回中文，返回用户输入中出现的内容。\n";
+//            String prompt = "作为会议安全助手，你需要帮助抽取并识别以下的内容，并按照下述要求返回结果（有且仅返回下述两点内容！）：\n" +
+//                    "1. intent为用户意图：限定为route，action，chat。其中route表示用户想要进入或者跳转到某个指定页面；action表示用户想要执行某些操作，如查询、总结、抽取等；chat表示用户当前内容不符合上述消息，只是单纯的在和大模型进行对话。\n" +
+//                    "2. keywords为关键词：只对输入的内容进行信息提取，提取其中最有价值的1~2个信息，用英文逗号分隔，不要分点不要扩充，不要翻译，直接返回中文，返回用户输入中出现的内容。\n";
+
+            String prompt = "作为会议安全助手，你需要帮助抽取并识别用户输入的内容，并按照下述要求返回intent和keywords两条内容！不要分点不要扩充！其中，intent为用户意图：限定为route，action，chat。其中route表示用户想要前往某个页面，如进入，跳转，打开，访问某个页面；action表示用户想要执行某些操作，如查询、总结、抽取等；chat表示用户当前内容不符合上述意图，只是单纯的在和大模型进行对话，注意如果你不能分辨用户意图，就使用chat表示。keywords为关键词：只对{{$.kv_user.input}}进行信息提取，提取其中最有价值的1~2个信息，用英文逗号分隔，如果不能提取出任何信息就为空。\n" +
+                    "\n" +
+                    "例如：\n" +
+                    "1. 用户提问 告诉我教育系统数据安全专题会议中AI如何“加”网络安全部分的主要内容？\n" +
+                    "回答：intent: action\nkeywords: 教育系统数据安全专题会议, AI如何“加”网络安全\n" +
+                    "2. 用户提问 打开个人中心页面\n" +
+                    "回答： intent: route\nkeywords: 个人中心\n" +
+                    "\n" +
+                    "注意：\n" +
+                    "你只需要回答intent和keywords，不需要任何其余信息，所有内容的回答格式都如下：\n" +
+                    "intent: xxx\nkeywords: xxx, xxx\n\n";
 
             Map<String, Object> messageElement = new HashMap<>();
             messageElement.put("role", "user");
@@ -130,9 +142,21 @@ public class DomesticModel implements ChatLanguageModel {
         headers.add("sign", SignUtils.getSign(ragParamConfig.getAppKey(), ragParamConfig.getAppSecret()));
 
         Map<String, Object> requestBody = new HashMap<>();
-        String prompt = "作为会议安全助手，你需要帮助抽取并识别以下的内容，并按照下述要求返回结果（有且仅返回下述两点内容！）：\n" +
-                "1. intent为用户意图：限定为route，action，chat。其中route表示用户想要进入或者跳转到某个指定页面；action表示用户想要执行某些操作，如查询、总结、抽取等；chat表示用户当前内容不符合上述消息，只是单纯的在和大模型进行对话。\n" +
-                "2. keywords为关键词：只对输入的内容进行信息提取，提取其中最有价值的1~2个信息，用英文逗号分隔，不要分点不要扩充，不要翻译，直接返回中文，返回用户输入中出现的内容。\n";
+//        String prompt = "作为会议安全助手，你需要帮助抽取并识别以下的内容，并按照下述要求返回结果（有且仅返回下述两点内容！）：\n" +
+//                "1. intent为用户意图：限定为route，action，chat。其中route表示用户想要进入或者跳转到某个指定页面；action表示用户想要执行某些操作，如查询、总结、抽取等；chat表示用户当前内容不符合上述消息，只是单纯的在和大模型进行对话。\n" +
+//                "2. keywords为关键词：只对输入的内容进行信息提取，提取其中最有价值的1~2个信息，用英文逗号分隔，不要分点不要扩充，不要翻译，直接返回中文，返回用户输入中出现的内容。\n";
+
+        String prompt = "作为会议安全助手，你需要帮助抽取并识别用户输入的内容，并按照下述要求返回intent和keywords两条内容！不要分点不要扩充！其中，intent为用户意图：限定为route，action，chat。其中route表示用户想要前往某个页面，如进入，跳转，打开，访问某个页面；action表示用户想要执行某些操作，如查询、总结、抽取等；chat表示用户当前内容不符合上述意图，只是单纯的在和大模型进行对话，注意如果你不能分辨用户意图，就使用chat表示。keywords为关键词：只对{{$.kv_user.input}}进行信息提取，提取其中最有价值的1~2个信息，用英文逗号分隔，如果不能提取出任何信息就为空。\n" +
+        "\n" +
+        "例如：\n" +
+        "1. 用户提问 告诉我教育系统数据安全专题会议中AI如何“加”网络安全部分的主要内容？\n" +
+        "回答：intent: action\nkeywords: 教育系统数据安全专题会议, AI如何“加”网络安全\n" +
+        "2. 用户提问 打开个人中心页面\n" +
+        "回答： intent: route\nkeywords: 个人中心\n" +
+        "\n" +
+        "注意：\n" +
+        "你只需要回答intent和keywords，不需要任何其余信息，所有内容的回答格式都如下：\n" +
+        "intent: xxx\nkeywords: xxx, xxx\n\n";
 
         // requestBody.put("sid", "a5778aec-1109-47d2-b337-c7014992870b");
         List<Map<String, Object>> message= new ArrayList<>();

@@ -70,6 +70,7 @@ public class RagController {
         }
         chatMemory.add(UserMessage.from(question));
         String generate = domesticModel.generate(question);
+        System.err.println("生成内容  "+ generate);
         chatMemory.add(AiMessage.from(generate));
 
         String[] split = generate.split("\n");
@@ -96,10 +97,17 @@ public class RagController {
         String prompt = toolDispatchFactory.dispatch(intent, keywords);
         logger.info("===== RAG 前置工具链处理完成! =====");
 
-        String finalQuestion = question + "\n现在有信息：\n" + prompt + "。结合上述内容，并回答问题!不需要重复问题和重读信息内容!";
-
-        String toolReturn = "智能体助理接入数据库，通过Embedding相似度匹配，查询到以下额外信息：" + prompt + "\n会务助理将集合上述信息，整合发送给恒脑大模型进行总结：\n";
-        nettyServerHandler.sendMsg(null, uid + "&^tool" + toolReturn);
+        String finalQuestion = null;
+        if (intent.equals("action")) {
+            finalQuestion = question + "\n现在有信息：\n" + prompt + "。结合上述内容，并回答问题!不需要重复问题和重读信息内容!只回答一次，不要重复回答！";
+            String toolReturn = "智能体助理接入数据库，通过Embedding相似度匹配，查询到以下额外信息：" + prompt + "\n会务助理将集合上述信息，整合发送给恒脑大模型进行总结：\n";
+            nettyServerHandler.sendMsg(null, uid + "&^tool" + toolReturn);
+        }
+        else if (intent.equals("route")){
+            finalQuestion = question + "\n" + prompt + "。结合上述内容，并回答问题!不需要重复问题和重读信息内容!只回答一次，不要重复回答！";
+            String toolReturn = "智能体助理接入向量库，匹配路由信息, 会务助理将集合上述信息，整合发送给恒脑大模型进行总结后提供跳转链接：\n";
+            nettyServerHandler.sendMsg(null, uid + "&^tool" + toolReturn);
+        }
 
         AjaxResult ajax = AjaxResult.success("");
         try {
