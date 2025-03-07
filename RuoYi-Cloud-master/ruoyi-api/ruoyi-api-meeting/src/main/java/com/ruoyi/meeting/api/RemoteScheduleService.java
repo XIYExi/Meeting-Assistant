@@ -7,6 +7,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 这是调用Meeting的api，写定时任务的时候产生的历史遗留问题
  */
@@ -32,4 +35,11 @@ public interface RemoteScheduleService {
     @GetMapping("/meeting/getMessageByAgenda")
     public AjaxResult getMessageByAgenda(@RequestParam("id") Long id, @RequestParam("dbType") Long dbType);
 
+
+    /**
+     * 获取会议信息，结合LLM做离线推荐算法用
+     * @return
+     */
+    @GetMapping("/meeting/getListForRec")
+    public List<Map<String, Object>> getListForRec();
 }

@@ -9,6 +9,10 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Component
 public class RemoteScheduleFallbackFactory implements FallbackFactory<RemoteScheduleService> {
 
@@ -27,6 +31,11 @@ public class RemoteScheduleFallbackFactory implements FallbackFactory<RemoteSche
             @Override
             public AjaxResult getMessageByAgenda(Long id, Long dbType) {
                 return AjaxResult.error("获取Meeting/Agenda数据失败:" + throwable.getMessage());
+            }
+
+            @Override
+            public List<Map<String, Object>> getListForRec() {
+                return new ArrayList<>();
             }
         };
     }

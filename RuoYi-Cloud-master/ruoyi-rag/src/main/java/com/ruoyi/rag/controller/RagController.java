@@ -54,7 +54,7 @@ public class RagController {
 
     @PostMapping("/flux")
     @ResponseBody
-    public AjaxResult chat(@RequestBody ChatReq req) throws Exception {
+    public AjaxResult flux(@RequestBody ChatReq req) throws Exception {
         String question = req.getText();
         String uid = req.getUid();
 
@@ -136,20 +136,10 @@ public class RagController {
             return "对话聊天";
     }
 
-
-    public void sendLongString(String longString, String uid, String prefix) throws Exception {
-    int chunkSize = 12; // 每段的大小
-    int totalChunks = (longString.length() + chunkSize - 1) / chunkSize; // 总段数
-
-    for (int i = 0; i < totalChunks; i++) {
-        int start = i * chunkSize;
-        int end = Math.min(start + chunkSize, longString.length());
-        String chunk = longString.substring(start, end);
-
-        // 发送消息
-        nettyServerHandler.sendMsg(null, uid + "&^" + prefix + chunk);
+    @GetMapping("/chat")
+    public AjaxResult chat(@RequestParam("question") String question, @RequestParam("prompt") String prompt) {
+        String chat = domesticModel.chat(question, prompt);
+        return AjaxResult.success(chat);
     }
-}
-
 
 }

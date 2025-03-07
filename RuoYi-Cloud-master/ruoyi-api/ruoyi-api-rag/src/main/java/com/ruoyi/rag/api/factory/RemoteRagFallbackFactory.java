@@ -19,6 +19,11 @@ public class RemoteRagFallbackFactory implements FallbackFactory<RemoteRagServic
             public AjaxResult insert(Long originalId, Long dbType, String title) {
                 return AjaxResult.error("milvus向量库插入失败");
             }
+
+            @Override
+            public AjaxResult chat(String question, String prompt) {
+                return AjaxResult.error("调用chat对话接口错误");
+            }
         };
     }
 }

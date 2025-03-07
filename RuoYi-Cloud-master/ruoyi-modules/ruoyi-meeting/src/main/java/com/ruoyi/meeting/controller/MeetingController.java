@@ -68,6 +68,23 @@ public class MeetingController extends BaseController {
     @Resource
     private IMeetingAgendaService meetingAgendaService;
 
+    @GetMapping("/getListForRec")
+    public List<Map<String, Object>> getListForRec() {
+        List<Meeting> meetings = meetingService.selectMeetingList(new Meeting());
+        List<Map<String, Object>> result = new ArrayList<>();
+        meetings.forEach(meeting -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", meeting.getId());
+            map.put("title", meeting.getTitle());
+            map.put("views", meeting.getViews());
+            map.put("type", meeting.getType());
+            map.put("meetingType", meeting.getMeetingType());
+            result.add(map);
+        });
+        return result;
+    }
+
+
     @GetMapping("/lastOne")
     public AjaxResult getLastOneMeeting() {
         Meeting lastOneMeeting = meetingService.getLastOneMeeting();

@@ -264,6 +264,7 @@
         <module>ruoyi-api</module>
         <module>ruoyi-common</module>
         <module>ruoyi-rag</module>
+        <module>ruoyi-rec</module>
     </modules>
     <packaging>pom</packaging>
 

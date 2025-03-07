@@ -12,4 +12,8 @@ public interface RemoteRagService {
 
     @GetMapping("/milvus/insert")
     public AjaxResult insert(@RequestParam("id") Long originalId, @RequestParam("dbType") Long dbType, @RequestParam("title") String title);
+
+
+    @GetMapping("/rag/chat")
+    public AjaxResult chat(@RequestParam("question") String question, @RequestParam("prompt") String prompt);
 }

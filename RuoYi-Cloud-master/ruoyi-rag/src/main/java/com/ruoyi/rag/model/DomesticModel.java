@@ -124,7 +124,35 @@ public class DomesticModel implements ChatLanguageModel {
     }
 
 
+    public String chat(String question, String prompt) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("appKey", ragParamConfig.getAppKey());
+            headers.add("sign", SignUtils.getSign(ragParamConfig.getAppKey(), ragParamConfig.getAppSecret()));
+            Map<String, Object> requestBody = new HashMap<>();
+            List<Map<String, Object>> message = new ArrayList<>();
+            Map<String, Object> messageElement = new HashMap<>();
+            messageElement.put("role", "user");
+            messageElement.put("content", question + "\n" + prompt);
+            messageElement.put("seq", 0);
+            messageElement.put("type", "text");
+            message.add(messageElement);
 
+            requestBody.put("message", message);
+            // Long userId = SecurityUtils.getUserId();
+            Long userId = 1L;
+            requestBody.put("uid", String.valueOf(userId));
+            Map<String, String> intentMap = new HashMap<>();
+            intentMap.put("intent", "chat");
+            requestBody.put("parameter", intentMap);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+            QuestionEntity questionEntity = callDomesticModelApi(requestEntity);
+            return questionEntity.getMessage().getContent();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 

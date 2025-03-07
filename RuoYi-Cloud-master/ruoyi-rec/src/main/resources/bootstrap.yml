@@ -1,0 +1,20 @@
+# Tomcat
+server:
+  port: 9998
+
+
+
+
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: ruoyi-rec
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 127.0.0.1:8848
