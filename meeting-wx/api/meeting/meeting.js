@@ -1,10 +1,11 @@
 import upload from '@/utils/upload'
 import request from '@/utils/request'
 
-// 查询会议列表（按照时间最近的时间排序）
+// 查询会议列表
+// 首页静态推荐接口，获取系统判分最高的三个会议信息
 export function getMeetingListOrderByAsc() {
   return request({
-    url: '/meeting/meeting/list',
+    url: '/meeting/meeting/static_rec_list',
     method: 'get'
   });
 }
