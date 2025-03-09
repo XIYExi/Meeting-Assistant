@@ -71,4 +71,6 @@ public interface MeetingMapper
      * @return 结果
      */
     public int deleteMeetingByIds(Long[] ids);
+
+    List<Meeting> selectMeetingListByStaticRec();
 }

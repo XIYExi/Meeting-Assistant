@@ -68,6 +68,11 @@ public class MeetingController extends BaseController {
     @Resource
     private IMeetingAgendaService meetingAgendaService;
 
+
+    /**
+     * 提供给feign调用的，获取需要的字段，给rec计算rate
+     * @return
+     */
     @GetMapping("/getListForRec")
     public List<Map<String, Object>> getListForRec() {
         List<Meeting> meetings = meetingService.selectMeetingList(new Meeting());
@@ -189,6 +194,26 @@ public class MeetingController extends BaseController {
     public AjaxResult beginTimeList() {
         List<String> dates = meetingService.selectMeetingBeginTimeForList();
         return AjaxResult.success(dates);
+    }
+
+    /**
+     * 根据静态推荐获得的会议列表
+     * @param
+     * @return
+     */
+    @GetMapping("/static_rec_list")
+    public TableDataInfo listByStaticRec() {
+        startPage();
+        List<Meeting> list = meetingService.selectMeetingListByStaticRec();
+        List<MeetingResponse> collect = list.stream().map(elem -> {
+            MeetingResponse meetingGeo = new MeetingResponse();
+            BeanUtils.copyProperties(elem, meetingGeo);
+            Long locationId = Long.parseLong(elem.getLocation());
+            MeetingGeo meetingGeo1 = meetingGeoService.selectMeetingGeoById(locationId);
+            meetingGeo.setLocation(meetingGeo1);
+            return meetingGeo;
+        }).collect(Collectors.toList());
+        return getDataTable(collect);
     }
 
     /**

@@ -71,4 +71,6 @@ public interface IMeetingService
     public int deleteMeetingById(Long id);
 
     void insertMilvus(List<MeetingMilvusEntity> list);
+
+    List<Meeting> selectMeetingListByStaticRec();
 }

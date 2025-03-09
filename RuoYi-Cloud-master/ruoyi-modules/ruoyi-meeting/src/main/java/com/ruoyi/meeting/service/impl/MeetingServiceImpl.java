@@ -298,5 +298,10 @@ public class MeetingServiceImpl implements IMeetingService
         });
     }
 
+    @Override
+    public List<Meeting> selectMeetingListByStaticRec() {
+        return meetingMapper.selectMeetingListByStaticRec();
+    }
+
 
 }
