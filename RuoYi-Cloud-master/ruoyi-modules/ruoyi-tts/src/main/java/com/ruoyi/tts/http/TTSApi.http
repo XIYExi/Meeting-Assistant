@@ -1,4 +1,0 @@
-### GET test gateway
-GET http://localhost:9608/voice/send
-
-###
