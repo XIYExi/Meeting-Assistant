@@ -19,7 +19,5 @@ public class MeetingRate {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     private Long meetingId;
-    private Integer score;
-    private Integer views;
     private BigDecimal rate;
 }

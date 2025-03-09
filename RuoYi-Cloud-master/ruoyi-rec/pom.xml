@@ -20,17 +20,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <milvus.version>2.0.0</milvus.version>
+        <casbah.version>3.1.1</casbah.version>
+        <kafka.version>0.10.2.1</kafka.version>
+        <spark.version>2.1.1</spark.version>
+        <scala.version>2.11.8</scala.version>
+        <jblas.version>1.2.1</jblas.version>
     </properties>
 
     <dependencies>
-<!--        展示应该用不到springboot3.x-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-dependencies</artifactId>-->
-<!--            <version>3.2.0</version>-->
-<!--            <type>pom</type>-->
-<!--            <scope>import</scope>-->
-<!--        </dependency>-->
 
         <!-- SpringCloud Alibaba Nacos -->
         <dependency>
@@ -56,6 +53,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- Mysql Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -67,18 +70,6 @@
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common-datascope</artifactId>
-        </dependency>
-
-        <!-- RuoYi Common Log -->
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-common-log</artifactId>
-        </dependency>
-
-        <!-- RuoYi Common Swagger -->
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-common-swagger</artifactId>
         </dependency>
 
         <dependency>
@@ -126,6 +117,41 @@
             <artifactId>ruoyi-api-meeting</artifactId>
             <version>3.6.5</version>
         </dependency>
+
+
+
+
+        <!-- 引入Spark相关的Jar包 -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-graphx_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -138,5 +164,24 @@
             </releases>
         </repository>
     </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                    <artifactId>scala-maven-plugin</artifactId>
+                    <version>3.2.2</version>
+                    <executions>
+                        <!--绑定到maven的编译阶段-->
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>testCompile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
