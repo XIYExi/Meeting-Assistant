@@ -107,9 +107,6 @@
 					</view>
 				</view>
 			</scroll-view>
-
-
-
 		</view>
 	</view>
 </template>
@@ -121,7 +118,8 @@ export default {
 		getMeetingListOrderByAsc().then(resp => {
 			//console.log(resp.rows);
 			if (resp.code === 200) {
-				this.meetingList = resp.rows;
+			
+				this.meetingList = resp.data;
 			}
 		});
 

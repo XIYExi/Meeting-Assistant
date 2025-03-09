@@ -62,7 +62,7 @@
         from meeting m,
              meeting_rate mr
         where m.id = mr.meeting_id
-        order by mr.rate desc
+        order by mr.rate desc LIMIT 3
     </select>
 
     <select id="getLastOneMeeting" resultMap="MeetingResult">

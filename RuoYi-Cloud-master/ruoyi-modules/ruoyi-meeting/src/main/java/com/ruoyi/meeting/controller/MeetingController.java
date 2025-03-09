@@ -202,8 +202,7 @@ public class MeetingController extends BaseController {
      * @return
      */
     @GetMapping("/static_rec_list")
-    public TableDataInfo listByStaticRec() {
-        startPage();
+    public AjaxResult listByStaticRec() {
         List<Meeting> list = meetingService.selectMeetingListByStaticRec();
         List<MeetingResponse> collect = list.stream().map(elem -> {
             MeetingResponse meetingGeo = new MeetingResponse();
@@ -213,7 +212,7 @@ public class MeetingController extends BaseController {
             meetingGeo.setLocation(meetingGeo1);
             return meetingGeo;
         }).collect(Collectors.toList());
-        return getDataTable(collect);
+        return AjaxResult.success(collect);
     }
 
     /**
