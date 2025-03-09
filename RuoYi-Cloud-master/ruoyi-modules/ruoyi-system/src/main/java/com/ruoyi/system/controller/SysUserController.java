@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.utils.DateUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -211,6 +213,30 @@ public class SysUserController extends BaseController
         return ajax;
     }
 
+
+    // 用来测试，插入5000条用户数据(造用户判分矩阵)
+//    @Deprecated
+//    @GetMapping("/insert5000User")
+//    public AjaxResult insert5000User() {
+//        for (int i = 2; i <= 5000; ++i) {
+//            SysUser sysUser = new SysUser();
+//            sysUser.setDeptId(100L);
+//            sysUser.setNickName("测试用户-"+i);
+//            sysUser.setUserName("test-"+i);
+//            sysUser.setEmail("1356768966@qq.com");
+//            sysUser.setPhonenumber("18115773855");
+//            sysUser.setSex("0");
+//            sysUser.setPassword(SecurityUtils.encryptPassword("123456"));
+//            sysUser.setStatus("0");
+//            sysUser.setCreateTime(DateUtils.getNowDate());
+//            sysUser.setRemark("测试-"+i);
+//            sysUser.setCreateBy("admin");
+//            userService.insertUser(sysUser);
+//        }
+//        return AjaxResult.success();
+//    }
+
+
     /**
      * 新增用户
      */
@@ -219,6 +245,7 @@ public class SysUserController extends BaseController
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysUser user)
     {
+        System.err.println(user);
         deptService.checkDeptDataScope(user.getDeptId());
         roleService.checkRoleDataScope(user.getRoleIds());
         if (!userService.checkUserNameUnique(user))

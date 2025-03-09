@@ -19,6 +19,7 @@
         <module>ruoyi-im</module>
         <module>ruoyi-live</module>
         <module>ruoyi-router</module>
+        <module>ruoyi-collection</module>
     </modules>
 
     <artifactId>ruoyi-modules</artifactId>

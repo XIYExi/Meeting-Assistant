@@ -399,4 +399,33 @@ public class MeetingController extends BaseController {
         int i = meetingService.updateMeeting(meeting);
         return toAjax(i);
     }
+
+
+    // 插入1000个会议记录
+//    @Deprecated
+//    @GetMapping("/insert1000Meeting")
+//    public AjaxResult insert1000Meeting() {
+//        for (int i=2;i<=1000;++i) {
+//            Meeting meeting = new Meeting();
+//            meeting.setTitle("安全测试会议-"+i);
+//            Date now = DateUtils.getNowDate();
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(now);
+//            calendar.add(Calendar.MONTH, 1);
+//            meeting.setBeginTime(calendar.getTime());
+//            calendar.add(Calendar.DATE, 1);
+//            meeting.setEndTime(calendar.getTime());
+//            meeting.setLocation("203");
+//            meeting.setUrl("https://jn-1306384632.cos.ap-nanjing.myqcloud.com/common/6E1BE6AD.jpeg");
+//            meeting.setViews(0L);
+//            Random random = new Random();
+//            meeting.setType((long) (random.nextInt(4) + 1));
+//            meeting.setStatus(1L);
+//            meeting.setMeetingType((long)(random.nextInt(2) + 1));
+//            meeting.setCreateTime(now);
+//            meeting.setRemark("测试哦 - " + i);
+//            meetingService.insertMeeting(meeting);
+//        }
+//        return AjaxResult.success();
+//    }
 }

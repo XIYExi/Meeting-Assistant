@@ -1,0 +1,17 @@
+# Tomcat
+server:
+  port: 9997
+
+# Spring
+spring: 
+  application:
+    # 应用名称
+    name: ruoyi-collection
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 127.0.0.1:8848
