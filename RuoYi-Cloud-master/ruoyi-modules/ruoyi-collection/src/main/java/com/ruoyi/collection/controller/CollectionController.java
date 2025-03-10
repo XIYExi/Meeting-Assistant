@@ -7,8 +7,10 @@ import com.ruoyi.common.core.web.domain.AjaxResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -23,22 +25,21 @@ public class CollectionController {
     private MongoTemplate mongoTemplate;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private KafkaTemplate<Object, Object> kafka;
 
 
     /**
      * 采集一条数据
      * @return
      */
-    @GetMapping("/collect")
-    public AjaxResult collect() {
-        Long userId = 400L;
-        Integer timestamp = Math.toIntExact(DateUtils.getNowDate().getTime() / 1000);
-        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 200 + ":" + 3.5);
-        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 201 + ":" + 2.5);
-        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 202 + ":" + 1.5);
-        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 203 + ":" + 4.5);
-        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 204 + ":" + 5.0);
-        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 205 + ":" + 3.5);
+    @GetMapping("/send")
+    public AjaxResult collect(@RequestParam("userId")Long userId, @RequestParam("meetingId")Long meetingId, @RequestParam("score") Double score) {
+        Integer timestamp = Math.toIntExact(System.currentTimeMillis() / 1000);
+        // 存入redis
+        redisTemplate.opsForList().leftPush("rec:rating:userId:" + userId, meetingId+":"+score);
+        // kafka送到spark进行处理
+        kafka.send("recommendation", userId + "|" + meetingId + "|" + score + "|" + timestamp);
         return AjaxResult.success();
     }
 

@@ -7,6 +7,9 @@ mybatis-plus:
 
 
 spring:
+  kafka:
+    producer:
+      bootstrap-servers: 192.168.31.94:9092
   data:
     mongodb:
       uri: mongodb://root:123456@192.168.31.94:27017/meeting?authSource=admin&authMechanism=SCRAM-SHA-1
