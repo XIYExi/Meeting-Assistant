@@ -15,8 +15,8 @@
     </description>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <milvus.version>2.0.0</milvus.version>
@@ -25,6 +25,7 @@
         <spark.version>2.1.1</spark.version>
         <scala.version>2.11.8</scala.version>
         <jblas.version>1.2.1</jblas.version>
+        <mongodb-spark.version>2.0.0</mongodb-spark.version>
     </properties>
 
     <dependencies>
@@ -71,6 +72,18 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common-datascope</artifactId>
         </dependency>
+        <!--   调用恒脑做llm推荐     -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-api-rag</artifactId>
+            <version>3.6.5</version>
+        </dependency>
+        <!--   会议api    -->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-api-meeting</artifactId>
+            <version>3.6.5</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -103,55 +116,6 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
-
-        <!--   调用恒脑做llm推荐     -->
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-api-rag</artifactId>
-            <version>3.6.5</version>
-        </dependency>
-
-        <!--   会议api    -->
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-api-meeting</artifactId>
-            <version>3.6.5</version>
-        </dependency>
-
-
-
-
-        <!-- 引入Spark相关的Jar包 -->
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.11</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.11</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-streaming_2.11</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-mllib_2.11</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-graphx_2.11</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-        </dependency>
     </dependencies>
 
     <repositories>
@@ -167,6 +131,15 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>

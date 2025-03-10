@@ -2,9 +2,11 @@ package com.ruoyi.collection.controller;
 
 
 import com.ruoyi.collection.domain.UserRating;
+import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,12 +21,33 @@ public class CollectionController {
 
     @Resource
     private MongoTemplate mongoTemplate;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+
+    /**
+     * 采集一条数据
+     * @return
+     */
+    @GetMapping("/collect")
+    public AjaxResult collect() {
+        Long userId = 400L;
+        Integer timestamp = Math.toIntExact(DateUtils.getNowDate().getTime() / 1000);
+        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 200 + ":" + 3.5);
+        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 201 + ":" + 2.5);
+        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 202 + ":" + 1.5);
+        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 203 + ":" + 4.5);
+        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 204 + ":" + 5.0);
+        redisTemplate.opsForList().leftPush("rec:rating:userId:"+userId, 205 + ":" + 3.5);
+        return AjaxResult.success();
+    }
+
 
     /**
      * 为随机3500个用户，创造3~10条判分数据，方便训练推荐算法
      * @return
      */
-    @GetMapping("/mockInteract")
+    @GetMapping("/mock2500Interact")
     public AjaxResult mockInteract() {
         Random random = new Random();
         int numberOfUsers = 3500;

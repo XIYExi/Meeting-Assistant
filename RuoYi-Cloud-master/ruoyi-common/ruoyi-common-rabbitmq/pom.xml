@@ -15,8 +15,6 @@
     </description>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rocketmq.client.version>4.8.0</rocketmq.client.version>
     </properties>
