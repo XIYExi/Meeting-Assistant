@@ -34,7 +34,11 @@ public class CollectionController {
      * @return
      */
     @GetMapping("/send")
-    public AjaxResult collect(@RequestParam("userId")Long userId, @RequestParam("meetingId")Long meetingId, @RequestParam("score") Double score) {
+    public AjaxResult collect(
+            @RequestParam("userId")Long userId,
+            @RequestParam("meetingId")Long meetingId,
+            @RequestParam("score") Double score
+    ) {
         Integer timestamp = Math.toIntExact(System.currentTimeMillis() / 1000);
         // 存入redis
         redisTemplate.opsForList().leftPush("rec:rating:userId:" + userId, meetingId+":"+score);

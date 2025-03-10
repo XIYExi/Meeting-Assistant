@@ -215,6 +215,21 @@ public class MeetingController extends BaseController {
         return AjaxResult.success(collect);
     }
 
+    @GetMapping("/meeting_page")
+    public TableDataInfo meeting_page() {
+        startPage();
+        List<Meeting> list = meetingService.selectMeetingList(new Meeting());
+        List<MeetingResponse> collect = list.stream().map(elem -> {
+            MeetingResponse meetingGeo = new MeetingResponse();
+            BeanUtils.copyProperties(elem, meetingGeo);
+            Long locationId = Long.parseLong(elem.getLocation());
+            MeetingGeo meetingGeo1 = meetingGeoService.selectMeetingGeoById(locationId);
+            meetingGeo.setLocation(meetingGeo1);
+            return meetingGeo;
+        }).collect(Collectors.toList());
+        return getDataTable(collect);
+    }
+
     /**
      * 查询会议列表
      */
