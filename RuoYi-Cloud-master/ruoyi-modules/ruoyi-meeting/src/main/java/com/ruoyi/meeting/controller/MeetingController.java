@@ -201,7 +201,7 @@ public class MeetingController extends BaseController {
      * @param
      * @return
      */
-    @GetMapping("/static_rec_list")
+    // @GetMapping("/static_rec_list")
     public AjaxResult listByStaticRec() {
         List<Meeting> list = meetingService.selectMeetingListByStaticRec();
         List<MeetingResponse> collect = list.stream().map(elem -> {

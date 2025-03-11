@@ -9,14 +9,33 @@ export function submitRating(userId, meetingId, score) {
 }
 
 
-// 查询会议列表
-// 首页静态推荐接口，获取系统判分最高的三个会议信息
-export function getMeetingListOrderByAsc() {
+// 基于内容推荐
+export function content_rec_list(meetingId) {
   return request({
-    url: '/meeting/meeting/static_rec_list',
+    url: `/rec/demo/content_rec_list?meetingId=${meetingId}`,
     method: 'get'
   });
 }
+
+
+// 静态统计推荐（用于用户没有评分或者没有登录的时候）
+export function llmViewStaticRecList() {
+  return request({
+    url: `/rec/demo/llm_view_static_rec_list`,
+    method: 'get'
+  });
+}
+
+
+// 用于登录用户并且有评分的时候
+export function stream_real_time_rec_list(userId) {
+  return request({
+    url: `/rec/demo/stream_real_time_rec_list?userId=${userId}`,
+    method: 'get'
+  });
+}
+
+
 
 // 不走推荐，只按照时间顺序查找会议列表，会议列表页面用
 export function getMeetingListPage() {

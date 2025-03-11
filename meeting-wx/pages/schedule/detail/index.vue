@@ -191,7 +191,7 @@
     </view>
 
     <view class="content">
-        <Recommend :id="event.id"/>
+        <Recommend :id="event.id" :recs="recs"/>
     </view>
 
 
@@ -582,7 +582,7 @@
 import Recommend from '@/pages/schedule/detail/recommend.vue';
 import Agenda from '@/pages/schedule/detail/agenda.vue';
 import Sum from '@/pages/schedule/detail/sum.vue';
-import {getMeetingDetail, getSimpleMeetingPartUsers,recordMeetingView,submitRating} from '@/api/meeting/meeting';
+import {getMeetingDetail, getSimpleMeetingPartUsers,recordMeetingView,submitRating,content_rec_list} from '@/api/meeting/meeting';
 import {startLiving, getUsersInRoom} from '@/api/live/index';
 import {meetingTypeConstants} from '@/utils/constant';
 import {calculateTimeDifference} from '@/utils/time';
@@ -603,6 +603,11 @@ export default {
 	  this.meetingId = option.id;
      // 记录，当前会议关注度+1
      recordMeetingView(option.id);
+	 
+	 // 获得基于内容的推荐列表
+	 content_rec_list(option.id).then(resp => {
+	 	this.recs = resp.data;
+	 })
 
     // 获取会议详细信息
     getMeetingDetail(option.id).then(resp => {
@@ -637,6 +642,8 @@ export default {
   },
   data() {
     return {
+		// 基于内容推荐的列表
+		recs: [],
 	//用户评分，推荐算法使用
 	  rating: 0,
       // 会议详细信息

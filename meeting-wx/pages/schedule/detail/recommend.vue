@@ -3,7 +3,7 @@
 		<view class="rec_title">会议推荐</view>
 
 		<view class="event-list">
-			<view class="event-container" @click="handleToDetail(event.id)" v-for="(event, index) in meetings" :key="index">
+			<view class="event-container" @click="handleToDetail(event.id)" v-for="(event, index) in recs" :key="index">
 				<view class="event-card">
 					<view class="event-poster">
 						<img :src="event.url" class="event-image" loading="lazy"/>
@@ -25,13 +25,9 @@
 
 <script>
 export default {
-	onLoad(args) {
-		this.$store.dispatch("MeetingList");
-	},
-	computed: {
-		meetings() {
-			const meetings = this.$store.state.meeting.meetingList;
-			return meetings;
+	props: {
+		recs: {
+			type: Array,
 		}
 	},
 	data() {

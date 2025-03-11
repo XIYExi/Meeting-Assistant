@@ -5,10 +5,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.meeting.api.RemoteScheduleService;
 import com.ruoyi.rag.api.RemoteRagService;
+import com.ruoyi.rec.domain.ContentMeetingRec;
+import com.ruoyi.rec.domain.MeetingResponse;
 import com.ruoyi.rec.schedule.LLMRecComponent;
+import com.ruoyi.rec.service.RecService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -16,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/demo")
@@ -30,6 +33,42 @@ public class DemoController {
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
     private LLMRecComponent llmRecComponent;
+    @Resource
+    private RecService recService;
+
+
+    /**
+     * 基于内容推荐
+     * @param meetingId
+     * @return
+     */
+    @GetMapping("/content_rec_list")
+    public AjaxResult contentRecList(@RequestParam("meetingId") Long meetingId) {
+        List<MeetingResponse> contentMeetingRecs = recService.selectContentRecMeetingList(meetingId);
+        return AjaxResult.success(contentMeetingRecs);
+    }
+
+    /**
+     * 基于LLM统计推荐
+     * @return
+     */
+    @GetMapping("/llm_view_static_rec_list")
+    public AjaxResult llmViewStaticRecList() {
+        List<MeetingResponse> meetingResponses = recService.selectStaticLLMRecMeetingList();
+        return AjaxResult.success(meetingResponses);
+    }
+
+
+    /**
+     * 基于内容相似度推荐
+     * @param userId
+     * @return
+     */
+    @GetMapping("/stream_real_time_rec_list")
+    public AjaxResult streamRealTimeRecList(@RequestParam("userId") Long userId) {
+        List<MeetingResponse> meetingResponses = recService.selectStreamRecMeetingList(userId);
+        return AjaxResult.success(meetingResponses);
+    }
 
 
     @GetMapping("/getRecMeeting")

@@ -112,24 +112,29 @@
 </template>
 
 <script>
-import { getMeetingListOrderByAsc, getGuestListOrderByDate } from '@/api/meeting/meeting.js';
+import { stream_real_time_rec_list, llmViewStaticRecList, getGuestListOrderByDate } from '@/api/meeting/meeting.js';
 export default {
 	onLoad: function () {
-		getMeetingListOrderByAsc().then(resp => {
-			//console.log(resp.rows);
-			if (resp.code === 200) {
-			
+		// 获得会议列表
+		if (this.$store.state.user) {
+			// console.log('true')
+			stream_real_time_rec_list(this.$store.state.user.userId).then(resp => { 
 				this.meetingList = resp.data;
-			}
-		});
-
+			})
+		}
+		else {
+			llmViewStaticRecList().then(resp => {
+				this.meetingList = resp.data;
+			})
+		}
+		
+		// 获得嘉宾
 		getGuestListOrderByDate().then(resp => {
 			//console.log(resp)
 			if (resp.code === 200) {
 				this.guestList = resp.rows;
 			}
 		})
-
 	},
 	data() {
 		return {
