@@ -1,4 +1,4 @@
-import { getMeetingListOrderByAsc, getMeetingAgendaList } from '@/api/meeting/meeting'
+import { getMeetingListPage, getMeetingAgendaList } from '@/api/meeting/meeting'
 
 const meeting = {
   state: {
@@ -9,7 +9,7 @@ const meeting = {
   actions: {
     MeetingList({ commit, state }) {
         return new Promise((resolve, reject) => {
-            getMeetingListOrderByAsc().then(resp => {
+            getMeetingListPage().then(resp => {
                 const {rows} = resp;
                 // console.log(rows[0])
                 // this.events = rows;

@@ -201,8 +201,8 @@
       <view class="bottom-bar">
         <view class="bottom-bar-left-wrapper">
           <view class="bottom-bar-left-wrapper-1">
-            <uni-icons type="list" size="24"></uni-icons>
-            <view class="bottom-bar-left-wrapper-text">更多</view>
+            <uni-icons type="star" size="24" @click="handleOpenRating"></uni-icons>
+            <view class="bottom-bar-left-wrapper-text">评分</view>
           </view>
           <view>
             <uni-icons type="chatbubble" size="24"></uni-icons>
@@ -216,6 +216,36 @@
         </view>
       </view>
     </view>
+	
+	<!-- rating评分弹窗 -->
+	<uni-popup
+	  ref="popup"
+	  background-color="white"
+	  class="popup-container"
+	>
+	  <uni-popup-dialog
+	    message="评分"
+	    :duration="2000"
+	    :before-close="true"
+	    @close="close"
+	    @confirm="confirm"
+	  >
+	    <view class="rate-container">
+		  <text class="title">title</text>
+	      <uni-rate
+	        v-model="rating"
+	        :size="30"
+	        :max="totalStars"
+	        allow-half
+	        :touchable="true"
+	        @change="handleRateChange"
+	      />
+	      
+	    </view>
+		<!-- <text class="rating-text">{{ rating.toFixed(1) }}</text> -->
+	  </uni-popup-dialog>
+	</uni-popup>
+	
   </view>
 </template>
 
@@ -552,7 +582,7 @@
 import Recommend from '@/pages/schedule/detail/recommend.vue';
 import Agenda from '@/pages/schedule/detail/agenda.vue';
 import Sum from '@/pages/schedule/detail/sum.vue';
-import {getMeetingDetail, getSimpleMeetingPartUsers,recordMeetingView} from '@/api/meeting/meeting';
+import {getMeetingDetail, getSimpleMeetingPartUsers,recordMeetingView,submitRating} from '@/api/meeting/meeting';
 import {startLiving, getUsersInRoom} from '@/api/live/index';
 import {meetingTypeConstants} from '@/utils/constant';
 import {calculateTimeDifference} from '@/utils/time';
@@ -563,7 +593,14 @@ export default {
     Agenda,
     Sum,
   },
+  props: {
+    totalStars: {
+      type: Number,
+      default: 5
+    }
+  },
   onLoad(option) {
+	  this.meetingId = option.id;
      // 记录，当前会议关注度+1
      recordMeetingView(option.id);
 
@@ -600,6 +637,8 @@ export default {
   },
   data() {
     return {
+	//用户评分，推荐算法使用
+	  rating: 0,
       // 会议详细信息
       event: {
         location: {formattedAddress: null}
@@ -679,7 +718,27 @@ export default {
       uni.navigateTo({
 				url: `/pages/map/index?id=${this.event.location.id}`
 			});
-    }
+    },
+	handleOpenRating() {
+		this.$refs.popup.open('center');
+	},
+	confirm() {
+	  // 提交评分逻辑
+	  this.$emit('submit', this.rating);
+	  console.log(this.$store.state.user)
+	  submitRating(this.$store.state.user.userId, this.meetingId, this.rating)
+	  this.$refs.popup.close();
+	},
+	close() {
+	  // 关闭弹窗逻辑
+	  this.rating = 0;
+	  this.$refs.popup.close();
+	},
+	handleRateChange(value) {
+	  // 评分变化回调
+	  // console.log('当前评分：', value);
+	  this.rating = value.value;
+	}
   }
 
 };
