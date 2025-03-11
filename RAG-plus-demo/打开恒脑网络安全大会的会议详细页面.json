@@ -1,0 +1,14 @@
+[
+    {
+        "step": 1,
+        "intent": "route",
+        "params": {
+            "keywords": "会议详细页面",
+            "db": "",
+            "filters": [
+                { "filter": "title", "value": "恒脑网络安全大会", "order": "", "operator": "like" }
+            ],
+            "dependency": -1
+        }
+    }
+]

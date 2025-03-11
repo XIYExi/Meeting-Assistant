@@ -1,0 +1,25 @@
+[
+    {
+        "step": 1,
+        "intent": "route",
+        "params": {
+            "keywords": "新闻页面",
+            "db": "",
+            "filters": [],
+            "dependency": -1
+        }
+    },
+    {
+        "step": 1,
+        "intent": "query",
+        "params": {
+            "keywords": "查询人工智能最新资讯",
+            "db": "news",
+            "filters": [
+                { "filter": "createTime", "value": "", "order": "desc", "operator": "" },
+                { "filter": "title", "value": "人工智能", "order": "", "operator": "like" }
+            ],
+            "dependency": 1
+        }
+    }
+]

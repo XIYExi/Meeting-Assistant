@@ -1,0 +1,26 @@
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "params": {
+            "keywords": "全球科技峰会",
+            "db": "meeting",
+            "filters": [
+                { "filter": "title", "value": "全球科技峰会", "order": "", "operator": "like" }
+            ],
+            "dependency": -1
+        }
+    },
+    {
+        "step": 2,
+        "intent": "query",
+        "params": {
+            "keywords": "所有议程内容",
+            "db": "meeting_agenda",
+            "filters": [
+                { "filter": "meetingId", "value": "step1.id", "order": "", "operator": "eq" }
+            ],
+            "dependency": 1
+        }
+    }
+]

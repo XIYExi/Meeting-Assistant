@@ -1,0 +1,29 @@
+{
+    "db": {
+        "meeting": {
+            "描述": "存储会议信息的表",
+            "filter可查询字段": "title,content,createTime,views",
+            "此表可以查询": "会议id, 地理位置表geoId，会议标题（title)、内容(content)、开始结束时间(createTime)、海报、浏览量(views)、会议类型、线上线下会议"
+        },
+        "meeting_agenda": {
+            "描述": "存储对应会议的议程信息,通过meetingId关联meeting表",
+            "filter可查询字段": "content，beginTime，meta",
+            "此表可以查询": "议程id，对应会议id（meetingId），开始时间（beginTime），议程内容（content），主讲人（meta）"
+        },
+        "meeting_geo": {
+            "描述": "存储会议地理位置的表，通过id和meeting关联",
+            "filter可查询字段": "country， formatted_address， provience， city",
+            "此表可以查询": "地理位置id， 国家country，会议地点formatted_address,省份provience,城市city，经纬度location"
+        },
+        "meeting_clip": {
+            "描述": "存储可下载文件的表,通过meetingId和对应的会议关联，提供过agendaId和议程关联，如果为0，则表示此文件和具体会议或者议程无关",
+            "filter可查询字段": "fileName",
+            "此表可以查询": "文件表id，会议meetingId，议程agendaId，文件类型fileType, 文件名称fileName,文件存储地址url"
+        },
+        "news": {
+            "描述": "新闻表，存储最新消息",
+            "filter可查询字段": "title, createTime, author",
+            "此表可以查询": "新闻id，新闻标题title，新闻内容content,发布时间createTime，发布者author"
+        }
+    }
+}

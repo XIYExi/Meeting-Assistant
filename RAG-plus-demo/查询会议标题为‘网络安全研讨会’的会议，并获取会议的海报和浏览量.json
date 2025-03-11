@@ -1,0 +1,14 @@
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "params": {
+            "keywords": "网络安全研讨会",
+            "db": "meeting",
+            "filters": [
+                { "filter": "title", "value": "网络安全研讨会", "order": "", "operator": "like" }
+            ],
+            "dependency": -1
+        }
+    }
+]

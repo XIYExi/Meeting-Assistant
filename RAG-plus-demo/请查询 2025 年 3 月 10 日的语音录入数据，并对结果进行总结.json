@@ -1,0 +1,26 @@
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "params": {
+            "keywords": "语音录入",
+            "db": "tts",
+            "filters": [
+                { "filter": "createTime", "value": "2025-03-10", "order": "", "operator": "eq" }
+            ],
+            "dependency": -1
+        }
+    },
+    {
+        "step": 2,
+        "intent": "summary",
+        "params": {
+            "keywords": "总结",
+            "db": "",
+            "filters": [],
+            "dependency": 1
+        }
+    }
+]
+
+

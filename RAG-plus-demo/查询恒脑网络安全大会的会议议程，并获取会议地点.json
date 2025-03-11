@@ -1,0 +1,38 @@
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "params": {
+            "keywords": "恒脑网络安全大会",
+            "db": "meeting",
+            "filters": [
+                { "filter": "title", "value": "恒脑网络安全大会", "order": "", "operator": "like" }
+            ],
+            "dependency": -1
+        }
+    },
+    {
+        "step": 2,
+        "intent": "query",
+        "params": {
+            "keywords": "会议议程",
+            "db": "meeting_agenda",
+            "filters": [
+                { "filter": "meetingId", "value": "step1.meetingId", "order": "", "operator": "eq" }
+            ],
+            "dependency": 1
+        }
+    },
+    {
+        "step": 3,
+        "intent": "query",
+        "params": {
+            "keywords": "会议地点",
+            "db": "meeting_geo",
+            "filters": [
+                { "filter": "geoId", "value": "step1.geoId", "order": "", "operator": "eq" }
+            ],
+            "dependency": 1
+        }
+    }
+]

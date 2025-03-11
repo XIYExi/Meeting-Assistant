@@ -1,0 +1,25 @@
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "params": {
+            "keywords": "会议记录文件",
+            "db": "meeting_clip",
+            "filters": [
+                { "filter": "fileType", "value": "会议记录", "order": "", "operator": "eq" },
+                { "filter": "createTime", "value": "", "order": "desc", "operator": "" }
+            ],
+            "dependency": -1
+        }
+    },
+    {
+        "step": 1,
+        "intent": "action",
+        "params": {
+            "keywords": "下载",
+            "db": "",
+            "filters": [],
+            "dependency": 1
+        }
+    }
+]

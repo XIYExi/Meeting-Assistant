@@ -1,0 +1,12 @@
+[
+    {
+        "step": 1,
+        "intent": "chat",
+        "params": {
+            "keywords": "天气",
+            "db": "",
+            "filters": [],
+            "dependency": -1
+        }
+    }
+]
