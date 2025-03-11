@@ -5,7 +5,16 @@ const loginPage = "/pages/login"
   
 // 页面白名单
 const whiteList = [
-  '/pages/login', '/pages/register', '/pages/common/webview/index'
+  '/pages/login', 
+  '/pages/register', 
+  '/pages/common/webview/index',
+  '/pages/chat/home',
+  // 之后chat需要隐藏掉啊
+  '/pages/chat/chat',
+  '/pages/index',
+  '/pages/mine/index',
+  '/pages/schedule/index'
+  
 ]
 
 // 检查地址白名单

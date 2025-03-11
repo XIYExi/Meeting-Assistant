@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.meeting.api.RemoteScheduleService;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
+import com.ruoyi.rag.domain.StepSplitParamsEntity;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.utils.IdGenerator;
 import com.ruoyi.rag.utils.MilvusOperateUtils;
@@ -74,5 +75,10 @@ public class ToolActionHandler implements ToolSimpleHandler {
         System.err.println(prompt);
         logger.info("Action Tool 处理完成");
         return prompt;
+    }
+
+    @Override
+    public void handler(StepSplitParamsEntity params, Map<Integer, Map<String, Object>> output) {
+
     }
 }

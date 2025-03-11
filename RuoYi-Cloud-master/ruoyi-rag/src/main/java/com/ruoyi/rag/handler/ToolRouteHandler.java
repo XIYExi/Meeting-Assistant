@@ -3,6 +3,7 @@ package com.ruoyi.rag.handler;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
 import com.ruoyi.rag.domain.EmbeddingRouteMappingMilvus;
 import com.ruoyi.rag.domain.RouteMapping;
+import com.ruoyi.rag.domain.StepSplitParamsEntity;
 import com.ruoyi.rag.mapper.RouteMappingMapper;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.utils.IdGenerator;
@@ -55,5 +56,10 @@ public class ToolRouteHandler implements ToolSimpleHandler {
 
         logger.info("Route Tool 处理完成");
         return prompt.toString();
+    }
+
+    @Override
+    public void handler(StepSplitParamsEntity params, Map<Integer, Map<String, Object>> output) {
+
     }
 }
