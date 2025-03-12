@@ -45,12 +45,23 @@ public class Demo2Controller {
                 "        \"step\": 1,\n" +
                 "        \"intent\": \"query\",\n" +
                 "        \"params\": {\n" +
-                "            \"keywords\": \"教育系统数据安全专题会议\",\n" +
-                "            \"db\": \"meeting\",\n" +
+                "            \"keywords\": \"会议记录文件\",\n" +
+                "            \"db\": \"meeting_clip\",\n" +
                 "            \"filters\": [\n" +
-                "                { \"filter\": \"title\", \"value\": \"教育系统数据安全专题会议\", \"order\": \"\", \"operator\": \"like\" }\n" +
+                "                { \"filter\": \"fileType\", \"value\": \"会议记录\", \"order\": \"\", \"operator\": \"eq\" },\n" +
+                "                { \"filter\": \"createTime\", \"value\": \"\", \"order\": \"desc\", \"operator\": \"\" }\n" +
                 "            ],\n" +
                 "            \"dependency\": -1\n" +
+                "        }\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"step\": 1,\n" +
+                "        \"intent\": \"action\",\n" +
+                "        \"params\": {\n" +
+                "            \"keywords\": \"下载\",\n" +
+                "            \"db\": \"\",\n" +
+                "            \"filters\": [],\n" +
+                "            \"dependency\": 1\n" +
                 "        }\n" +
                 "    }\n" +
                 "]";
