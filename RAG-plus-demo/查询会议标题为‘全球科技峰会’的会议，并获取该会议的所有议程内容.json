@@ -1,12 +1,13 @@
+
 [
     {
         "step": 1,
         "intent": "query",
         "params": {
-            "keywords": "全球科技峰会",
+            "keywords": "合作伙伴大会",
             "db": "meeting",
             "filters": [
-                { "filter": "title", "value": "全球科技峰会", "order": "", "operator": "like" }
+                { "filter": "title", "value": "合作伙伴大会", "order": "", "operator": "like" }
             ],
             "dependency": -1
         }

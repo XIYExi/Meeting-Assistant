@@ -1,12 +1,13 @@
+
 [
     {
         "step": 1,
         "intent": "query",
         "params": {
-            "keywords": "恒脑网络安全大会",
+            "keywords": "西湖论剑暨安恒信息年度新品发布会",
             "db": "meeting",
             "filters": [
-                { "filter": "title", "value": "恒脑网络安全大会", "order": "", "operator": "like" }
+                { "filter": "title", "value": "西湖论剑暨安恒信息年度新品发布会", "order": "", "operator": "like" }
             ],
             "dependency": -1
         }

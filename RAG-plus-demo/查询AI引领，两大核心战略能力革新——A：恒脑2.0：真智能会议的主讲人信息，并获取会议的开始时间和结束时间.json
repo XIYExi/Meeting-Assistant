@@ -1,12 +1,13 @@
+
 [
     {
         "step": 1,
         "intent": "query",
         "params": {
-            "keywords": "AI发展和机遇",
+            "keywords": "AI引领，两大核心战略能力革新——A：恒脑2.0：真智能",
             "db": "meeting_agenda",
             "filters": [
-                { "filter": "title", "value": "AI发展和机遇", "order": "", "operator": "like" }
+                { "filter": "title", "value": "AI引领，两大核心战略能力革新——A：恒脑2.0：真智能", "order": "", "operator": "like" }
             ],
             "dependency": -1
         }
