@@ -6,16 +6,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+
+/**
+ * v2版本 用来替代v1版本的action操作，执行数据库查询操作
+ */
 @Component
-public class ToolChatHandler implements ToolSimpleHandler {
+public class ToolQueryHandler implements ToolSimpleHandler {
     @Override
     public String handler(String content) {
-        // chat 目前直接pass，不需要封装system prompt，直接走agent在查询一次
         return "";
     }
 
     @Override
-    public boolean handler(StepSplitParamsEntity params, int step,  Map<Integer, Map<String, Object>> output) {
-        return true;
+    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output) {
+
+        return false;
     }
 }

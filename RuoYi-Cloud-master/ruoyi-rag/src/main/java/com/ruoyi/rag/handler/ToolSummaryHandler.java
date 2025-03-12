@@ -7,15 +7,14 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class ToolChatHandler implements ToolSimpleHandler {
+public class ToolSummaryHandler implements ToolSimpleHandler {
     @Override
     public String handler(String content) {
-        // chat 目前直接pass，不需要封装system prompt，直接走agent在查询一次
         return "";
     }
 
     @Override
-    public boolean handler(StepSplitParamsEntity params, int step,  Map<Integer, Map<String, Object>> output) {
-        return true;
+    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output) {
+        return false;
     }
 }

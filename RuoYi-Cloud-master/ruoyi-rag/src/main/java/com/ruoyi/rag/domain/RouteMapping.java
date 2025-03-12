@@ -24,4 +24,10 @@ public class RouteMapping {
 
     private String keywords;
 
+    // 是否为子页面 0 - 不是 1- 是
+    private Integer leaf;
+
+    // 子页面路由id去哪查
+    private String leafDb;
+
 }
