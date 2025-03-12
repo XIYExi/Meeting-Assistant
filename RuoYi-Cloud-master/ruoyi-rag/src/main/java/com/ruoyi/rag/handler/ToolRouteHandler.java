@@ -3,7 +3,7 @@ package com.ruoyi.rag.handler;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
 import com.ruoyi.rag.domain.EmbeddingRouteMappingMilvus;
-import com.ruoyi.rag.domain.RouteMapping;
+import com.ruoyi.rag.domain.query.RouteMapping;
 import com.ruoyi.rag.domain.StepSplitParamsEntity;
 import com.ruoyi.rag.domain.StepSplitParamsFilterEntity;
 import com.ruoyi.rag.domain.query.Meeting;
@@ -15,6 +15,8 @@ import com.ruoyi.rag.mapper.query.MeetingMapper;
 import com.ruoyi.rag.mapper.query.NewsMapper;
 import com.ruoyi.rag.model.CustomPrompt;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
+import com.ruoyi.rag.tcp.server.WebSocketServerHandler;
+import com.ruoyi.rag.utils.MilvusOperateUtils;
 import com.ruoyi.rag.utils.RouteMappingOperateUtils;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
@@ -24,10 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Objects;
 
 
 @Component
@@ -46,6 +47,13 @@ public class ToolRouteHandler implements ToolSimpleHandler {
     @Resource
     private MeetingGeoMapper meetingGeoMapper;
 
+    private WebSocketServerHandler nettyServerHandler = new WebSocketServerHandler();
+
+    /**
+     * v1 版本
+     * @param content
+     * @return
+     */
     @Override
     public String handler(String content) {
         // 合并关键词
@@ -78,7 +86,7 @@ public class ToolRouteHandler implements ToolSimpleHandler {
      * @param output 输出的结果，保存到map里面，保证每一步结果向下传递
      */
     @Override
-    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output) {
+    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
         // 1. 先获取keywords，如果走的是route，那么肯定要先根据keywords去milvus里面查数据
         String keywords = params.getKeywords();
         Response<Embedding> embed = domesticEmbeddingModel.embed(TextSegment.textSegment(keywords));
@@ -92,22 +100,65 @@ public class ToolRouteHandler implements ToolSimpleHandler {
             // 2.1 filters不为空，说明提供了查询信息
             if (!params.getFilters().isEmpty()) {
                 Long routerLeafId = this.generateQueryWrapperByFilters(routeMapping.getLeafDb(), params.getFilters());
+                // 2.2 如果子页面id查出来是-1，表示数据库里面没查到，没这个页面，请求错误
+                if (Objects.equals(routerLeafId, -1L)) {
+                    String outputFailureFormatPrompt = String.format(CustomPrompt.ROUTE_FILTER_EMPTY_IN_LEAF, step, routeMapping.getPageType());
+                    try {
+                        nettyServerHandler.sendMsg(null, uid + "&^tool" + outputFailureFormatPrompt);
+                    } catch (Exception e) {
+                        logger.error("【route send failure msg through netty for intent ERROR!】 ",e.getMessage());
+                    }
+                    output.get(step).put("status", false);
+                    output.get(step).put("prompt", outputFailureFormatPrompt);
+                    output.get(step).put("queryResult", routeMapping);
+                    output.get(step).put("routePath", "");
+                    output.get(step).put("intent", "route");
+                    return false;
+                }
+                // 2.3 子页面查询到了，继续执行拼接数据
                 String finalRouterPath = routeMapping.getPath() + "?id=" + routerLeafId;
                 String outputSuccessFormatPrompt = String.format(CustomPrompt.ROUTE_OUTPUT_PROMPT, routeMapping.getPageType(), routerLeafId, finalRouterPath);
+                try {
+                    nettyServerHandler.sendMsg(null, uid + "&^tool" + outputSuccessFormatPrompt);
+                } catch (Exception e) {
+                    logger.error("【route send success msg through netty for intent ERROR!】 ",e.getMessage());
+                }
                 output.get(step).put("status", true);
                 output.get(step).put("prompt", outputSuccessFormatPrompt);
                 output.get(step).put("queryResult", routeMapping);
+                output.get(step).put("routePath", finalRouterPath);
                 output.get(step).put("intent", "route");
             }
             // 2.2 filters为空，此时信息匹配错误，需要立刻掐断
             else {
-                String outputFailureFormatPrompt = String.format(CustomPrompt.ROUTE_FILTER_EMPTY_IN_LEAF, routeMapping.getPageType());
+                String outputFailureFormatPrompt = String.format(CustomPrompt.ROUTE_FILTER_EMPTY_IN_LEAF, step, routeMapping.getPageType());
+                try {
+                    nettyServerHandler.sendMsg(null, uid + "&^tool" + outputFailureFormatPrompt);
+                } catch (Exception e) {
+                    logger.error("【route send failure msg through netty for intent ERROR!】 ",e.getMessage());
+                }
                 output.get(step).put("status", false);
                 output.get(step).put("prompt", outputFailureFormatPrompt);
                 output.get(step).put("queryResult", routeMapping);
+                output.get(step).put("routePath", "");
                 output.get(step).put("intent", "route");
                 return false;
             }
+        }
+        // 3. 不是子页面，直接匹配好了返回,此部分逻辑同 v1 版本
+        else {
+            String outputSuccessFormatPrompt = String.format(CustomPrompt.ROUTE_MAIN_OUTPUT_PROMPT, routeMapping.getPageType(), routeMapping.getPath());
+            try {
+                nettyServerHandler.sendMsg(null, uid + "&^tool" + outputSuccessFormatPrompt);
+            } catch (Exception e) {
+                logger.error("【route send success msg through netty for intent ERROR!】 ",e.getMessage());
+            }
+            output.get(step).put("status", true);
+            output.get(step).put("prompt", outputSuccessFormatPrompt);
+            output.get(step).put("queryResult", routeMapping);
+            output.get(step).put("routePath", routeMapping.getPath());
+            output.get(step).put("intent", "route");
+            logger.info("Route Tool 处理完成");
         }
 
         return true;
@@ -127,9 +178,15 @@ public class ToolRouteHandler implements ToolSimpleHandler {
         switch (db) {
             case "meeting":
                 QueryWrapper<Meeting> meetingQueryWrapper= new QueryWrapper<>();
-                meetingQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
+                String filter = filters.get(0).getFilter();
+                if (filter.equals("title"))
+                    meetingQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
+
                 meetingQueryWrapper.last("limit 1");
-                Meeting meeting = meetingMapper.selectList(meetingQueryWrapper).get(0);
+                List<Meeting> meetings = meetingMapper.selectList(meetingQueryWrapper);
+                if (meetings.isEmpty())
+                    return -1L;
+                Meeting meeting = meetings.get(0);
                 // 路由子页面的id
                 Long routerLeafId = meeting.getId();
                 return routerLeafId;
@@ -137,19 +194,24 @@ public class ToolRouteHandler implements ToolSimpleHandler {
                 QueryWrapper<News> newsQueryWrapper = new QueryWrapper<>();
                 newsQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
                 newsQueryWrapper.last("limit 1");
-                News news = newsMapper.selectList(newsQueryWrapper).get(0);
-                Long newsRouterLeadIf = news.getId();
+                List<News> news = newsMapper.selectList(newsQueryWrapper);
+                if (news.isEmpty())
+                    return -1L;
+                News _new = news.get(0);
+                Long newsRouterLeadIf = _new.getId();
                 return newsRouterLeadIf;
             case "meeting_geo":
                 QueryWrapper<MeetingGeo> geoQueryWrapper = new QueryWrapper<>();
                 geoQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
                 geoQueryWrapper.last("limit 1");
-                MeetingGeo meetingGeo = meetingGeoMapper.selectList(geoQueryWrapper).get(0);
+                List<MeetingGeo> meetingGeos = meetingGeoMapper.selectList(geoQueryWrapper);
+                if (meetingGeos.isEmpty()) return -1L;
+                MeetingGeo meetingGeo = meetingGeos.get(0);
                 Long geoRouterLeadIf = meetingGeo.getId();
                 return geoRouterLeadIf;
             default:
                 break;
         }
-        return 1L;
+        return -1L;
     }
 }

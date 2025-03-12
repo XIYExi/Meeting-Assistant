@@ -127,13 +127,6 @@ public class RagController {
         return ajax;
     }
 
-//    @PostMapping("/v2/flux")
-//    @ResponseBody
-//    public AjaxResult flux_v2(@RequestBody ChatReq req) throws Exception {
-//        String question = req.getText();
-//        String uid = req.getUid();
-//
-//    }
 
 
 

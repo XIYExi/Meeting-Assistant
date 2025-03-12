@@ -72,6 +72,7 @@ public class RagChatServiceImpl implements RagChatService {
                 .retrieve()
                 .bodyToFlux(String.class); // 得到string返回，便于查看结束标志
         StringBuilder resultBuilder = new StringBuilder();
+        StringBuilder basicLlmBuilder = new StringBuilder();
         // 设置同步信号量
         Semaphore semaphore = new Semaphore(0);
         chatResponseFlux.subscribe(value -> {
@@ -82,12 +83,17 @@ public class RagChatServiceImpl implements RagChatService {
                 if (agentResult.getContent() == null){
                     return;
                 }
-
                 String res = agentResult.getContent();
-                // System.out.println(res);
                 if (res != null) {
-                    resultBuilder.append(res);
-                    nettyServerHandler.sendMsg(null, uid + "&" + resultBuilder.toString());
+                    if (!agentResult.getFrom().equals("execute_result")){
+                        basicLlmBuilder.append(res);
+                        nettyServerHandler.sendMsg(null, uid + "&^llm" + basicLlmBuilder.toString());
+                    }
+                    else {
+                        // System.out.println(res);
+                        resultBuilder.append(res);
+                        nettyServerHandler.sendMsg(null, uid + "&" + resultBuilder.toString());
+                    }
                 }
 
             } catch (Exception e) {

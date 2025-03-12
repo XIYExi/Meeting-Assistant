@@ -49,7 +49,7 @@ public class Demo2Controller {
                 "            \"keywords\": \"会议详细页面\",\n" +
                 "            \"db\": \"\",\n" +
                 "            \"filters\": [\n" +
-                "                { \"filter\": \"title\", \"value\": \"恒脑网络安全大会\", \"order\": \"\", \"operator\": \"like\" }\n" +
+                "                { \"filter\": \"title\", \"value\": \"西湖论剑新品发布会\", \"order\": \"\", \"operator\": \"like\" }\n" +
                 "            ],\n" +
                 "            \"dependency\": -1\n" +
                 "        }\n" +
@@ -57,9 +57,23 @@ public class Demo2Controller {
                 "]";
         // 分割出来的每一个step
         List<StepSplitEntity> steps = JSONArray.parseArray(result, StepSplitEntity.class);
+        String intentReturn = "用户提问【"+question+"】,通过拆解用户意图可知，拆解需求后需要执行【" + steps.size() +"】步骤\n";
+        nettyServerHandler.sendMsg(null, uid + "&^intent" + intentReturn);
+
+        String finalUserPrompt = toolDispatchFactory.dispatch(steps, uid);
+        logger.info("===== RAG v2 前置工具链处理完成! =====");
 
 
+        String finalQuestion = question + "\n现在有信息：\n" + finalUserPrompt + "。结合上述内容，并回答问题!不需要重复问题和重读信息内容!只回答一次，不要重复回答！";
 
-        return AjaxResult.success(steps);
+        AjaxResult ajax = AjaxResult.success("");
+        try {
+            String msg = ragChatService.sendFluxMsg(req.getUid(), finalQuestion, question);
+            ajax = AjaxResult.success(msg);
+        } catch (Exception e) {
+            ajax = AjaxResult.error(e.getMessage());
+        }
+
+        return ajax;
     }
 }

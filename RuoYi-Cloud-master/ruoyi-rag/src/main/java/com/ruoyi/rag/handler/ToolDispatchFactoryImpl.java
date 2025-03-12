@@ -5,7 +5,7 @@ import com.ruoyi.rag.config.ToolExecuteMap;
 import com.ruoyi.rag.declare.ToolDispatchFactory;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
 import com.ruoyi.rag.domain.StepSplitEntity;
-import com.ruoyi.rag.domain.StepSplitParamsEntity;
+import com.ruoyi.rag.model.CustomPrompt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,7 +34,7 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
     }
 
     @Override
-    public String dispatch(List<StepSplitEntity> steps) {
+    public String dispatch(List<StepSplitEntity> steps, String uid) {
         // 需要保存结果
         // 方便后面的结果调用
         Map<Integer, Map<String, Object>> stepResult = new HashMap<>();
@@ -43,7 +43,7 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
             stepResult.put(i, new HashMap<String, Object>());
 
             ToolSimpleHandler toolSimpleHandler = toolMap.get(step.getIntent());
-            boolean handler = toolSimpleHandler.handler(step.getParams(), i, stepResult);
+            boolean handler = toolSimpleHandler.handler(step.getParams(), i, stepResult, uid);
              // 准备开始下一轮之前，判断当前结果运行是不是失败
             if (!handler) {
                 logger.info("【factory dispatch】解析错误，用户提问错误 ", step);
@@ -51,16 +51,24 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
             }
         }
 
-        // 把output结果拿出去进行判断
-        this.handleOutput(stepResult);
-        return "";
+        // 把output结果拿出去进行判断 并输出最终的prompt
+        String finalUserPrompt = this.handleOutput(stepResult);
+        return finalUserPrompt;
     }
 
 
-    private void handleOutput(Map<Integer, Map<String, Object>> output) {
+    private String handleOutput(Map<Integer, Map<String, Object>> output) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < output.size(); i++) {
             Map<String, Object> currentStep = output.get(i);
+            //判断当前结果，根据前面的逻辑，如果有执行错误，那么一定map的是最后一个元素
+            // 直接返回最后一个元素的错误信息prompt 之前封装的sb都不需要
+            boolean currentStatus = (boolean) currentStep.get("status");
+            if (!currentStatus) {
+                String failurePrompt = (String) currentStep.get("prompt");
+                return failurePrompt;
+            }
+            // status都为true，那么正常执行，把数据封装到sb里面，最后返回sb.toString()的结果
             String currentIntent = (String) currentStep.get("intent");
             if ("route".equals(currentIntent)) {
                 // 如果是route，检查下一个步骤（如果存在）
@@ -79,13 +87,14 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
             // 不是route类型，直接分发给execute函数封装prompt
             sb.append(this.executePrompt(currentIntent, currentStep));
         }
+        return sb.toString();
     }
 
     private String executePrompt(String intent, Map<String, Object> currentOutput) {
         switch (intent) {
             case ToolExecuteMap.ROUTE:
-
-                break;
+                String format = "\n" + String.format(CustomPrompt.ROUTE_EXECUTE_PROMPT, currentOutput.get("routePath"), "前往") + "\n";
+                return format;
             case ToolExecuteMap.QUERY:
                 break;
             case ToolExecuteMap.ACTION:

@@ -1,4 +1,4 @@
-package com.ruoyi.rag.domain;
+package com.ruoyi.rag.domain.query;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

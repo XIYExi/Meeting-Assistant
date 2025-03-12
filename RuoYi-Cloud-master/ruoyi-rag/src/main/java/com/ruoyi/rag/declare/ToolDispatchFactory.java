@@ -24,8 +24,9 @@ public interface ToolDispatchFactory {
      * 优点：可以识别组合命令，执行复杂任务，操作嵌入软件
      * 缺点：运行速度慢
      * @param step
+     * @param uid 会话id，用来ws发消息回去
      * @return
      */
-    String dispatch(List<StepSplitEntity> step);
+    String dispatch(List<StepSplitEntity> step, String uid);
 
 }

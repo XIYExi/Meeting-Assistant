@@ -2,17 +2,19 @@ package com.ruoyi.rag.entity;
 
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Map;
 
 @Data
+@ToString
 public class AgentResult {
 
     private String model;
 
     private String type;
 
-    private String form;
+    private String from;
 
     private String name;
 

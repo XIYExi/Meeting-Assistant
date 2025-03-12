@@ -8,5 +8,5 @@ public interface ToolSimpleHandler {
 
     String handler(String content);
 
-    boolean handler(StepSplitParamsEntity params, int step,  Map<Integer, Map<String, Object>> output);
+    boolean handler(StepSplitParamsEntity params, int step,  Map<Integer, Map<String, Object>> output, String uid);
 }

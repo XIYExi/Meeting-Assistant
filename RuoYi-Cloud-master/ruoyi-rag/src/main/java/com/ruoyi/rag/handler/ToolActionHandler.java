@@ -78,7 +78,7 @@ public class ToolActionHandler implements ToolSimpleHandler {
     }
 
     @Override
-    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output) {
+    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
 
         return true;
     }
