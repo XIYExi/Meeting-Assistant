@@ -23,8 +23,9 @@
 					class="left-res"
 					:class="show ? '' : 'hidden_think'"
 				>
-					<text class="intent">{{item.intent}}</text>
-					<text class="tool">{{item.tool}}</text>
+					<view class="intent">{{item.intent}}</view>
+					<view class="tool">{{item.tool}}</view>
+					<view class="llm">{{item.llm}}</view>
 				</view>
 				<view class="msg_wrapper" :class="!show && 'closeMagin'">
 					<view class="msg" v-html="item.msg"></view>
@@ -55,14 +56,14 @@ export default {
 	mounted() {
 		window.handleRoute = (path) => {
 			console.log(path)
-			if(path == 'pages/mine/index' || path == 'pages/schedule/index') {
+			if(path == '/pages/mine/index' || path == '/pages/schedule/index') {
 				uni.switchTab({
-					url: `/${path}`
+					url: `${path}`
 				})
 			}
 			else {
 				uni.navigateTo({
-					url: `/${path}`
+					url: `${path}`
 				})
 			}
 				
@@ -168,12 +169,19 @@ export default {
 		color: #999;
 		font-size: 2.4vw;
 		font-weight: 300;
+		margin-bottom: 5px;
 	},
 	.tool {
 		color: #999;
 		font-size: 2.4vw;
 		font-weight: 300;
+		margin-bottom: 5px;
 	},
+	.llm {
+		color: #999;
+		font-size: 2.4vw;
+		font-weight: 300;
+	}
 	.content.left .msg_wrapper {
 		margin-top: 15px;
 		background-color: #fff;

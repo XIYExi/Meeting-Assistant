@@ -103,6 +103,7 @@ export default {
 				tool: "",
 				position: 'left',
 				msg: "",
+				llm: "",
 				user: 'AI',
 				timestamp: Date.now(),
 			};
@@ -123,6 +124,10 @@ export default {
 				// 4. 第二个返回的（如果正常运行）一定是tool总计出来的东西
 				if (msg.data.startsWith("^tool")) {
 					this.chatMsg[this.chatMsg.length - 1].tool = this.removeStart(msg.data, "^tool");
+				}
+				else if (msg.data.startsWith("^llm")) {
+					// 5. 模型推理结果返回，这个一定是tool返回之后
+					this.chatMsg[this.chatMsg.length - 1].llm = this.removeStart(msg.data, "^llm");
 				}
 				else {
 					this.chatMsg[this.chatMsg.length - 1].msg = msg.data;

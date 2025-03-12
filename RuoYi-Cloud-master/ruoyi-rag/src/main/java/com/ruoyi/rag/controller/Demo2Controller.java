@@ -10,7 +10,6 @@ import com.ruoyi.rag.entity.ChatReq;
 import com.ruoyi.rag.model.DomesticModel;
 import com.ruoyi.rag.service.RagChatService;
 import com.ruoyi.rag.tcp.server.WebSocketServerHandler;
-import org.aspectj.weaver.loadtime.Aj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,14 +43,38 @@ public class Demo2Controller {
         String result = "[\n" +
                 "    {\n" +
                 "        \"step\": 1,\n" +
-                "        \"intent\": \"route\",\n" +
+                "        \"intent\": \"query\",\n" +
                 "        \"params\": {\n" +
-                "            \"keywords\": \"会议详细页面\",\n" +
-                "            \"db\": \"\",\n" +
+                "            \"keywords\": \"西湖论剑暨安恒信息年度新品发布会\",\n" +
+                "            \"db\": \"meeting\",\n" +
                 "            \"filters\": [\n" +
-                "                { \"filter\": \"title\", \"value\": \"西湖论剑新品发布会\", \"order\": \"\", \"operator\": \"like\" }\n" +
+                "                { \"filter\": \"title\", \"value\": \"西湖论剑暨安恒信息年度新品发布会\", \"order\": \"\", \"operator\": \"like\" }\n" +
                 "            ],\n" +
                 "            \"dependency\": -1\n" +
+                "        }\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"step\": 2,\n" +
+                "        \"intent\": \"query\",\n" +
+                "        \"params\": {\n" +
+                "            \"keywords\": \"会议议程\",\n" +
+                "            \"db\": \"meeting_agenda\",\n" +
+                "            \"filters\": [\n" +
+                "                { \"filter\": \"meetingId\", \"value\": \"step1.meetingId\", \"order\": \"\", \"operator\": \"eq\" }\n" +
+                "            ],\n" +
+                "            \"dependency\": 1\n" +
+                "        }\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"step\": 3,\n" +
+                "        \"intent\": \"query\",\n" +
+                "        \"params\": {\n" +
+                "            \"keywords\": \"会议地点\",\n" +
+                "            \"db\": \"meeting_geo\",\n" +
+                "            \"filters\": [\n" +
+                "                { \"filter\": \"geoId\", \"value\": \"step1.geoId\", \"order\": \"\", \"operator\": \"eq\" }\n" +
+                "            ],\n" +
+                "            \"dependency\": 1\n" +
                 "        }\n" +
                 "    }\n" +
                 "]";
@@ -62,7 +85,6 @@ public class Demo2Controller {
 
         String finalUserPrompt = toolDispatchFactory.dispatch(steps, uid);
         logger.info("===== RAG v2 前置工具链处理完成! =====");
-
 
         String finalQuestion = question + "\n现在有信息：\n" + finalUserPrompt + "。结合上述内容，并回答问题!不需要重复问题和重读信息内容!只回答一次，不要重复回答！";
 

@@ -53,12 +53,14 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
 
         // 把output结果拿出去进行判断 并输出最终的prompt
         String finalUserPrompt = this.handleOutput(stepResult);
+        System.err.println(finalUserPrompt);
         return finalUserPrompt;
     }
 
 
     private String handleOutput(Map<Integer, Map<String, Object>> output) {
         StringBuffer sb = new StringBuffer();
+        sb.append("接下来你将得到一些信息，你需要以markdown格式返回，不要过度总结，不要重复总结，回答问题即可：");
         for (int i = 0; i < output.size(); i++) {
             Map<String, Object> currentStep = output.get(i);
             //判断当前结果，根据前面的逻辑，如果有执行错误，那么一定map的是最后一个元素
@@ -93,10 +95,11 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
     private String executePrompt(String intent, Map<String, Object> currentOutput) {
         switch (intent) {
             case ToolExecuteMap.ROUTE:
-                String format = "\n" + String.format(CustomPrompt.ROUTE_EXECUTE_PROMPT, currentOutput.get("routePath"), "前往") + "\n";
-                return format;
+                String formatRoute = "\n" + String.format(CustomPrompt.ROUTE_EXECUTE_PROMPT, currentOutput.get("routePath"), "前往") + "\n";
+                return formatRoute;
             case ToolExecuteMap.QUERY:
-                break;
+                String formatQuery = "\n" + currentOutput.get("prompt") + "\n";
+                return formatQuery;
             case ToolExecuteMap.ACTION:
                 break;
             case ToolExecuteMap.SUMMARY:
@@ -111,5 +114,7 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
         toolMap.put(ToolDispatchEnum.TOOL_ACTION.getMessage(), applicationContext.getBean(ToolActionHandler.class));
         toolMap.put(ToolDispatchEnum.TOOL_ROUTER.getMessage(), applicationContext.getBean(ToolRouteHandler.class));
         toolMap.put(ToolDispatchEnum.TOOL_CHAT.getMessage(), applicationContext.getBean(ToolChatHandler.class));
+        toolMap.put(ToolDispatchEnum.TOOL_QUERY.getMessage(), applicationContext.getBean(ToolQueryHandler.class));
+        toolMap.put(ToolDispatchEnum.TOOL_SUMMARY.getMessage(), applicationContext.getBean(ToolSummaryHandler.class));
     }
 }
