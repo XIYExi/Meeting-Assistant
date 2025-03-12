@@ -230,10 +230,13 @@ public class ToolQueryHandler implements ToolSimpleHandler {
         // milvus查出来是议程，那么就还换思路，根据filters去数据库查
         else {
             QueryWrapper<Meeting> meetingQueryWrapper= new QueryWrapper<>();
-            String filter = filters.get(0).getFilter();
-            if (filter.equals("title"))
-                meetingQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
-
+            // String filter = filters.get(0).getFilter();
+            for (StepSplitParamsFilterEntity filter :filters) {
+                if (filter.getOperator().equals("like"))
+                    meetingQueryWrapper.like(filter.getFilter(), filter.getValue());
+                else if(filter.getOperator().equals("eq"))
+                    meetingQueryWrapper.eq(filter.getFilter(), filter.getValue());
+            }
             meetingQueryWrapper.last("limit 1");
             List<Meeting> meetings = meetingMapper.selectList(meetingQueryWrapper);
             meeting = meetings.get(0);
