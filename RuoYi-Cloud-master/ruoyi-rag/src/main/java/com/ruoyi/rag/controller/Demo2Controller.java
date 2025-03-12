@@ -45,39 +45,16 @@ public class Demo2Controller {
                 "        \"step\": 1,\n" +
                 "        \"intent\": \"query\",\n" +
                 "        \"params\": {\n" +
-                "            \"keywords\": \"西湖论剑暨安恒信息年度新品发布会\",\n" +
+                "            \"keywords\": \"教育系统数据安全专题会议\",\n" +
                 "            \"db\": \"meeting\",\n" +
                 "            \"filters\": [\n" +
-                "                { \"filter\": \"title\", \"value\": \"西湖论剑暨安恒信息年度新品发布会\", \"order\": \"\", \"operator\": \"like\" }\n" +
+                "                { \"filter\": \"title\", \"value\": \"教育系统数据安全专题会议\", \"order\": \"\", \"operator\": \"like\" }\n" +
                 "            ],\n" +
                 "            \"dependency\": -1\n" +
                 "        }\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"step\": 2,\n" +
-                "        \"intent\": \"query\",\n" +
-                "        \"params\": {\n" +
-                "            \"keywords\": \"会议议程\",\n" +
-                "            \"db\": \"meeting_agenda\",\n" +
-                "            \"filters\": [\n" +
-                "                { \"filter\": \"meetingId\", \"value\": \"step1.meetingId\", \"order\": \"\", \"operator\": \"eq\" }\n" +
-                "            ],\n" +
-                "            \"dependency\": 1\n" +
-                "        }\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"step\": 3,\n" +
-                "        \"intent\": \"query\",\n" +
-                "        \"params\": {\n" +
-                "            \"keywords\": \"会议地点\",\n" +
-                "            \"db\": \"meeting_geo\",\n" +
-                "            \"filters\": [\n" +
-                "                { \"filter\": \"geoId\", \"value\": \"step1.geoId\", \"order\": \"\", \"operator\": \"eq\" }\n" +
-                "            ],\n" +
-                "            \"dependency\": 1\n" +
-                "        }\n" +
                 "    }\n" +
                 "]";
+
         // 分割出来的每一个step
         List<StepSplitEntity> steps = JSONArray.parseArray(result, StepSplitEntity.class);
         String intentReturn = "用户提问【"+question+"】,通过拆解用户意图可知，拆解需求后需要执行【" + steps.size() +"】步骤\n";
@@ -87,7 +64,7 @@ public class Demo2Controller {
         logger.info("===== RAG v2 前置工具链处理完成! =====");
 
         String finalQuestion = question + "\n现在有信息：\n" + finalUserPrompt + "。结合上述内容，并回答问题!不需要重复问题和重读信息内容!只回答一次，不要重复回答！";
-
+        System.err.println(finalQuestion);
         AjaxResult ajax = AjaxResult.success("");
         try {
             String msg = ragChatService.sendFluxMsg(req.getUid(), finalQuestion, question);

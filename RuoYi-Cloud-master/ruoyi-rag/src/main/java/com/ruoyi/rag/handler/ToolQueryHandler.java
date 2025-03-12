@@ -95,6 +95,7 @@ public class ToolQueryHandler implements ToolSimpleHandler {
 
                 // 所依赖的meetingId
                 long dependencyMeetingId = Long.parseLong(String.valueOf(dependencyQueryResult.get("id")));
+
                 switch (db) {
                     case "meeting_agenda":
                         List<MeetingAgenda> meetingAgenda = meetingAgendaMapper.selectList(new QueryWrapper<MeetingAgenda>().eq("meeting_id", dependencyMeetingId));
@@ -121,6 +122,23 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                         output.get(step).put("status", true);
                         output.get(step).put("prompt", meetingGeoQuerySuccessPrompt);
                         output.get(step).put("queryResult", meetingGeo);
+                        output.get(step).put("routePath", "");
+                        output.get(step).put("intent", "query");
+                        break;
+                    case "meeting":
+                        // 这个最简单，不管之前是哪个，只要是meeting、meeting_agenda或者meeting_geo里面的一个，那么肯定存储了完整的meeting信息
+                        String meetingQuerySuccessPrompt = "\n" + String.format(
+                                CustomPrompt.QUERY_MEETING_SUCCESS_PROMPT,
+                                dependencyQueryResult.get("title"),
+                                dependencyQueryResult.get("beginTime"),
+                                dependencyQueryResult.get("address"),
+                                dependencyQueryResult.get("views"),
+                                dependencyQueryResult.get("content"),
+                                dependencyQueryResult.get("url")
+                        ) +"\n";
+                        output.get(step).put("status", true);
+                        output.get(step).put("prompt", meetingQuerySuccessPrompt);
+                        output.get(step).put("queryResult", dependencyQueryResult);
                         output.get(step).put("routePath", "");
                         output.get(step).put("intent", "query");
                         break;
@@ -156,7 +174,8 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                         resBySQL.get("beginTime"),
                         resBySQL.get("address"),
                         resBySQL.get("views"),
-                        resBySQL.get("content")
+                        resBySQL.get("content"),
+                        resBySQL.get("url")
                 )+"\n";
             }
             else if (db.equals("meeting_agenda")) {
@@ -168,7 +187,8 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                         resBySQL.get("beginTime"),
                         resBySQL.get("address"),
                         resBySQL.get("views"),
-                        resBySQL.get("content")
+                        resBySQL.get("content"),
+                        resBySQL.get("url")
                 );
                 String meetingAgendaQuerySuccessPrompt = String.format(
                         CustomPrompt.QUERY_MEETING_AGENDA_SUCCESS_PROMPT,
@@ -185,7 +205,8 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                         resBySQL.get("beginTime"),
                         resBySQL.get("address"),
                         resBySQL.get("views"),
-                        resBySQL.get("content")
+                        resBySQL.get("content"),
+                        resBySQL.get("url")
                 );
                 String meetingGeoQuerySuccessPrompt = String.format(
                         CustomPrompt.QUERY_GEO_SUCCESS_PROMPT,
@@ -213,71 +234,85 @@ public class ToolQueryHandler implements ToolSimpleHandler {
             List<StepSplitParamsFilterEntity> filters
     ) {
         Map<String, Object> map = new HashMap<>();
-
-        // 1. 先去milvus里面查，因为milvus一定能查到东西
-        Response<Embedding> embed = domesticEmbeddingModel.embed(TextSegment.textSegment(keywords));
-        List<Float> keywordsEmbedding = embed.content().vectorAsList();
-        List<?> meetingMilvus = milvus.searchByFeature(EmbeddingMilvus.COLLECTION_NAME, keywordsEmbedding);
-        Long composeId = (Long) meetingMilvus.get(0);
-        long originalId = IdGenerator.getOriginalId((Long) composeId);
-        boolean isMeeting = IdGenerator.isMeeting((Long) composeId);
-
+        // 查和会议相关的内容，第一步一定是先把会议查出来！
         Meeting meeting = null;
-        // milvus查出来是meeting，那么直接查
-        if (isMeeting) {
-            meeting = meetingMapper.selectById(originalId);
-        }
-        // milvus查出来是议程，那么就还换思路，根据filters去数据库查
-        else {
-            QueryWrapper<Meeting> meetingQueryWrapper= new QueryWrapper<>();
-            // String filter = filters.get(0).getFilter();
-            for (StepSplitParamsFilterEntity filter :filters) {
-                if (filter.getOperator().equals("like"))
-                    meetingQueryWrapper.like(filter.getFilter(), filter.getValue());
-                else if(filter.getOperator().equals("eq"))
-                    meetingQueryWrapper.eq(filter.getFilter(), filter.getValue());
-            }
-            meetingQueryWrapper.last("limit 1");
-            List<Meeting> meetings = meetingMapper.selectList(meetingQueryWrapper);
-            meeting = meetings.get(0);
-            // 为空，直接返回，那么一定没查到，直接掐断即可
-            if (meetings.isEmpty())
-                return null;
-        }
-
-
-        // 会议只需要返回这些内容
-        map.put("id", meeting.getId());
-        map.put("type", db);
-        map.put("title", meeting.getTitle());
-        map.put("beginTime", meeting.getBeginTime());
-        map.put("views", meeting.getViews());
-        map.put("content", meeting.getRemark());
-
         switch (db) {
             case "meeting":
+                QueryWrapper<Meeting> meetingQueryWrapper = new QueryWrapper<>();
+                for (StepSplitParamsFilterEntity filter : filters) {
+                    if (filter.getOperator().equals("eq"))
+                        meetingQueryWrapper.eq(filter.getFilter(), filter.getValue());
+                    else if (filter.getOperator().equals("like"))
+                        meetingQueryWrapper.like(filter.getFilter(), filter.getValue());
+                }
+                meetingQueryWrapper.last("limit 1");
+                List<Meeting> meetings = meetingMapper.selectList(meetingQueryWrapper);
+                if (meetings.isEmpty())
+                    return null;
+                meeting = meetings.get(0);
                 // 只查询meeting和formatted_location
                 long geoId = Long.parseLong(meeting.getLocation());
                 MeetingGeo meetingGeo = meetingGeoMapper.selectById(geoId);
                 // 补上地址
                 map.put("address", meetingGeo.getFormattedAddress());
-                return map;
+                break;
             case "meeting_agenda":
-                // 补上所有的议程信息
                 QueryWrapper<MeetingAgenda> meetingAgendaQueryWrapper = new QueryWrapper<>();
-                meetingAgendaQueryWrapper.eq("meeting_id", meeting.getId());
-                List<MeetingAgenda> meetingAgenda = meetingAgendaMapper.selectList(meetingAgendaQueryWrapper);
-                map.put("agenda", meetingAgenda);
-                return map;
+                for (StepSplitParamsFilterEntity filter : filters) {
+                    if (filter.getOperator().equals("eq"))
+                        meetingAgendaQueryWrapper.eq(filter.getFilter(), filter.getValue());
+                    else if (filter.getOperator().equals("like"))
+                        meetingAgendaQueryWrapper.like(filter.getFilter().equals("title") ? "content" : filter.getFilter(), filter.getValue());
+                }
+                meetingAgendaQueryWrapper.last("limit 1");
+                List<MeetingAgenda> meetingAgendas = meetingAgendaMapper.selectList(meetingAgendaQueryWrapper);
+                if (meetingAgendas.isEmpty())
+                    return null;
+                MeetingAgenda meetingAgenda = meetingAgendas.get(0);
+                // 正常情况下，如果问xxx议程的xxx，其实应该只查一条数据就行了，这里为了防止发生莫名其妙的bug，索性都补上，大模型会自己取需要的数据的
+                Long meetingId = meetingAgenda.getMeetingId();
+                meeting = meetingMapper.selectById(meetingId);
+                // 补上所有的议程信息
+                QueryWrapper<MeetingAgenda> meetingAgendaQueryWrapperAgain = new QueryWrapper<>();
+                meetingAgendaQueryWrapperAgain.eq("meeting_id", meetingId);
+                List<MeetingAgenda> meetingAgendaFinal = meetingAgendaMapper.selectList(meetingAgendaQueryWrapperAgain);
+                map.put("agenda", meetingAgendaFinal);
+                break;
             case "meeting_geo":
+                QueryWrapper<MeetingGeo> meetingGeoQueryWrapper=new QueryWrapper<>();
+                for (StepSplitParamsFilterEntity filter : filters) {
+                    if (filter.getOperator().equals("eq"))
+                        meetingGeoQueryWrapper.eq(filter.getFilter(), filter.getValue());
+                    else if (filter.getOperator().equals("like"))
+                        meetingGeoQueryWrapper.like(filter.getFilter(), filter.getValue());
+                }
+                meetingGeoQueryWrapper.last("limit 1");
+                List<MeetingGeo> meetingGeos = meetingGeoMapper.selectList(meetingGeoQueryWrapper);
+                if (meetingGeos.isEmpty())
+                    return null;
+                MeetingGeo meetingGeoMore = meetingGeos.get(0);
+                Long locationId = meetingGeos.get(0).getId();
+                QueryWrapper<Meeting> locationQueryWrapper = new QueryWrapper<>();
+                locationQueryWrapper.eq("location_id", locationId);
+                locationQueryWrapper.last("limit 1");
+                List<Meeting> meetingsByGeo = meetingMapper.selectList(locationQueryWrapper);
+                meeting = meetingsByGeo.get(0);
+
                 // 补上更加详细的地图信息
-                MeetingGeo meetingGeoMore = meetingGeoMapper.selectById(Long.parseLong(meeting.getLocation()));
                 map.put("moreLocation", meetingGeoMore.getCountry() + "-" + meetingGeoMore.getProvince() + "-" + meetingGeoMore.getCity() + "-" + meetingGeoMore.getDistrict());
                 map.put("location", meetingGeoMore.getLocation());
-                return map;
+                break;
             default:
                 break;
         }
-        return null;
+        // 只要能到这里，说明meeting肯定查出来了，封装剩余会议需要返回的内容
+        map.put("id", meeting.getId());
+        map.put("type", db);
+        map.put("url", meeting.getUrl());
+        map.put("title", meeting.getTitle());
+        map.put("beginTime", meeting.getBeginTime());
+        map.put("views", meeting.getViews());
+        map.put("content", meeting.getRemark());
+        return map;
     }
 }

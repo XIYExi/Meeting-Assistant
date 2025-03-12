@@ -53,7 +53,6 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
 
         // 把output结果拿出去进行判断 并输出最终的prompt
         String finalUserPrompt = this.handleOutput(stepResult);
-        System.err.println(finalUserPrompt);
         return finalUserPrompt;
     }
 
