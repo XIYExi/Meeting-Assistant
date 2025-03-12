@@ -9,5 +9,5 @@ public interface ToolExecuteMap {
 
     public static final String SUMMARY = "summary";
 
-
+    public static final String CHAT = "chat";
 }

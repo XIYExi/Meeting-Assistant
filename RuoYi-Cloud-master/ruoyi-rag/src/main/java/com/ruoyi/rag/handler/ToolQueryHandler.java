@@ -1,18 +1,12 @@
 package com.ruoyi.rag.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
-import com.ruoyi.rag.domain.EmbeddingMilvus;
-import com.ruoyi.rag.domain.EmbeddingRouteMappingMilvus;
 import com.ruoyi.rag.domain.StepSplitParamsEntity;
 import com.ruoyi.rag.domain.StepSplitParamsFilterEntity;
 import com.ruoyi.rag.domain.query.Meeting;
 import com.ruoyi.rag.domain.query.MeetingAgenda;
 import com.ruoyi.rag.domain.query.MeetingGeo;
-import com.ruoyi.rag.domain.query.News;
-import com.ruoyi.rag.mapper.RouteMappingMapper;
 import com.ruoyi.rag.mapper.query.MeetingAgendaMapper;
 import com.ruoyi.rag.mapper.query.MeetingGeoMapper;
 import com.ruoyi.rag.mapper.query.MeetingMapper;
@@ -20,12 +14,7 @@ import com.ruoyi.rag.mapper.query.NewsMapper;
 import com.ruoyi.rag.model.CustomPrompt;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.tcp.server.WebSocketServerHandler;
-import com.ruoyi.rag.utils.IdGenerator;
 import com.ruoyi.rag.utils.MilvusOperateUtils;
-import com.ruoyi.rag.utils.RouteMappingOperateUtils;
-import dev.langchain4j.data.embedding.Embedding;
-import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.model.output.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,10 +31,7 @@ import java.util.Map;
 @Component
 public class ToolQueryHandler implements ToolSimpleHandler {
     private static final Logger logger = LoggerFactory.getLogger(ToolQueryHandler.class);
-    @Resource
-    private DomesticEmbeddingModel domesticEmbeddingModel;
-    @Resource
-    private MilvusOperateUtils milvus;
+
     @Resource
     private MeetingMapper meetingMapper;
     @Resource
@@ -104,9 +90,13 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                                 CustomPrompt.QUERY_MEETING_AGENDA_SUCCESS_PROMPT,
                                 meetingAgenda
                         ) + "\n";
+
+                        // 为当前封装output - queryResult
+                        dependencyQueryResult.put("agenda", meetingAgenda);
+
                         output.get(step).put("status", true);
                         output.get(step).put("prompt", meetingAgendaQuerySuccessPrompt);
-                        output.get(step).put("queryResult", meetingAgenda);
+                        output.get(step).put("queryResult", dependencyQueryResult);
                         output.get(step).put("routePath", "");
                         output.get(step).put("intent", "query");
                         break;
@@ -119,9 +109,13 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                                 meetingGeo.getCountry() + "-" + meetingGeo.getProvince() + "-" + meetingGeo.getCity() + "-" + meetingGeo.getDistrict(),
                                 meetingGeo.getLocation()
                         ) + "\n";
+
+                        dependencyQueryResult.put("moreLocation", meetingGeo.getCountry() + "-" + meetingGeo.getProvince() + "-" + meetingGeo.getCity() + "-" + meetingGeo.getDistrict());
+                        dependencyQueryResult.put("location", meetingGeo.getLocation());
+
                         output.get(step).put("status", true);
                         output.get(step).put("prompt", meetingGeoQuerySuccessPrompt);
-                        output.get(step).put("queryResult", meetingGeo);
+                        output.get(step).put("queryResult", dependencyQueryResult);
                         output.get(step).put("routePath", "");
                         output.get(step).put("intent", "query");
                         break;
@@ -244,6 +238,11 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                         meetingQueryWrapper.eq(filter.getFilter(), filter.getValue());
                     else if (filter.getOperator().equals("like"))
                         meetingQueryWrapper.like(filter.getFilter(), filter.getValue());
+
+                    if ("desc".equals(filter.getOrder()))
+                        meetingQueryWrapper.orderByDesc(filter.getFilter());
+                    else if ("asc".equals(filter.getOrder()))
+                        meetingQueryWrapper.orderByAsc(filter.getFilter());
                 }
                 meetingQueryWrapper.last("limit 1");
                 List<Meeting> meetings = meetingMapper.selectList(meetingQueryWrapper);
@@ -263,6 +262,11 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                         meetingAgendaQueryWrapper.eq(filter.getFilter(), filter.getValue());
                     else if (filter.getOperator().equals("like"))
                         meetingAgendaQueryWrapper.like(filter.getFilter().equals("title") ? "content" : filter.getFilter(), filter.getValue());
+
+                    if ("desc".equals(filter.getOrder()))
+                        meetingAgendaQueryWrapper.orderByDesc(filter.getFilter());
+                    else if ("asc".equals(filter.getOrder()))
+                        meetingAgendaQueryWrapper.orderByAsc(filter.getFilter());
                 }
                 meetingAgendaQueryWrapper.last("limit 1");
                 List<MeetingAgenda> meetingAgendas = meetingAgendaMapper.selectList(meetingAgendaQueryWrapper);
@@ -285,6 +289,11 @@ public class ToolQueryHandler implements ToolSimpleHandler {
                         meetingGeoQueryWrapper.eq(filter.getFilter(), filter.getValue());
                     else if (filter.getOperator().equals("like"))
                         meetingGeoQueryWrapper.like(filter.getFilter(), filter.getValue());
+
+                     if ("desc".equals(filter.getOrder()))
+                        meetingGeoQueryWrapper.orderByDesc(filter.getFilter());
+                    else if ("asc".equals(filter.getOrder()))
+                        meetingGeoQueryWrapper.orderByAsc(filter.getFilter());
                 }
                 meetingGeoQueryWrapper.last("limit 1");
                 List<MeetingGeo> meetingGeos = meetingGeoMapper.selectList(meetingGeoQueryWrapper);

@@ -102,7 +102,11 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
             case ToolExecuteMap.ACTION:
                 break;
             case ToolExecuteMap.SUMMARY:
-                break;
+                String formatSummary = "" + currentOutput.get("prompt");
+                return formatSummary;
+            case ToolExecuteMap.CHAT:
+                String formatChat = "" + currentOutput.get("prompt");
+                return formatChat;
         }
         return "";
     }

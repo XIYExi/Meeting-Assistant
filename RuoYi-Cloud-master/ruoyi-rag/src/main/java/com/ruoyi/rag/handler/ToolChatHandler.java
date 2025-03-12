@@ -16,6 +16,12 @@ public class ToolChatHandler implements ToolSimpleHandler {
 
     @Override
     public boolean handler(StepSplitParamsEntity params, int step,  Map<Integer, Map<String, Object>> output, String uid) {
+        // v2 同理，直接返回ok的output即可
+        output.get(step).put("status", true);
+        output.get(step).put("prompt", "");
+        output.get(step).put("queryResult", "");
+        output.get(step).put("routePath", "");
+        output.get(step).put("intent", "chat");
         return true;
     }
 }

@@ -11,5 +11,18 @@
             ],
             "dependency": -1
         }
+    },
+
+    {
+        "step": 1,
+        "intent": "route",
+        "params": {
+            "keywords": "地图页面",
+            "db": "",
+            "filters": [
+                { "filter": "title", "value": "教育系统数据安全专题会议", "order": "", "operator": "like" }
+            ],
+            "dependency": -1
+        }
     }
 ]

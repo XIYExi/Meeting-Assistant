@@ -3,20 +3,20 @@
         "step": 1,
         "intent": "query",
         "params": {
-            "keywords": "会议记录文件",
-            "db": "meeting_clip",
+            "keywords": "名为测试的最新会议",
+            "db": "meeting",
             "filters": [
-                { "filter": "fileType", "value": "会议记录", "order": "", "operator": "eq" },
-                { "filter": "createTime", "value": "", "order": "desc", "operator": "" }
+                { "filter": "title", "value": "测试", "order": "", "operator": "like" },
+                { "filter": "create_time", "value": "", "order": "desc", "operator": "" }
             ],
             "dependency": -1
         }
     },
     {
         "step": 1,
-        "intent": "action",
+        "intent": "summary",
         "params": {
-            "keywords": "下载",
+            "keywords": "总结",
             "db": "",
             "filters": [],
             "dependency": 1

@@ -40,31 +40,18 @@ public class Demo2Controller {
         String question = req.getText();
         String uid = req.getUid();
 
-        String result = "[\n" +
-                "    {\n" +
+        String result = "[{\n" +
                 "        \"step\": 1,\n" +
-                "        \"intent\": \"query\",\n" +
+                "        \"intent\": \"route\",\n" +
                 "        \"params\": {\n" +
-                "            \"keywords\": \"会议记录文件\",\n" +
-                "            \"db\": \"meeting_clip\",\n" +
+                "            \"keywords\": \"地图页面\",\n" +
+                "            \"db\": \"\",\n" +
                 "            \"filters\": [\n" +
-                "                { \"filter\": \"fileType\", \"value\": \"会议记录\", \"order\": \"\", \"operator\": \"eq\" },\n" +
-                "                { \"filter\": \"createTime\", \"value\": \"\", \"order\": \"desc\", \"operator\": \"\" }\n" +
+                "                { \"filter\": \"title\", \"value\": \"教育系统数据安全专题会议\", \"order\": \"\", \"operator\": \"like\" }\n" +
                 "            ],\n" +
                 "            \"dependency\": -1\n" +
                 "        }\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"step\": 1,\n" +
-                "        \"intent\": \"action\",\n" +
-                "        \"params\": {\n" +
-                "            \"keywords\": \"下载\",\n" +
-                "            \"db\": \"\",\n" +
-                "            \"filters\": [],\n" +
-                "            \"dependency\": 1\n" +
-                "        }\n" +
-                "    }\n" +
-                "]";
+                "    }]";
 
         // 分割出来的每一个step
         List<StepSplitEntity> steps = JSONArray.parseArray(result, StepSplitEntity.class);

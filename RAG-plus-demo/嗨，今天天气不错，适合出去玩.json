@@ -8,5 +8,26 @@
             "filters": [],
             "dependency": -1
         }
+    },
+
+    {
+        "step": 1,
+        "intent": "chat",
+        "params": {
+            "keywords": "西湖",
+            "db": "",
+            "filters": [],
+            "dependency": -1
+        }
+    },
+    {
+        "step": 2,
+        "intent": "summary",
+        "params": {
+            "keywords": "总结",
+            "db": "",
+            "filters": [],
+            "dependency": 1
+        }
     }
 ]

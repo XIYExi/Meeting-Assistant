@@ -178,10 +178,17 @@ public class ToolRouteHandler implements ToolSimpleHandler {
         switch (db) {
             case "meeting":
                 QueryWrapper<Meeting> meetingQueryWrapper= new QueryWrapper<>();
-                String filter = filters.get(0).getFilter();
-                if (filter.equals("title"))
-                    meetingQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
+                for (StepSplitParamsFilterEntity filter : filters) {
+                    if (filter.getOperator().equals("eq"))
+                        meetingQueryWrapper.eq(filter.getFilter(), filter.getValue());
+                    else if (filter.getOperator().equals("like"))
+                        meetingQueryWrapper.like(filter.getFilter(), filter.getValue());
 
+                    if ("desc".equals(filter.getOrder()))
+                        meetingQueryWrapper.orderByDesc(filter.getFilter());
+                    else if ("asc".equals(filter.getOrder()))
+                        meetingQueryWrapper.orderByAsc(filter.getFilter());
+                }
                 meetingQueryWrapper.last("limit 1");
                 List<Meeting> meetings = meetingMapper.selectList(meetingQueryWrapper);
                 if (meetings.isEmpty())
@@ -192,7 +199,17 @@ public class ToolRouteHandler implements ToolSimpleHandler {
                 return routerLeafId;
             case "news":
                 QueryWrapper<News> newsQueryWrapper = new QueryWrapper<>();
-                newsQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
+                for (StepSplitParamsFilterEntity filter : filters) {
+                    if (filter.getOperator().equals("eq"))
+                        newsQueryWrapper.eq(filter.getFilter(), filter.getValue());
+                    else if (filter.getOperator().equals("like"))
+                        newsQueryWrapper.like(filter.getFilter(), filter.getValue());
+
+                    if ("desc".equals(filter.getOrder()))
+                        newsQueryWrapper.orderByDesc(filter.getFilter());
+                    else if ("asc".equals(filter.getOrder()))
+                        newsQueryWrapper.orderByAsc(filter.getFilter());
+                }
                 newsQueryWrapper.last("limit 1");
                 List<News> news = newsMapper.selectList(newsQueryWrapper);
                 if (news.isEmpty())
@@ -201,14 +218,24 @@ public class ToolRouteHandler implements ToolSimpleHandler {
                 Long newsRouterLeadIf = _new.getId();
                 return newsRouterLeadIf;
             case "meeting_geo":
-                QueryWrapper<MeetingGeo> geoQueryWrapper = new QueryWrapper<>();
-                geoQueryWrapper.like(filters.get(0).getFilter(), filters.get(0).getValue());
+                QueryWrapper<Meeting> geoQueryWrapper = new QueryWrapper<>();
+                for (StepSplitParamsFilterEntity filter : filters) {
+                    if (filter.getOperator().equals("eq"))
+                        geoQueryWrapper.eq(filter.getFilter(), filter.getValue());
+                    else if (filter.getOperator().equals("like"))
+                        geoQueryWrapper.like(filter.getFilter(), filter.getValue());
+
+                    if ("desc".equals(filter.getOrder()))
+                        geoQueryWrapper.orderByDesc(filter.getFilter());
+                    else if ("asc".equals(filter.getOrder()))
+                        geoQueryWrapper.orderByAsc(filter.getFilter());
+                }
                 geoQueryWrapper.last("limit 1");
-                List<MeetingGeo> meetingGeos = meetingGeoMapper.selectList(geoQueryWrapper);
+                List<Meeting> meetingGeos = meetingMapper.selectList(geoQueryWrapper);
                 if (meetingGeos.isEmpty()) return -1L;
-                MeetingGeo meetingGeo = meetingGeos.get(0);
-                Long geoRouterLeadIf = meetingGeo.getId();
-                return geoRouterLeadIf;
+                Meeting meetingTemp = meetingGeos.get(0);
+                long geoId = Long.parseLong(meetingTemp.getLocation());
+                return geoId;
             default:
                 break;
         }
