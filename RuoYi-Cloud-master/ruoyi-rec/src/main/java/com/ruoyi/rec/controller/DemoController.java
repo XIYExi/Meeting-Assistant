@@ -66,6 +66,7 @@ public class DemoController {
      */
     @GetMapping("/stream_real_time_rec_list")
     public AjaxResult streamRealTimeRecList(@RequestParam("userId") Long userId) {
+        System.err.println(userId);
         List<MeetingResponse> meetingResponses = recService.selectStreamRecMeetingList(userId);
         return AjaxResult.success(meetingResponses);
     }

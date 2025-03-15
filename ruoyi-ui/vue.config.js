@@ -37,7 +37,7 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // todo 请求的是gateway本地！
-        target: `http://192.168.31.150:8080`,
+        target: `http://192.168.31.76:8080`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
