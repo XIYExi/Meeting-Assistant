@@ -24,6 +24,9 @@ port(){
 	firewall-cmd --add-port=9604/tcp --permanent
 	firewall-cmd --add-port=9602/tcp --permanent
 	firewall-cmd --add-port=9601/tcp --permanent
+	firewall-cmd --add-port=9997/tcp --permanent
+	firewall-cmd --add-port=9998/tcp --permanent
+	firewall-cmd --add-port=9999/tcp --permanent
 	service firewalld restart
 }
 
@@ -34,7 +37,7 @@ base(){
 
 # 启动程序模块（必须）
 modules(){
-	docker compose up -d ruoyi-nginx ruoyi-gateway ruoyi-auth ruoyi-modules-system ruoyi-modules-agent ruoyi-modules-cos ruoyi-modules-meeting
+	docker compose up -d ruoyi-nginx ruoyi-gateway ruoyi-auth ruoyi-rag ruoyi-rec ruoyi-modules-system ruoyi-modules-cos ruoyi-modules-collection ruoyi-modules-meeting
 }
 
 # 关闭所有环境/模块

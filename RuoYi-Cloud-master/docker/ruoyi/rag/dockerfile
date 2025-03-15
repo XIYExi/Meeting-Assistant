@@ -1,5 +1,5 @@
 # 基础镜像
-FROM  openjdk:8-jre
+FROM  openjdk:17-jdk
 # author
 MAINTAINER ruoyi
 
@@ -10,6 +10,6 @@ RUN mkdir -p /home/ruoyi
 # 指定路径
 WORKDIR /home/ruoyi
 # 复制jar文件到路径
-COPY ./jar/ruoyi-modules-file.jar /home/ruoyi/ruoyi-modules-file.jar
-# 启动文件服务
-ENTRYPOINT ["java","-jar","ruoyi-modules-file.jar"]
+COPY ./jar/ruoyi-rag.jar /home/ruoyi/ruoyi-rag.jar
+# 启动网关服务
+ENTRYPOINT ["java","-jar","ruoyi-rag.jar"]

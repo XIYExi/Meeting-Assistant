@@ -40,18 +40,44 @@ public class Demo2Controller {
         String question = req.getText();
         String uid = req.getUid();
 
-        String result = "[{\n" +
+        String result = "[\n" +
+                "    {\n" +
                 "        \"step\": 1,\n" +
-                "        \"intent\": \"route\",\n" +
+                "        \"intent\": \"query\",\n" +
                 "        \"params\": {\n" +
-                "            \"keywords\": \"地图页面\",\n" +
-                "            \"db\": \"\",\n" +
+                "            \"keywords\": \"西湖论剑暨安恒信息年度新品发布会\",\n" +
+                "            \"db\": \"meeting\",\n" +
                 "            \"filters\": [\n" +
-                "                { \"filter\": \"title\", \"value\": \"教育系统数据安全专题会议\", \"order\": \"\", \"operator\": \"like\" }\n" +
+                "                { \"filter\": \"title\", \"value\": \"西湖论剑暨安恒信息年度新品发布会\", \"order\": \"\", \"operator\": \"like\" }\n" +
                 "            ],\n" +
                 "            \"dependency\": -1\n" +
                 "        }\n" +
-                "    }]";
+                "    },\n" +
+                "    {\n" +
+                "        \"step\": 2,\n" +
+                "        \"intent\": \"query\",\n" +
+                "        \"params\": {\n" +
+                "            \"keywords\": \"会议议程\",\n" +
+                "            \"db\": \"meeting_agenda\",\n" +
+                "            \"filters\": [\n" +
+                "                { \"filter\": \"meetingId\", \"value\": \"step1.meetingId\", \"order\": \"\", \"operator\": \"eq\" }\n" +
+                "            ],\n" +
+                "            \"dependency\": 1\n" +
+                "        }\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"step\": 3,\n" +
+                "        \"intent\": \"query\",\n" +
+                "        \"params\": {\n" +
+                "            \"keywords\": \"会议地点\",\n" +
+                "            \"db\": \"meeting_geo\",\n" +
+                "            \"filters\": [\n" +
+                "                { \"filter\": \"geoId\", \"value\": \"step1.geoId\", \"order\": \"\", \"operator\": \"eq\" }\n" +
+                "            ],\n" +
+                "            \"dependency\": 1\n" +
+                "        }\n" +
+                "    }\n" +
+                "]\n";
 
         // 分割出来的每一个step
         List<StepSplitEntity> steps = JSONArray.parseArray(result, StepSplitEntity.class);
@@ -66,6 +92,7 @@ public class Demo2Controller {
         AjaxResult ajax = AjaxResult.success("");
         try {
             String msg = ragChatService.sendFluxMsg(req.getUid(), finalQuestion, question);
+            System.err.println(msg);
             ajax = AjaxResult.success(msg);
         } catch (Exception e) {
             ajax = AjaxResult.error(e.getMessage());

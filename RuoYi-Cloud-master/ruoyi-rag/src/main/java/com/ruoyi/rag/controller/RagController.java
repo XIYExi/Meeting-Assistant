@@ -127,9 +127,6 @@ public class RagController {
         return ajax;
     }
 
-
-
-
     private String judgeType(String intent) {
         if (intent.equals("route"))
             return "路由跳转";
