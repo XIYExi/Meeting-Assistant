@@ -53,6 +53,10 @@ public class QueryContext {
         }
     }
 
+    public <T> T getDependencyResult(int step, Class<T> type) {
+        return type.cast(stepData.get("step" + step));
+    }
+
 
     public boolean containsStep(String dependencyKey) {
         return stepData.containsKey(dependencyKey);

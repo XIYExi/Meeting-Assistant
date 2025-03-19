@@ -1,15 +1,22 @@
 package com.ruoyi.rag.assistant.handler;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ruoyi.rag.assistant.component.VectorSearchComponent;
+import com.ruoyi.rag.assistant.constant.QueryToolDispatchEnum;
 import com.ruoyi.rag.assistant.declare.EnhancedToolHandler;
+import com.ruoyi.rag.assistant.declare.QueryProcessor;
 import com.ruoyi.rag.assistant.entity.Filter;
 import com.ruoyi.rag.assistant.entity.StepDefinition;
+import com.ruoyi.rag.assistant.handler.query.QueryMeetingProcessor;
+import com.ruoyi.rag.assistant.handler.query.QueryRecProcessor;
 import com.ruoyi.rag.assistant.utils.QueryContext;
 import com.ruoyi.rag.assistant.utils.ToolJudgmentFunc;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -39,21 +46,18 @@ import javax.annotation.Resource;
  * ]
  */
 @Component
-public class EnhancedQueryToolHandler implements EnhancedToolHandler {
+public class EnhancedQueryToolHandler implements EnhancedToolHandler, InitializingBean {
+
+    private static final Map<String, QueryProcessor> queryToolMap = new ConcurrentHashMap<>();
+
 
     @Resource
-    private VectorSearchComponent vectorSearchComponent;
+    ApplicationContext applicationContext;
 
     @Override
     public boolean handler(StepDefinition step, QueryContext context) {
-        if (step.getDependency() != -1) {
-            // 处理依赖
-        }
-        else {
-            // 根据 subtype 处理对应的方法
-            boolean firstQueryResult = processQueryStep(step, context);
-        }
-
+        QueryProcessor queryProcessor = queryToolMap.get(step.getSubtype());
+        queryProcessor.processor(step, context);
         return false;
     }
 
@@ -79,14 +83,12 @@ public class EnhancedQueryToolHandler implements EnhancedToolHandler {
             if (ToolJudgmentFunc.isVectorSearchRequired(step, filter)) {
                 // 如果查的是meeting，并且根据title查询，那么直接返回结果
                 // title优先级最高，只要对于meeting数据出现了title那么其他所有字段可以忽略，通过title一定可以锁定数据
-                MeetingResponse meetingResponse = vectorSearchComponent.vectorSearch((String) filter.getValue());
+
                 skipQueryForMeetingWithTitle = true;
-                context.storeStepResult(step.getStep(), meetingResponse);
+                // context.storeStepResult(step.getStep(), meetingResponse);
                 break;
             }
 
-
-            applyFilter(wrapper, filter, filter.getValue());
         }
 
         if (skipQueryForMeetingWithTitle) {
@@ -100,7 +102,10 @@ public class EnhancedQueryToolHandler implements EnhancedToolHandler {
     }
 
 
-    protected void applyFilter(QueryWrapper<?> wrapper, Filter filter, Object value) {
-        String field = filter.getField();
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        queryToolMap.put(QueryToolDispatchEnum.QUERY_MEETING.getMessage(), applicationContext.getBean(QueryMeetingProcessor.class));
+        queryToolMap.put(QueryToolDispatchEnum.QUERY_REC.getMessage(), applicationContext.getBean(QueryRecProcessor.class));
     }
 }

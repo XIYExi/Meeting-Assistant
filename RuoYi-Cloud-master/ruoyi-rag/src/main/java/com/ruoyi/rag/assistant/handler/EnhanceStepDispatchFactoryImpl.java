@@ -13,15 +13,15 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class EnhanceStepDispatchFactoryImpl implements EnhancedStepDispatchFactory, InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(EnhanceStepDispatchFactoryImpl.class);
-    private static Map<String, EnhancedToolHandler> toolMap = new HashMap<>();
+    private static Map<String, EnhancedToolHandler> toolMap = new ConcurrentHashMap<>();
 
     @Resource
     private ApplicationContext applicationContext;
