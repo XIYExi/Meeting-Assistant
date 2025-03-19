@@ -1,30 +1,31 @@
-package com.ruoyi.rag.domain.query;
+package com.ruoyi.rag.assistant.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.core.annotation.Excel;
+import com.ruoyi.rag.assistant.domain.MeetingAgenda;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@TableName("meeting_agenda")
-public class MeetingAgenda implements Serializable {
+public class MeetingResponse {
     private Long id;
-    private Long meetingId;
+    private String title;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
-    private String content;
-    private String meta;
+    private String location;
+    private List<MeetingAgenda> agenda;
+    private String url;
+    private Long views;
+    private Long type;
+    private Long status;
+    private Long meetingType;
     private String delFlag;
 
     private String createBy;
@@ -33,4 +34,5 @@ public class MeetingAgenda implements Serializable {
     private String updateBy;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+    private String remark;
 }

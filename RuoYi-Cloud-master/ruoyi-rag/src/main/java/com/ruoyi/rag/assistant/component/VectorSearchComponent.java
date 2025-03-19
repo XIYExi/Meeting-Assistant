@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.utils.bean.BeanUtils;
 import com.ruoyi.rag.assistant.domain.Meeting;
 import com.ruoyi.rag.assistant.domain.MeetingAgenda;
-import com.ruoyi.rag.assistant.domain.MeetingResponse;
+import com.ruoyi.rag.assistant.entity.MeetingResponse;
 import com.ruoyi.rag.mapper.query.MeetingAgendaMapper;
 import com.ruoyi.rag.mapper.query.MeetingMapper;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;

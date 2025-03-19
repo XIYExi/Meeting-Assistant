@@ -5,10 +5,6 @@ import com.ruoyi.rag.assistant.declare.EnhancedStepDispatchFactory;
 import com.ruoyi.rag.assistant.declare.EnhancedToolHandler;
 import com.ruoyi.rag.assistant.entity.StepDefinition;
 import com.ruoyi.rag.assistant.utils.QueryContext;
-import com.ruoyi.rag.config.ToolDispatchEnum;
-import com.ruoyi.rag.declare.ToolSimpleHandler;
-import com.ruoyi.rag.domain.StepSplitEntity;
-import com.ruoyi.rag.handler.v1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// @Component
-public class EnhanceStepDispatchFactoryImpl implements EnhancedStepDispatchFactory/*, InitializingBean */{
+@Component
+public class EnhanceStepDispatchFactoryImpl implements EnhancedStepDispatchFactory, InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(ToolDispatchFactoryImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(EnhanceStepDispatchFactoryImpl.class);
     private static Map<String, EnhancedToolHandler> toolMap = new HashMap<>();
 
     @Resource
@@ -54,17 +50,12 @@ public class EnhanceStepDispatchFactoryImpl implements EnhancedStepDispatchFacto
     }
 
 
-//    @Override
-//    public void afterPropertiesSet() throws Exception {
-//        toolMap.put(EnhancedToolDispatchEnum.TOOL_ACTION.getMessage(), applicationContext.getBean(EnhancedActionToolHandler.class));
-//        toolMap.put(EnhancedToolDispatchEnum.TOOL_ROUTER.getMessage(), applicationContext.getBean(EnhancedRouteToolHandler.class));
-//        toolMap.put(EnhancedToolDispatchEnum.TOOL_CHAT.getMessage(), applicationContext.getBean(EnhancedChatToolHandler.class));
-//        toolMap.put(EnhancedToolDispatchEnum.TOOL_QUERY.getMessage(), applicationContext.getBean(EnhancedQueryToolHandler.class));
-//    }
-    static {
-        toolMap.put(EnhancedToolDispatchEnum.TOOL_ACTION.getMessage(), new EnhancedActionToolHandler());
-        toolMap.put(EnhancedToolDispatchEnum.TOOL_ROUTER.getMessage(), new EnhancedRouteToolHandler());
-        toolMap.put(EnhancedToolDispatchEnum.TOOL_CHAT.getMessage(), new EnhancedChatToolHandler());
-        toolMap.put(EnhancedToolDispatchEnum.TOOL_QUERY.getMessage(), new EnhancedQueryToolHandler());
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        toolMap.put(EnhancedToolDispatchEnum.TOOL_ACTION.getMessage(), applicationContext.getBean(EnhancedActionToolHandler.class));
+        toolMap.put(EnhancedToolDispatchEnum.TOOL_ROUTER.getMessage(), applicationContext.getBean(EnhancedRouteToolHandler.class));
+        toolMap.put(EnhancedToolDispatchEnum.TOOL_CHAT.getMessage(), applicationContext.getBean(EnhancedChatToolHandler.class));
+        toolMap.put(EnhancedToolDispatchEnum.TOOL_QUERY.getMessage(), applicationContext.getBean(EnhancedQueryToolHandler.class));
     }
+
 }

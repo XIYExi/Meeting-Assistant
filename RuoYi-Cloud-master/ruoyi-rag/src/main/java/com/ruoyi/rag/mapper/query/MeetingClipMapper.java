@@ -1,7 +1,7 @@
 package com.ruoyi.rag.mapper.query;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ruoyi.rag.domain.query.MeetingClip;
+import com.ruoyi.rag.assistant.domain.MeetingClip;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

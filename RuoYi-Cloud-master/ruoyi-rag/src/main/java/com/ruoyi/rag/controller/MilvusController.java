@@ -4,7 +4,7 @@ package com.ruoyi.rag.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.rag.domain.EmbeddingRouteMappingMilvus;
-import com.ruoyi.rag.domain.query.RouteMapping;
+import com.ruoyi.rag.assistant.domain.RouteMapping;
 import com.ruoyi.rag.mapper.RouteMappingMapper;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.utils.IdGenerator;

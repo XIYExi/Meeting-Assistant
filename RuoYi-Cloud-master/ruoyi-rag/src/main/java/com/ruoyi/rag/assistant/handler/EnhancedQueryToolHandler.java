@@ -3,7 +3,6 @@ package com.ruoyi.rag.assistant.handler;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.rag.assistant.component.VectorSearchComponent;
 import com.ruoyi.rag.assistant.declare.EnhancedToolHandler;
-import com.ruoyi.rag.assistant.domain.MeetingResponse;
 import com.ruoyi.rag.assistant.entity.Filter;
 import com.ruoyi.rag.assistant.entity.StepDefinition;
 import com.ruoyi.rag.assistant.utils.QueryContext;
@@ -11,7 +10,6 @@ import com.ruoyi.rag.assistant.utils.ToolJudgmentFunc;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 
 /**
