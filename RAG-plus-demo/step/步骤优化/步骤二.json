@@ -18,12 +18,12 @@
         "enum": [
           "meeting", "file", "news", "rank", "rec",
           "download", "schedule", "summarize", "checkin",
-          "page", "geo", "cancel"
+          "page", "geo", "cancel", "share"
         ]
       },
       "db": {
         "type": "string",
-        "enum": ["meeting", "meeting_geo", "meeting_clip", "news"]
+        "enum": ["meeting", "meeting_geo","meeting_clip", "news"]
       },
       "input_fields": {
         "type": "array",
@@ -36,7 +36,8 @@
         "type": "array",
         "items": {
           "type": "string",
-          "enum": ["meeting_id", "file_id", "geo_id", "news_id", "address", "beginTime"]
+          "enum": ["meeting_id", "file_id", "geo_id", "news_id", "address", "beginTime", ""],
+          "default": ""
         }
       },
       "params": {
@@ -48,7 +49,7 @@
           },
           "query": {
             "type": "string",
-            "description": "动态参数（如id=step1.meeting_id）"
+            "description": "需要跳转的具体页面关键词"
           }
         },
         "required": ["path"]
@@ -61,7 +62,7 @@
           "properties": {
             "field": {
               "type": "string",
-              "enum": ["title", "date", "user_id", "admin_role", "geo_id"]
+              "enum": ["title", "beginTime", "address", "geo_id", "fileName", "author"]
             },
             "operator": {
               "type": "string",
@@ -93,7 +94,7 @@
         "then": {
           "required": ["input_fields", "auth_type"],
           "properties": {
-            "subtype": { "enum": ["download", "schedule", "summarize", "checkin"] }
+            "subtype": { "enum": ["download", "schedule", "summarize", "checkin", "share", "cancel"] }
           }
         }
       },
