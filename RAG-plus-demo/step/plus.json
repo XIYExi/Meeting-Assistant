@@ -1,0 +1,14 @@
+[
+{
+    "step": 1,
+    "intent": "query/chat/route/action 意图识别，判断到底是哪一类操作",
+    "query": "file/meeting/news/rank/rec 对应query意图的细分操作，判断用户具体希望执行什么类型的操作",
+    "route": "page/geo 对应route类型的细分操作，判断用户是在软件内跳转，还是对应地图导航",
+    "db": "meeting/meeting_geo/news/meeting_clip 对应需要查询的数据库",
+    "keywords": "抽取关键词，无法判断到底要查什么数据库，就去milvus里面匹配",
+    "dependency": -1,
+    "filters": [
+        {"filter": "title", "value": "xxx", "order": "asc/desc", "operator": "eq/like"}
+    ]
+}
+]

@@ -1,0 +1,258 @@
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "step",
+            "intent",
+            "subtype",
+            "db",
+            "dependency",
+            "data_bindings"
+        ],
+        "properties": {
+            "step": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+            },
+            "intent": {
+                "type": "string",
+                "enum": [
+                    "query",
+                    "route",
+                    "action"
+                ]
+            },
+            "subtype": {
+                "type": "string",
+                "enum": [
+                    "meeting",
+                    "file",
+                    "news",
+                    "rank",
+                    "rec",
+                    "download",
+                    "schedule",
+                    "summarize",
+                    "checkin",
+                    "page",
+                    "geo"
+                ]
+            },
+            "db": {
+                "type": "string",
+                "enum": [
+                    "meeting",
+                    "meeting_geo",
+                    "meeting_clip",
+                    "news"
+                ]
+            },
+            "input_fields": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "description": "格式：stepX.field（如step1.meeting_id）"
+                }
+            },
+            "output_fields": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "meeting_id",
+                        "file_id",
+                        "geo_id",
+                        "news_id",
+                        "address",
+                        "beginTime"
+                    ]
+                }
+            },
+            "params": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "description": "路径由后端向量匹配决定"
+                    },
+                    "query": {
+                        "type": "string",
+                        "description": "动态参数（如id=step1.meeting_id）"
+                    }
+                },
+                "required": [
+                    "path"
+                ]
+            },
+            "filters": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": [
+                        "field",
+                        "operator"
+                    ],
+                    "properties": {
+                        "field": {
+                            "type": "string",
+                            "enum": [
+                                "title",
+                                "date",
+                                "user_id",
+                                "admin_role",
+                                "geo_id"
+                            ]
+                        },
+                        "operator": {
+                            "type": "string",
+                            "enum": [
+                                "=",
+                                ">",
+                                "<",
+                                "!=",
+                                "LIKE"
+                            ]
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "auth_type": {
+                "type": "string",
+                "enum": [
+                    "user_verify",
+                    "admin_verify",
+                    "none"
+                ]
+            },
+            "dependency": {
+                "type": "integer",
+                "minimum": -1,
+                "maximum": 5,
+                "description": "依赖的步骤编号（-1表示无依赖）"
+            },
+            "data_bindings": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string",
+                    "description": "格式：stepX.field_name（如step1.meeting_id）"
+                },
+                "description": "当前步骤字段与前序字段的映射关系"
+            }
+        },
+        "allOf": [
+            {
+                "if": {
+                    "properties": {
+                        "step": {
+                            "const": 1
+                        }
+                    }
+                },
+                "then": {
+                    "properties": {
+                        "dependency": {
+                            "const": -1
+                        }
+                    }
+                }
+            },
+            {
+                "if": {
+                    "properties": {
+                        "step": {
+                            "exclusiveMinimum": 1
+                        }
+                    }
+                },
+                "then": {
+                    "properties": {
+                        "dependency": {
+                            "minimum": 1,
+                            "maximum": {
+                                "$data": "1/step"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "if": {
+                    "properties": {
+                        "intent": {
+                            "const": "query"
+                        }
+                    }
+                },
+                "then": {
+                    "required": [
+                        "filters",
+                        "output_fields"
+                    ],
+                    "properties": {
+                        "subtype": {
+                            "enum": [
+                                "meeting",
+                                "file",
+                                "news",
+                                "rank",
+                                "rec"
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "if": {
+                    "properties": {
+                        "intent": {
+                            "const": "action"
+                        }
+                    }
+                },
+                "then": {
+                    "required": [
+                        "input_fields",
+                        "auth_type"
+                    ],
+                    "properties": {
+                        "subtype": {
+                            "enum": [
+                                "download",
+                                "schedule",
+                                "summarize",
+                                "checkin"
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "if": {
+                    "properties": {
+                        "intent": {
+                            "const": "route"
+                        }
+                    }
+                },
+                "then": {
+                    "required": [
+                        "params"
+                    ],
+                    "properties": {
+                        "subtype": {
+                            "enum": [
+                                "page",
+                                "geo"
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

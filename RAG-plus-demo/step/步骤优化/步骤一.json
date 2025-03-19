@@ -1,0 +1,57 @@
+{
+    "type": "array",
+    "items": {
+      "type": "object",
+      "required": ["primary_intent", "keywords", "implicit_steps"],
+      "properties": {
+        "primary_intent": {
+          "type": "string",
+          "enum": ["query", "route", "action"]
+        },
+        "subtype": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["meeting", "file", "news", "rank", "rec"]
+              }
+            },
+            "action": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["download", "schedule", "summarize", "checkin", "share", "cancel"]
+              }
+            },
+            "route": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["page", "geo"]
+              }
+            }
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "items": {"type": "string"},
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "db_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["meeting", "meeting_geo", "meeting_clip", "news"]
+          }
+        },
+        "implicit_steps": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "需要以'需要'开头的操作描述，如：需要验证时间冲突"
+        }
+      }
+    }
+  }

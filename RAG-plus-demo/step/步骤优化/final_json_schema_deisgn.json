@@ -1,0 +1,120 @@
+{
+    "type": "array",
+    "items": {
+      "type": "object",
+      "required": ["step", "intent", "dependency", "keywords", "filters", "db"],
+      "properties": {
+        "step": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "步骤编号，从1开始递增"
+        },
+        "intent": {
+          "type": "string",
+          "enum": ["action", "query", "route"],
+          "description": "用户意图分类"
+        },
+        "query": {
+          "type": "string",
+          "enum": ["meeting", "file", "news", "rank", "rec"],
+          "description": "仅当intent=query时必填"
+        },
+        "route": {
+          "type": "string",
+          "enum": ["page", "geo"],
+          "description": "仅当intent=route时必填"
+        },
+        "action": {
+          "type": "string",
+          "enum": ["download", "schedule", "remind", ""],
+          "description": "新增字段，仅当intent=action时必填",
+          "default": ""
+        },
+        "db": {
+          "type": "string",
+          "enum": ["meeting", "meeting_geo", "news", "meeting_clip", ""],
+          "description": "仅当intent=query时允许非空值",
+          "default": ""
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "keyword": {"type": "string"},
+              "type": {"type": "string", "enum": ["会议名称", "地理位置", "文件", "动作"]}
+            }
+          },
+          "description": "结构化关键词数组"
+        },
+        "dependency": {
+          "type": "integer",
+          "minimum": -1,
+          "maximum": {"$data": "1/step"},
+          "description": "依赖的步骤号，必须小于当前step",
+          "default": -1
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "enum": ["title", "beginTime", "meetingType", "address", "fileName", "meetingId"]
+              },
+              "operator": {
+                "type": "string",
+                "enum": ["like", "eq", ">", "<", ">=", "<="],
+                "default": "eq"
+              },
+              "value": {"type": "string"},
+              "order": {"type": "integer", "minimum": 1}
+            },
+            "required": ["field", "value"]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"intent": {"const": "query"}},
+            "required": ["intent"]
+          },
+          "then": {
+            "required": ["query"],
+            "properties": {
+              "route": {"enum": [""]},
+              "action": {"enum": [""]}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"intent": {"const": "route"}},
+            "required": ["intent"]
+          },
+          "then": {
+            "required": ["route"],
+            "properties": {
+              "query": {"enum": [""]},
+              "action": {"enum": [""]}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"intent": {"const": "action"}},
+            "required": ["intent"]
+          },
+          "then": {
+            "required": ["action"],
+            "properties": {
+              "query": {"enum": [""]},
+              "route": {"enum": [""]}
+            }
+          }
+        }
+      ]
+    }
+  }

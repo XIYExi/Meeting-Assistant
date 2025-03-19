@@ -1,0 +1,36 @@
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "subtype": "meeting",
+        "db": "meeting",
+        "input_fields": [],
+        "output_fields": [
+            "meeting_id"
+        ],
+        "filters": [
+            {
+                "field": "date",
+                "operator": ">",
+                "value": "now+1m"
+            }
+        ],
+        "auth_type": "user_verify"
+    },
+    {
+        "step": 2,
+        "intent": "route",
+        "subtype": "geo",
+        "db": "meeting_geo",
+        "input_fields": [
+            "step1.meeting_id"
+        ],
+        "output_fields": [
+            "geo_id"
+        ],
+        "params": {
+            "path": "/导航至会议地点",
+            "query": "id=step1.meeting_id"
+        }
+    }
+]
