@@ -117,13 +117,15 @@ export default {
 	onLoad: function () {
 		// 获得会议列表
 		if (this.$store.state.user) {
-			// console.log('true')
+			console.log('true')
 			stream_real_time_rec_list(this.$store.state.user.userId).then(resp => { 
+				console.log(resp)
 				this.meetingList = resp.data;
 			})
 		}
 		else {
 			llmViewStaticRecList().then(resp => {
+				console.log(resp)
 				this.meetingList = resp.data;
 			})
 		}

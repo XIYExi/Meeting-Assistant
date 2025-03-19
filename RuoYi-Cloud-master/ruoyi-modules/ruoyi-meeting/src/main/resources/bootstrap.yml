@@ -15,7 +15,7 @@ aliyun:
 spring:
   data:
     mongodb:
-      uri: mongodb://root:123456@192.168.31.94:27017/meeting?authSource=admin&authMechanism=SCRAM-SHA-1
+      uri: mongodb://root:123456@123.56.20.200:27017/meeting?authSource=admin&authMechanism=SCRAM-SHA-1
   application:
     # 应用名称
     name: ruoyi-meeting

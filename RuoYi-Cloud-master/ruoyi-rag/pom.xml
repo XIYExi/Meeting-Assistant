@@ -176,6 +176,12 @@
             <artifactId>hutool-all</artifactId>
              <version>5.7.21</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-api-rec</artifactId>
+            <version>3.6.5</version>
+        </dependency>
     </dependencies>
 
     <repositories>

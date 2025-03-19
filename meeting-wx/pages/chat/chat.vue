@@ -40,7 +40,7 @@ export default {
 			value: '',
 			showStream: false,
 			intCount: 0,
-			path: "ws://127.0.0.1:8010/websocket",
+			path: "ws://192.168.31.76:8010/websocket",
 			socket: "",
 			emptys: [
 				'关于西湖论剑安全大会',

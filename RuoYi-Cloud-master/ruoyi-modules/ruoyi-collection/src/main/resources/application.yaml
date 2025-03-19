@@ -9,16 +9,16 @@ mybatis-plus:
 spring:
   kafka:
     producer:
-      bootstrap-servers: 192.168.31.94:9092
+      bootstrap-servers: 123.56.20.200:9092
   data:
     mongodb:
-      uri: mongodb://root:123456@192.168.31.94:27017/meeting?authSource=admin&authMechanism=SCRAM-SHA-1
+      uri: mongodb://root:123456@123.56.20.200:27017/meeting?authSource=admin&authMechanism=SCRAM-SHA-1
   redis:
-    host: 192.168.31.76
+    host: 123.56.20.200
     port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.31.76:3306/ry-cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://123.56.20.200:3306/ry-cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
     username: root
     password: 123456
 

@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.meeting.api.RemoteScheduleService;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
-import com.ruoyi.rag.domain.StepSplitParamsEntity;
+import com.ruoyi.rag.domain.StepSplitEntity;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.utils.IdGenerator;
 import com.ruoyi.rag.utils.MilvusOperateUtils;
@@ -78,7 +78,7 @@ public class ToolActionHandler implements ToolSimpleHandler {
     }
 
     @Override
-    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
+    public boolean handler(StepSplitEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
 
         return true;
     }

@@ -1,28 +1,36 @@
 package com.ruoyi.rag.handler;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ruoyi.common.core.utils.bean.BeanUtils;
+import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
-import com.ruoyi.rag.domain.StepSplitParamsEntity;
+import com.ruoyi.rag.domain.MeetingRecResponse;
+import com.ruoyi.rag.domain.StepSplitEntity;
 import com.ruoyi.rag.domain.StepSplitParamsFilterEntity;
 import com.ruoyi.rag.domain.query.Meeting;
 import com.ruoyi.rag.domain.query.MeetingAgenda;
 import com.ruoyi.rag.domain.query.MeetingGeo;
+import com.ruoyi.rag.domain.query.News;
 import com.ruoyi.rag.mapper.query.MeetingAgendaMapper;
 import com.ruoyi.rag.mapper.query.MeetingGeoMapper;
 import com.ruoyi.rag.mapper.query.MeetingMapper;
 import com.ruoyi.rag.mapper.query.NewsMapper;
 import com.ruoyi.rag.model.CustomPrompt;
-import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.tcp.server.WebSocketServerHandler;
-import com.ruoyi.rag.utils.MilvusOperateUtils;
+import com.ruoyi.rec.api.RemoteRecService;
+import com.ruoyi.rec.api.domain.MeetingResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -40,6 +48,11 @@ public class ToolQueryHandler implements ToolSimpleHandler {
     private MeetingGeoMapper meetingGeoMapper;
     @Resource
     private MeetingAgendaMapper meetingAgendaMapper;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+    @Resource
+    private RemoteRecService recService;
+
 
     private WebSocketServerHandler nettyServerHandler = new WebSocketServerHandler();
 
@@ -59,7 +72,72 @@ public class ToolQueryHandler implements ToolSimpleHandler {
      * @return
      */
     @Override
-    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
+    public boolean handler(StepSplitEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
+        String keywords = params.getKeywords();
+        String db = params.getDb();
+        Integer dependency = params.getDependency();
+
+        String query = params.getQuery();
+
+        switch (query) {
+            case "meeting":
+
+                break;
+            case "file":
+                break;
+            case "news":
+                break;
+            case "rec":
+                // 获得用来推荐的最终列表
+                List<MeetingRecResponse> queryRec = this.queryRec();
+                break;
+            case "rank":
+                // 获取用来推荐的最终列表
+                List<MeetingRecResponse> queryRank = this.queryRank();
+                break;
+        }
+
+
+        return true;
+    }
+
+
+    private List<MeetingRecResponse> queryRec() {
+        List<MeetingResponse> meetingResponses = recService.recForAgent(1L);
+        List<MeetingRecResponse> collect = meetingResponses.stream().map(meetingResponse -> {
+            MeetingRecResponse meetingRecResponse = new MeetingRecResponse();
+            BeanUtils.copyProperties(meetingResponse, meetingRecResponse);
+            meetingRecResponse.setLocation(meetingResponse.getLocation().getFormattedAddress());
+            meetingRecResponse.setRoute("/pages/schedule/detail/index?id" + meetingResponse.getId());
+            meetingRecResponse.setMeetingType(meetingResponse.getMeetingType() == 1L ? "线下会议" : "线上会议");
+            return meetingRecResponse;
+        }).collect(Collectors.toList());
+        return collect;
+    }
+
+    private List<MeetingRecResponse> queryRank() {
+        // 总榜
+        Set<ZSetOperations.TypedTuple<Object>> ranks =  redisTemplate.opsForZSet().reverseRangeWithScores("meeting:view:rank", 0L, -1L).stream().limit(4L).collect(Collectors.toSet());
+        List<MeetingRecResponse> collect = ranks.stream().map(elem -> {
+            Meeting meeting = meetingMapper.selectById((Long) elem.getValue());
+            MeetingGeo meetingGeo = meetingGeoMapper.selectById(Long.parseLong(meeting.getLocation()));
+
+            MeetingRecResponse meetingRecResponse = new MeetingRecResponse();
+            BeanUtils.copyProperties(meeting, meetingRecResponse);
+            meetingRecResponse.setLocation(meetingGeo.getFormattedAddress());
+            meetingRecResponse.setMeetingType(meeting.getMeetingType() == 1L ? "线下会议": "线上会议");
+            return meetingRecResponse;
+        }).collect(Collectors.toList());
+        return collect;
+    }
+
+    private List<News> queryNes(StepSplitEntity params
+    ) {
+        return null;
+    }
+
+
+    private boolean oldHanlder(StepSplitEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
         // 1. 先解析参数
         String keywords = params.getKeywords();
         String db = params.getDb();
@@ -220,7 +298,6 @@ public class ToolQueryHandler implements ToolSimpleHandler {
         }
         return true;
     }
-
 
     private Map<String, Object> generateQueryWrapperByFiltersForMeeting(
             String keywords,

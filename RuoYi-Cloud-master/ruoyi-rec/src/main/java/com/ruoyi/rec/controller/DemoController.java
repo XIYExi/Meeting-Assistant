@@ -71,6 +71,14 @@ public class DemoController {
         return AjaxResult.success(meetingResponses);
     }
 
+    @GetMapping("/rec_for_agent")
+    public List<MeetingResponse> recForAgent(@RequestParam("userId") Long userId) {
+        System.err.println(userId);
+        List<MeetingResponse> meetingResponses = recService.selectStreamRecMeetingList(userId);
+        return meetingResponses;
+    }
+
+
 
     @GetMapping("/getRecMeeting")
     public AjaxResult getRecMeeting() {

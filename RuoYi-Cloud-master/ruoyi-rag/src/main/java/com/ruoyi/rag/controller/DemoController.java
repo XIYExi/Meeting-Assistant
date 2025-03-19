@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.core.web.domain.AjaxResult;
-import com.ruoyi.rag.assistant.Assistant;
 import com.ruoyi.rag.config.RagCacheKeyBuilder;
 import com.ruoyi.rag.config.RagParamConfig;
 import com.ruoyi.rag.config.RagRequestPath;
@@ -102,11 +101,8 @@ public class DemoController {
     @GetMapping("/custom")
     public AjaxResult custom() {
         // 创建 Assistant
-        Assistant assistant = AiServices.builder(Assistant.class)
-                .chatLanguageModel(domesticModel)
-                .build();
-        String response = assistant.chat("你好，国产大模型！");
-        return AjaxResult.success(response);
+
+        return AjaxResult.success("");
     }
 
     @GetMapping("/chat")

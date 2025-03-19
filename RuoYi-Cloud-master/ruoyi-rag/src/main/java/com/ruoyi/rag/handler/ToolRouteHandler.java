@@ -3,11 +3,10 @@ package com.ruoyi.rag.handler;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.rag.declare.ToolSimpleHandler;
 import com.ruoyi.rag.domain.EmbeddingRouteMappingMilvus;
+import com.ruoyi.rag.domain.StepSplitEntity;
 import com.ruoyi.rag.domain.query.RouteMapping;
-import com.ruoyi.rag.domain.StepSplitParamsEntity;
 import com.ruoyi.rag.domain.StepSplitParamsFilterEntity;
 import com.ruoyi.rag.domain.query.Meeting;
-import com.ruoyi.rag.domain.query.MeetingGeo;
 import com.ruoyi.rag.domain.query.News;
 import com.ruoyi.rag.mapper.RouteMappingMapper;
 import com.ruoyi.rag.mapper.query.MeetingGeoMapper;
@@ -16,7 +15,6 @@ import com.ruoyi.rag.mapper.query.NewsMapper;
 import com.ruoyi.rag.model.CustomPrompt;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.tcp.server.WebSocketServerHandler;
-import com.ruoyi.rag.utils.MilvusOperateUtils;
 import com.ruoyi.rag.utils.RouteMappingOperateUtils;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
@@ -86,7 +84,7 @@ public class ToolRouteHandler implements ToolSimpleHandler {
      * @param output 输出的结果，保存到map里面，保证每一步结果向下传递
      */
     @Override
-    public boolean handler(StepSplitParamsEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
+    public boolean handler(StepSplitEntity params, int step, Map<Integer, Map<String, Object>> output, String uid) {
         // 1. 先获取keywords，如果走的是route，那么肯定要先根据keywords去milvus里面查数据
         String keywords = params.getKeywords();
         Response<Embedding> embed = domesticEmbeddingModel.embed(TextSegment.textSegment(keywords));

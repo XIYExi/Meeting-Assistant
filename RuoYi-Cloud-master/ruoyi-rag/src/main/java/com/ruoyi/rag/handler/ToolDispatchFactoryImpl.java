@@ -43,7 +43,7 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
             stepResult.put(i, new HashMap<String, Object>());
 
             ToolSimpleHandler toolSimpleHandler = toolMap.get(step.getIntent());
-            boolean handler = toolSimpleHandler.handler(step.getParams(), i, stepResult, uid);
+            boolean handler = toolSimpleHandler.handler(step, i, stepResult, uid);
              // 准备开始下一轮之前，判断当前结果运行是不是失败
             if (!handler) {
                 logger.info("【factory dispatch】解析错误，用户提问错误 ", step);
@@ -118,6 +118,5 @@ public class ToolDispatchFactoryImpl implements ToolDispatchFactory, Initializin
         toolMap.put(ToolDispatchEnum.TOOL_ROUTER.getMessage(), applicationContext.getBean(ToolRouteHandler.class));
         toolMap.put(ToolDispatchEnum.TOOL_CHAT.getMessage(), applicationContext.getBean(ToolChatHandler.class));
         toolMap.put(ToolDispatchEnum.TOOL_QUERY.getMessage(), applicationContext.getBean(ToolQueryHandler.class));
-        toolMap.put(ToolDispatchEnum.TOOL_SUMMARY.getMessage(), applicationContext.getBean(ToolSummaryHandler.class));
     }
 }

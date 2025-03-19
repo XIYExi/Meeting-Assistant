@@ -11,7 +11,7 @@ export function executeChatMessage(question) {
 
 export function sendFlux(data) {
   return request({
-    url: '/rag/rag/v2/flux',
+    url: '/rag/rag/v1/flux',
     method: 'post',
 	data: data
   })
