@@ -10,27 +10,41 @@
         ],
         "filters": [
             {
-                "field": "date",
-                "operator": ">",
-                "value": "now+1m"
+                "field": "title",
+                "operator": "=",
+                "value": "网络安全大会"
             }
         ],
         "auth_type": "user_verify"
     },
     {
         "step": 2,
-        "intent": "route",
-        "subtype": "geo",
-        "db": "meeting_geo",
+        "intent": "query",
+        "subtype": "meeting",
+        "db": "meeting",
         "input_fields": [
             "step1.meeting_id"
         ],
         "output_fields": [
-            "geo_id"
+            "meeting_id"
         ],
-        "params": {
-            "path": "/导航至会议地点",
-            "query": "id=step1.meeting_id"
-        }
+        "filters": [
+            {
+                "field": "title",
+                "operator": "=",
+                "value": "网络安全大会"
+            },
+            {
+                "field": "beginTime",
+                "operator": "=",
+                "value": ""
+            },
+            {
+                "field": "address",
+                "operator": "=",
+                "value": ""
+            }
+        ],
+        "auth_type": "user_verify"
     }
 ]
