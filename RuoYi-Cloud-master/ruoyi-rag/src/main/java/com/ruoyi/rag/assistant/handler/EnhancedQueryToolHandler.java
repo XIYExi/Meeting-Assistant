@@ -6,10 +6,7 @@ import com.ruoyi.rag.assistant.declare.EnhancedToolHandler;
 import com.ruoyi.rag.assistant.declare.QueryProcessor;
 import com.ruoyi.rag.assistant.entity.Filter;
 import com.ruoyi.rag.assistant.entity.StepDefinition;
-import com.ruoyi.rag.assistant.handler.query.QueryMeetingProcessor;
-import com.ruoyi.rag.assistant.handler.query.QueryNewsProcessor;
-import com.ruoyi.rag.assistant.handler.query.QueryRankProcessor;
-import com.ruoyi.rag.assistant.handler.query.QueryRecProcessor;
+import com.ruoyi.rag.assistant.handler.query.*;
 import com.ruoyi.rag.assistant.utils.QueryContext;
 import com.ruoyi.rag.assistant.utils.ToolJudgmentFunc;
 import org.springframework.beans.factory.InitializingBean;
@@ -70,5 +67,6 @@ public class EnhancedQueryToolHandler implements EnhancedToolHandler, Initializi
         queryToolMap.put(QueryToolDispatchEnum.QUERY_REC.getMessage(), applicationContext.getBean(QueryRecProcessor.class));
         queryToolMap.put(QueryToolDispatchEnum.QUERY_RANk.getMessage(), applicationContext.getBean(QueryRankProcessor.class));
         queryToolMap.put(QueryToolDispatchEnum.QUERY_NEWS.getMessage(), applicationContext.getBean(QueryNewsProcessor.class));
+        queryToolMap.put(QueryToolDispatchEnum.QUERY_FILE.getMessage(), applicationContext.getBean(QueryFileProcessor.class));
     }
 }
