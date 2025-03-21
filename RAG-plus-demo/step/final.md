@@ -343,6 +343,81 @@
 ]
 ```
 
+## 查询名为《锡流千里》的文件
+
+```json
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "subtype": "file",
+        "db": "meeting_clip",
+        "dependency": -1,
+        "data_bindings": {},
+        "filters": [
+            {
+                "field": "fileName",
+                "operator": "=",
+                "value": "锡流千里"
+            }
+        ],
+        "auth_condition": {
+            "verify_mode": "password"
+        }
+    }
+]
+```
+
+
+## 查询教育系统数据安全专题会议的会议文件
+
+```json
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "subtype": "meeting",
+        "db": "meeting",
+        "dependency": -1,
+        "data_bindings": {},
+        "filters": [
+            {
+                "field": "title",
+                "operator": "LIKE",
+                "value": "教育系统数据安全专题会议"
+            }
+        ],
+        "output_fields": [
+            "meeting_id"
+        ]
+    },
+    {
+        "step": 2,
+        "intent": "query",
+        "subtype": "file",
+        "db": "meeting_clip",
+        "dependency": 1,
+        "data_bindings": {
+            "meeting_id": "step1.meeting_id"
+        },
+        "filters": [
+            {
+                "field": "meetingId",
+                "operator": "=",
+                "value": "step1.meeting_id"
+            }
+        ],
+        "output_fields": []
+    }
+]
+```
+
+## 下载名为《锡流千里》的文件
+
+```json
+
+```
+
 
 上面几个例子是我的最终输出，现在我要尝试再java中对上述案例进行处理，你需要按照mybatis-plus，springboot规范给我解析代码。
 

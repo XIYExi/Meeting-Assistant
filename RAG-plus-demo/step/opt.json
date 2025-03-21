@@ -2,11 +2,17 @@
     {
         "step": 1,
         "intent": "query",
-        "subtype": "rec",
+        "subtype": "meeting",
         "db": "meeting",
         "dependency": -1,
         "data_bindings": {},
-        "filters": [],
+        "filters": [
+            {
+                "field": "title",
+                "operator": "LIKE",
+                "value": "教育系统数据安全专题会议"
+            }
+        ],
         "output_fields": [
             "meeting_id"
         ]
@@ -14,18 +20,19 @@
     {
         "step": 2,
         "intent": "query",
-        "subtype": "rank",
-        "db": "meeting",
+        "subtype": "file",
+        "db": "meeting_clip",
         "dependency": 1,
         "data_bindings": {
             "meeting_id": "step1.meeting_id"
         },
-        "filters": [],
-        "input_fields": [
-            "meeting_id"
+        "filters": [
+            {
+                "field": "meetingId",
+                "operator": "=",
+                "value": "step1.meeting_id"
+            }
         ],
-        "output_fields": [
-            "meeting_id"
-        ]
+        "output_fields": []
     }
 ]
