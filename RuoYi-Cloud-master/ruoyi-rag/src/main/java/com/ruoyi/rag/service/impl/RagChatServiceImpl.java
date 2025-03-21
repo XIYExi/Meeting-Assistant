@@ -10,7 +10,6 @@ import com.ruoyi.rag.domain.MessagesLogs;
 import com.ruoyi.rag.entity.AgentResult;
 import com.ruoyi.rag.entity.MessageResponseDas;
 import com.ruoyi.rag.mapper.MessageLogsMapper;
-import com.ruoyi.rag.service.MessageLogsService;
 import com.ruoyi.rag.service.RagChatService;
 import com.ruoyi.rag.tcp.server.WebSocketServerHandler;
 import com.ruoyi.rag.utils.SignUtils;

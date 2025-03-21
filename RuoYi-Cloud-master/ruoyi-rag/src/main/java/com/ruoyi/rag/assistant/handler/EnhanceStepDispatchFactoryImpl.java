@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,16 +28,30 @@ public class EnhanceStepDispatchFactoryImpl implements EnhancedStepDispatchFacto
     private ApplicationContext applicationContext;
 
 
-
     @Override
     public String dispatch(List<StepDefinition> steps, String uid) {
         QueryContext context = new QueryContext();
+        Map<String, Object> resultMap = new HashMap<>();
         steps.sort(Comparator.comparingInt(StepDefinition::getStep));
+
         for (StepDefinition step : steps) {
-//            validateDependency(step, context);
+
+            int stepNum = step.getStep();
+            String stepKey = "step" + stepNum;
+
+            // 检查依赖
+            int dependency = step.getDependency();
+            if (dependency > 0 && !context.containsStep("step" + dependency)) {
+                resultMap.put("error", "依赖步骤" + dependency + "的结果不存在");
+                break;
+            }
+
             EnhancedToolHandler enhancedToolHandler = toolMap.get(step.getIntent());
             boolean handler = enhancedToolHandler.handler(step, context);
         }
+
+        Object dependencyResult = context.getDependencyResult(steps.size(), Object.class);
+        System.err.println(dependencyResult);
         return null;
     }
 

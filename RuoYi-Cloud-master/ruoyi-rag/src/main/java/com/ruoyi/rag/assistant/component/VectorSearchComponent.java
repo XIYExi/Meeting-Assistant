@@ -5,8 +5,9 @@ import com.ruoyi.common.core.utils.bean.BeanUtils;
 import com.ruoyi.rag.assistant.domain.Meeting;
 import com.ruoyi.rag.assistant.domain.MeetingAgenda;
 import com.ruoyi.rag.assistant.entity.MeetingResponse;
-import com.ruoyi.rag.mapper.query.MeetingAgendaMapper;
-import com.ruoyi.rag.mapper.query.MeetingMapper;
+import com.ruoyi.rag.assistant.mapper.MeetingAgendaMapper;
+import com.ruoyi.rag.assistant.mapper.MeetingClipMapper;
+import com.ruoyi.rag.assistant.mapper.MeetingMapper;
 import com.ruoyi.rag.model.DomesticEmbeddingModel;
 import com.ruoyi.rag.utils.IdGenerator;
 import com.ruoyi.rag.utils.MilvusOperateUtils;
@@ -29,6 +30,8 @@ public class VectorSearchComponent {
     private MeetingMapper meetingMapper;
     @Resource
     private MeetingAgendaMapper meetingAgendaMapper;
+    @Resource
+    private MeetingClipMapper meetingClipMapper;
 
 
     public MeetingResponse vectorSearch(String title) {

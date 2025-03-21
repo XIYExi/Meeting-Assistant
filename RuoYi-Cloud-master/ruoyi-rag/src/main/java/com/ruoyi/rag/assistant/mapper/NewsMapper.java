@@ -1,4 +1,4 @@
-package com.ruoyi.rag.mapper.query;
+package com.ruoyi.rag.assistant.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.rag.assistant.domain.News;

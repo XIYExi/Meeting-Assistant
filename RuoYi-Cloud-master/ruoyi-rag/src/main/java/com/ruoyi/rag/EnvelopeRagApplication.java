@@ -43,20 +43,18 @@ public class EnvelopeRagApplication {
                 "            {\n" +
                 "                \"field\": \"title\",\n" +
                 "                \"operator\": \"LIKE\",\n" +
-                "                \"value\": \"网络安全大会\"\n" +
+                "                \"value\": \"%年度新品发布会%\"\n" +
                 "            }\n" +
                 "        ],\n" +
-                "        \"time_constraints\": {\n" +
-                "            \"max_execution_ms\": 5000\n" +
-                "        },\n" +
-                "        \"auth_condition\": {\n" +
-                "            \"required_level\": \"user\",\n" +
-                "            \"verify_mode\": \"password\"\n" +
-                "        }\n" +
+                "        \"output_fields\": [\n" +
+                "            \"meeting_id\"\n" +
+                "        ],\n" +
+                "        \"auth_type\": \"user_verify\"\n" +
                 "    }\n" +
                 "]";
         List<StepDefinition> stepDefinitions = JSONArray.parseArray(str, StepDefinition.class);
         RequestContextHolder.setRequestList(stepDefinitions);
         String dispatch = dispatchFactory.dispatch(stepDefinitions, "1");
+
     }
 }

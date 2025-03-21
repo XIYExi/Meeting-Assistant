@@ -6,23 +6,20 @@ import com.ruoyi.rag.assistant.component.VectorSearchComponent;
 import com.ruoyi.rag.assistant.declare.QueryProcessor;
 import com.ruoyi.rag.assistant.domain.Meeting;
 import com.ruoyi.rag.assistant.domain.MeetingAgenda;
-import com.ruoyi.rag.assistant.domain.MeetingClip;
 import com.ruoyi.rag.assistant.domain.MeetingGeo;
 import com.ruoyi.rag.assistant.entity.Filter;
 import com.ruoyi.rag.assistant.entity.MeetingResponse;
 import com.ruoyi.rag.assistant.entity.StepDefinition;
 import com.ruoyi.rag.assistant.utils.QueryContext;
 import com.ruoyi.rag.assistant.utils.RequestContextHolder;
-import com.ruoyi.rag.mapper.query.MeetingAgendaMapper;
-import com.ruoyi.rag.mapper.query.MeetingMapper;
+import com.ruoyi.rag.assistant.mapper.MeetingAgendaMapper;
+import com.ruoyi.rag.assistant.mapper.MeetingMapper;
+import com.ruoyi.rag.assistant.mapper.MeetingGeoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Component
 public class QueryMeetingProcessor implements QueryProcessor {
@@ -33,122 +30,225 @@ public class QueryMeetingProcessor implements QueryProcessor {
     private MeetingMapper meetingMapper;
     @Resource
     private MeetingAgendaMapper meetingAgendaMapper;
+    @Autowired
+    private MeetingGeoMapper meetingGeoMapper;
 
 
     @Override
     public void processor(StepDefinition step, QueryContext context) {
-        QueryWrapper<Meeting> wrapper = new QueryWrapper<>();
-        // 如果有依赖，就优先走依赖
-        if (step.getDependency() != -1) {
-            // 通过前置依赖，获取meeting_id的值
-            handleDependency(step, context, wrapper);
-        }
+        String db = step.getDb();
+        int dependency = step.getDependency();
+        List<Filter> filters = step.getFilters();
+        Map<String, String> dataBindings = step.getDataBindings();
+        int totalSteps = RequestContextHolder.getRequestList().size();
 
-        // 优先查询 title，如果有 title 那么其他就没有必要查询
-        // 走 title 去 Milvus 肯定可以查到 Meeting
-        Optional<Filter> titleFilter = step.getFilters().stream().filter(f -> "title".equals(f.getField())).findFirst();
-        if (titleFilter.isPresent()) {
-            handleTitleFilter(step, titleFilter.get(), context);
-            return;
-        }
+        boolean needSearch = true;
 
-        // 处理其他过滤条件
-        step.getFilters().stream()
-            .filter(f -> !"title".equals(f.getField()))
-            .forEach(filter -> applyFilter(filter, wrapper, context));
-
-        List<Meeting> results = meetingMapper.selectList(wrapper);
-
-        List<MeetingResponse> queryMeetings = results.stream().map(elem -> {
-            MeetingResponse result = new MeetingResponse();
-            BeanUtils.copyProperties(elem, result);
-            List<MeetingAgenda> agenda = meetingAgendaMapper.selectList(new QueryWrapper<MeetingAgenda>().eq("meeting_id", elem.getId()));
-            result.setAgenda(agenda);
-            return result;
-        }).collect(Collectors.toList());
-        context.storeStepResult(step.getStep(), queryMeetings);
-    }
-
-
-    private void handleDependency(StepDefinition step, QueryContext context, QueryWrapper<Meeting> wrapper) {
-        // 拿到上一步依赖的数据
-        // 但是此时上一步以来的到底是什么类型的数据，需要通过LocalThread中保存的steps拿到上一步数据到底是什么
-        Object dependencyData = context.getDependencyResult(step.getDependency(), Object.class);
-
-        // 被依赖的步骤
-        StepDefinition dependentOnStep = RequestContextHolder.getRequestList().get(step.getDependency() - 1);
-        // 获取被依赖的哪一步到底是哪个数据库的 等于判断到底是什么数据类型
-        String dependentOnStepDb = dependentOnStep.getDb();
-        if ("meeting".equals(dependentOnStepDb)) {
-            MeetingResponse castDependentOnData = (MeetingResponse) dependencyData;
-            wrapper.in("id", castDependentOnData.getId());
-        }
-        else if ("meeting_geo".equals(dependentOnStepDb)) {
-            MeetingGeo castDependentOnData = (MeetingGeo) dependencyData;
-            wrapper.in("location", castDependentOnData.getId());
-        }
-        else if ("meeting_clip".equals(dependentOnStepDb)) {
-            MeetingClip castDependentOnData = (MeetingClip) dependencyData;
-            wrapper.in("id", castDependentOnData.getMeetingId());
-        }
-    }
-
-
-    private void handleTitleFilter(StepDefinition step, Filter filter, QueryContext context) {
-        MeetingResponse meetingResponse = vectorSearchComponent.vectorSearch(String.valueOf(filter.getField()));
-        context.storeStepResult(step.getStep(), meetingResponse);
-    }
-
-
-    private void applyFilter(Filter filter, QueryWrapper<Meeting> wrapper, QueryContext context) {
-        // 此时value有可能是前置项，也有可能是string值
-        Object value = resolveValue(filter.getValue(), context);
-        if (value instanceof List) {
-            MeetingResponse meetingResponse = (MeetingResponse)((List<?>) value).get(0);
-            value = meetingResponse.getId();
-        }
-        // 如果字段转换不存在为空，那么表示 field 字段违法，直接掠过当前轮次
-        String convertFieldName = convertFieldName(filter.getField());
-        if (!"".equals(convertFieldName))
-            return;
-        switch (filter.getOperator().toUpperCase()) {
-            case "LIKE":
-                wrapper.like(convertFieldName, value);
-                break;
-            case "BETWEEN":
-                Object[] values = (Object[]) value;
-                wrapper.between(convertFieldName, values[0], values[1]);
-                break;
-            default:
-                wrapper.eq(convertFieldName, value);
-        }
-    }
-
-    private Object resolveValue(Object rawValue, QueryContext context) {
-        if (rawValue instanceof String) {
-            String strValue = (String) rawValue;
-            if (strValue.startsWith("step")) {
-                // 如果step开头，那么就需要查前置依赖
-                return context.getDependencyResult(
-                    Integer.parseInt(strValue.split("\\.")[0].substring(4)),
-                    Object.class
-                );
+        List<String> outputFields = new ArrayList<>();
+        // 当前有输出，并且不是最后一项
+        if (step.getOutputFields()!= null && !step.getOutputFields().isEmpty() && step.getStep() < totalSteps) {
+            List<String> outputFieldsArray = step.getOutputFields();
+            for (int i = 0; i < outputFieldsArray.size(); i++) {
+                outputFields.add(outputFieldsArray.get(i));
             }
         }
-        return rawValue;
+
+        // file拆分出去了，这里只会查询meeting和meeting_geo两个数据库
+        // 同时meeting和meeting_agenda合二为一，查询的时候返回合并的结果MeetingResponse
+        if ("meeting".equals(db)) {
+            QueryWrapper<Meeting> queryWrapper = new QueryWrapper<>();
+            // 处理依赖和数据绑定
+            handleDependencyResult(step, context, queryWrapper);
+
+            for (Filter filter : filters) {
+                String field = filter.getField();
+                String operator = filter.getOperator();
+                String value = String.valueOf(filter.getValue());
+
+                // 如果包含step表示依赖了前置项，但是前置依赖已经在上面处理过了，这里直接跳过
+                if (value != null && value.contains("step")) {
+                    continue;
+                }
+
+                // 处理title, 只要查询title，就不在乎是什么匹配了，直接送到Milvus拿结果
+                if ("title".equals(field)) {
+                    MeetingResponse meetingResponse = vectorSearchComponent.vectorSearch(value);
+                    if (step.getStep() != totalSteps)
+                        context.storeStepResult(step.getStep(), Map.of("meeting_id", meetingResponse.getId()));
+                    else
+                        context.storeStepResult(step.getStep(), meetingResponse);
+                    needSearch = false;
+                    break;
+                }
+
+                switch (operator) {
+                    case "=":
+                        if ("NULL".equals(value)) {
+                            queryWrapper.isNull(convertFieldName(field));
+                        } else {
+                            queryWrapper.eq(convertFieldName(field), value);
+                        }
+                        break;
+                    case "LIKE":
+                        queryWrapper.like(convertFieldName(field), value);
+                        break;
+                    case ">":
+                        queryWrapper.gt(convertFieldName(field), value);
+                        break;
+                    case "<":
+                        queryWrapper.lt(convertFieldName(field), value);
+                        break;
+                    case ">=":
+                        queryWrapper.ge(convertFieldName(field), value);
+                        break;
+                    case "<=":
+                        queryWrapper.le(convertFieldName(field), value);
+                        break;
+                }
+            }
+
+            // 如果直接查了title那么肯定输出完整的meeting，所以不需要在进行判断了
+            if (needSearch) {
+                Meeting meeting = meetingMapper.selectList(queryWrapper).get(0);
+                // 不是最后一步，那么就按output_fields输出
+                if (step.getStep() != totalSteps){
+                    // 不然按照output_fields输出
+                    if (!outputFields.isEmpty()){
+                        Map<String, Object> resultItem = new HashMap<>();
+                        for (String field : outputFields) {
+                            switch (field) {
+                                case "meeting_id":
+                                    resultItem.put("meeting_id", meeting.getId());
+                                    break;
+                                case "title":
+                                    resultItem.put("title", meeting.getTitle());
+                                    break;
+                                case "beginTime":
+                                    resultItem.put("beginTime", meeting.getBeginTime());
+                                    break;
+                                case "geo_id":
+                                    resultItem.put("geo_id", meeting.getLocation());
+                                    break;
+                                // 添加其他需要的字段
+                                default:
+                                    break;
+                            }
+                        }
+                        context.storeStepResult(step.getStep(), resultItem);
+                    }
+                }
+                // 最后一步，直接输出完整的结果
+                else {
+                    // 最后一项，直接查询出完整数据然后送进去
+                    List<MeetingAgenda> agenda = meetingAgendaMapper.selectList(new QueryWrapper<MeetingAgenda>().eq("meeting_id", meeting.getId()));
+                    MeetingResponse meetingResponse = new MeetingResponse();
+                    BeanUtils.copyProperties(meeting, meetingResponse);
+                    meetingResponse.setAgenda(agenda);
+                    context.storeStepResult(step.getStep(), meetingResponse);
+                }
+            }
+        }
+        else if ("meeting_geo".equals(db)) {
+            QueryWrapper<MeetingGeo> queryWrapper = new QueryWrapper<>();
+            handleDependencyResult(step, context, queryWrapper);
+
+            for (Filter filter : filters) {
+                String field = filter.getField();
+                String operator = filter.getOperator();
+                String value = String.valueOf(filter.getValue());
+                if (value != null && value.contains("step")) {
+                    continue;
+                }
+
+                if ("address".equals(field)) {
+                    queryWrapper.like(convertFieldName(field), value);
+                    continue;
+                }
+
+                switch (operator) {
+                    case "=":
+                        queryWrapper.eq(convertFieldName(field), value);
+                        break;
+                    case "LIKE":
+                        queryWrapper.like(convertFieldName(field), value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            List<MeetingGeo> meetingGeos = meetingGeoMapper.selectList(queryWrapper);
+
+            System.err.println(meetingGeos.size());
+            MeetingGeo meetingGeo = meetingGeos.get(0);
+            if (step.getStep() != totalSteps) {
+                Map<String, Object> resultItem = new HashMap<>();
+                for (String field : outputFields) {
+                    switch (field) {
+                        case "geo_id":
+                            resultItem.put("geo_id", meetingGeo.getId());
+                            break;
+                        case "address":
+                            resultItem.put("address", meetingGeo.getFormattedAddress());
+                            break;
+                        // 添加其他需要的字段
+                        default: break;
+                    }
+                }
+                context.storeStepResult(step.getStep(), resultItem);
+            }
+            else {
+                context.storeStepResult(step.getStep(), meetingGeo);
+            }
+        }
+    }
+
+    // 处理依赖关系
+    public static <T> void handleDependencyResult(StepDefinition step, QueryContext context, QueryWrapper<T> queryWrapper) {
+        int dependency = step.getDependency();
+        Map<String, String> dataBindings = step.getDataBindings();
+        if (dependency > 0) {
+            Map dependencyResult = context.getDependencyResult(dependency, Map.class);
+            if (dependencyResult != null) {
+                for (Map.Entry<String, String> entry : dataBindings.entrySet()) {
+                    String bindValue = entry.getValue();
+                    if (bindValue.startsWith("step")) {
+                        String[]parts = bindValue.split("\\.");
+                        if (parts.length == 2) {
+                            String dependencyStep = parts[0];
+                            String dependencyField = parts[1];
+                            Object value = dependencyResult.get(dependencyField);
+                            if (value != null) {
+                                if (step.getDb().equals("meeting")) {
+                                    List<StepDefinition> requestList = RequestContextHolder.getRequestList();
+                                    // 被依赖数据的原始数据，要获取它的db
+                                    StepDefinition dStep = requestList.get(Integer.valueOf(dependencyStep.split("step")[1]) - 1);
+                                    String dependencyDb = dStep.getDb();
+                                    if ("meeting_geo".equals(dependencyDb)) {
+                                        queryWrapper.eq("location", value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
-    private String convertFieldName(String logicalName) {
-        // 字段映射逻辑
-        Map<String, String> fieldMapping = Map.of(
+    private static final Map<String, String> fieldMapping = Map.of(
             "beginTime", "begin_time",
             "geoId", "location",
             "type","type",
             "meetingType", "meeting_type",
             "views", "views",
-            "meetingId", "id"
+            "meeting_id", "id",
+            "address", "formatted_address"
         );
+    private static String convertFieldName(String logicalName) {
+        // 字段映射逻辑
         return fieldMapping.getOrDefault(logicalName, "");
     }
+
+
 }
