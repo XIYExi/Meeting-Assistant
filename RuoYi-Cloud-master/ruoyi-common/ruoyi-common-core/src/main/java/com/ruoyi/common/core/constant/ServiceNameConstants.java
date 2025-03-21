@@ -59,6 +59,11 @@ public class ServiceNameConstants
     public static final String RAG_SERVICE = "ruoyi-rag";
 
     /**
+     * REC 推荐算法模块 serviceId
+     */
+    public static final String REC_SERVICE = "ruoyi-rec";
+
+    /**
      * Agent 智能体模块 serviceId
      */
     public static final String AGENT_SERVICE = "ruoyi-agent";

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(contextId = "remoteRecService", value = ServiceNameConstants.RAG_SERVICE, fallbackFactory = RemoteRecFallbackFactory.class)
+@FeignClient(contextId = "remoteRecService", value = ServiceNameConstants.REC_SERVICE, fallbackFactory = RemoteRecFallbackFactory.class)
 public interface RemoteRecService {
 
     @GetMapping("/demo/rec_for_agent")

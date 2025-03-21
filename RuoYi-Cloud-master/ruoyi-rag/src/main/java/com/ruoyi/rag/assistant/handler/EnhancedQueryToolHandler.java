@@ -7,6 +7,8 @@ import com.ruoyi.rag.assistant.declare.QueryProcessor;
 import com.ruoyi.rag.assistant.entity.Filter;
 import com.ruoyi.rag.assistant.entity.StepDefinition;
 import com.ruoyi.rag.assistant.handler.query.QueryMeetingProcessor;
+import com.ruoyi.rag.assistant.handler.query.QueryNewsProcessor;
+import com.ruoyi.rag.assistant.handler.query.QueryRankProcessor;
 import com.ruoyi.rag.assistant.handler.query.QueryRecProcessor;
 import com.ruoyi.rag.assistant.utils.QueryContext;
 import com.ruoyi.rag.assistant.utils.ToolJudgmentFunc;
@@ -66,5 +68,7 @@ public class EnhancedQueryToolHandler implements EnhancedToolHandler, Initializi
     public void afterPropertiesSet() throws Exception {
         queryToolMap.put(QueryToolDispatchEnum.QUERY_MEETING.getMessage(), applicationContext.getBean(QueryMeetingProcessor.class));
         queryToolMap.put(QueryToolDispatchEnum.QUERY_REC.getMessage(), applicationContext.getBean(QueryRecProcessor.class));
+        queryToolMap.put(QueryToolDispatchEnum.QUERY_RANk.getMessage(), applicationContext.getBean(QueryRankProcessor.class));
+        queryToolMap.put(QueryToolDispatchEnum.QUERY_NEWS.getMessage(), applicationContext.getBean(QueryNewsProcessor.class));
     }
 }

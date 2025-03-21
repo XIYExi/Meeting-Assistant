@@ -11,14 +11,15 @@
         "data_bindings": {},
         "filters": [
             {
-                "field": "geo_id",
+                "field": "address",
                 "operator": "=",
                 "value": "安恒大厦"
             }
         ],
-        "auth_condition": {
-            "verify_mode": "password"
-        }
+        "output_fields": [
+            "geo_id"
+        ],
+        "auth_type": "user_verify"
     },
     {
         "step": 2,
@@ -27,7 +28,7 @@
         "db": "meeting",
         "dependency": 1,
         "data_bindings": {
-            "step1.geo_id": "step1.geo_id"
+            "geo_id": "step1.geo_id"
         },
         "filters": [
             {
@@ -36,9 +37,10 @@
                 "value": "step1.geo_id"
             }
         ],
-        "auth_condition": {
-            "verify_mode": "password"
-        }
+        "output_fields": [
+            "meeting_id"
+        ],
+        "auth_type": "user_verify"
     }
 ]
 ```
@@ -73,7 +75,7 @@
 ]
 ```
 
-## 查询网络安全大会信息
+## 查询年度新品发布会信息
 
 ```json
 [
@@ -88,15 +90,13 @@
             {
                 "field": "title",
                 "operator": "LIKE",
-                "value": "%网络安全大会%"
+                "value": "%年度新品发布会%"
             }
         ],
-        "auth_condition": {
-            "verify_mode": "password"
-        },
         "output_fields": [
             "meeting_id"
-        ]
+        ],
+        "auth_type": "user_verify"
     }
 ]
 ```
@@ -282,6 +282,67 @@
     }
 ]
 ```
+
+## 标题为网络安全的新闻讲了什么
+```json
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "subtype": "news",
+        "db": "news",
+        "dependency": -1,
+        "data_bindings": {},
+        "filters": [
+            {
+                "field": "title",
+                "operator": "LIKE",
+                "value": "%网络安全%"
+            }
+        ],
+        "output_fields": [
+            "news_id"
+        ],
+        "auth_type": "user_verify"
+    }
+]
+```
+
+## 给我推荐几个会议，并介绍浏览量最高的会议信息
+```json
+[
+    {
+        "step": 1,
+        "intent": "query",
+        "subtype": "rec",
+        "db": "meeting",
+        "dependency": -1,
+        "data_bindings": {},
+        "filters": [],
+        "output_fields": [
+            "meeting_id"
+        ]
+    },
+    {
+        "step": 2,
+        "intent": "query",
+        "subtype": "rank",
+        "db": "meeting",
+        "dependency": 1,
+        "data_bindings": {
+            "meeting_id": "step1.meeting_id"
+        },
+        "filters": [],
+        "input_fields": [
+            "meeting_id"
+        ],
+        "output_fields": [
+            "meeting_id"
+        ]
+    }
+]
+```
+
 
 上面几个例子是我的最终输出，现在我要尝试再java中对上述案例进行处理，你需要按照mybatis-plus，springboot规范给我解析代码。
 

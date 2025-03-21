@@ -20,8 +20,6 @@ import java.util.List;
 @EnableRyFeignClients
 public class EnvelopeRagApplication {
 
-
-
     public static void main(String[] args) {
         SpringApplication.run(EnvelopeRagApplication.class, args);
     }
@@ -35,21 +33,31 @@ public class EnvelopeRagApplication {
                 "    {\n" +
                 "        \"step\": 1,\n" +
                 "        \"intent\": \"query\",\n" +
-                "        \"subtype\": \"meeting\",\n" +
+                "        \"subtype\": \"rec\",\n" +
                 "        \"db\": \"meeting\",\n" +
                 "        \"dependency\": -1,\n" +
                 "        \"data_bindings\": {},\n" +
-                "        \"filters\": [\n" +
-                "            {\n" +
-                "                \"field\": \"title\",\n" +
-                "                \"operator\": \"LIKE\",\n" +
-                "                \"value\": \"%年度新品发布会%\"\n" +
-                "            }\n" +
+                "        \"filters\": [],\n" +
+                "        \"output_fields\": [\n" +
+                "            \"meeting_id\"\n" +
+                "        ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"step\": 2,\n" +
+                "        \"intent\": \"query\",\n" +
+                "        \"subtype\": \"rank\",\n" +
+                "        \"db\": \"meeting\",\n" +
+                "        \"dependency\": 1,\n" +
+                "        \"data_bindings\": {\n" +
+                "            \"meeting_id\": \"step1.meeting_id\"\n" +
+                "        },\n" +
+                "        \"filters\": [],\n" +
+                "        \"input_fields\": [\n" +
+                "            \"meeting_id\"\n" +
                 "        ],\n" +
                 "        \"output_fields\": [\n" +
                 "            \"meeting_id\"\n" +
-                "        ],\n" +
-                "        \"auth_type\": \"user_verify\"\n" +
+                "        ]\n" +
                 "    }\n" +
                 "]";
         List<StepDefinition> stepDefinitions = JSONArray.parseArray(str, StepDefinition.class);

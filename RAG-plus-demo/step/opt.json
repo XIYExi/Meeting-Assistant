@@ -2,49 +2,30 @@
     {
         "step": 1,
         "intent": "query",
-        "subtype": "meeting",
+        "subtype": "rec",
         "db": "meeting",
-        "input_fields": [],
+        "dependency": -1,
+        "data_bindings": {},
+        "filters": [],
         "output_fields": [
             "meeting_id"
-        ],
-        "filters": [
-            {
-                "field": "title",
-                "operator": "=",
-                "value": "网络安全大会"
-            }
-        ],
-        "auth_type": "user_verify"
+        ]
     },
     {
         "step": 2,
         "intent": "query",
-        "subtype": "meeting",
+        "subtype": "rank",
         "db": "meeting",
+        "dependency": 1,
+        "data_bindings": {
+            "meeting_id": "step1.meeting_id"
+        },
+        "filters": [],
         "input_fields": [
-            "step1.meeting_id"
+            "meeting_id"
         ],
         "output_fields": [
             "meeting_id"
-        ],
-        "filters": [
-            {
-                "field": "title",
-                "operator": "=",
-                "value": "网络安全大会"
-            },
-            {
-                "field": "beginTime",
-                "operator": "=",
-                "value": ""
-            },
-            {
-                "field": "address",
-                "operator": "=",
-                "value": ""
-            }
-        ],
-        "auth_type": "user_verify"
+        ]
     }
 ]

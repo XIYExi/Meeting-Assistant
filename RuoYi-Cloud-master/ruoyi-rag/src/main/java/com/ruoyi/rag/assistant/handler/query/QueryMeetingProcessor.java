@@ -37,9 +37,7 @@ public class QueryMeetingProcessor implements QueryProcessor {
     @Override
     public void processor(StepDefinition step, QueryContext context) {
         String db = step.getDb();
-        int dependency = step.getDependency();
         List<Filter> filters = step.getFilters();
-        Map<String, String> dataBindings = step.getDataBindings();
         int totalSteps = RequestContextHolder.getRequestList().size();
 
         boolean needSearch = true;
