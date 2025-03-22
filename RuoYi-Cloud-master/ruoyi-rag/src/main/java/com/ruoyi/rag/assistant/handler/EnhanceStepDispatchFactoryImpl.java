@@ -52,7 +52,7 @@ public class EnhanceStepDispatchFactoryImpl implements EnhancedStepDispatchFacto
 
         Object dependencyResult = context.getDependencyResult(steps.size(), Object.class);
         System.err.println(dependencyResult);
-        return null;
+        return context;
     }
 
     private void validateDependency(StepDefinition step, QueryContext context) {

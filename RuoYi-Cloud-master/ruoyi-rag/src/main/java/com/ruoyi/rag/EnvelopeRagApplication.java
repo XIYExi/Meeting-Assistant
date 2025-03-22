@@ -28,7 +28,7 @@ public class EnvelopeRagApplication {
     @Resource
     private EnhancedStepDispatchFactory dispatchFactory;
 
-    @PostConstruct
+    // @PostConstruct
     public void test() {
         String str = "[\n" +
                 "    {\n" +
