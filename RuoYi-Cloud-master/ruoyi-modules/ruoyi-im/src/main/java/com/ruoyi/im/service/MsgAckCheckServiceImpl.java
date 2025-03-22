@@ -46,7 +46,7 @@ public class MsgAckCheckServiceImpl implements IMsgAckCheckService{
         String json = JSON.toJSONString(imMsgBody);
         Message message = new Message();
         message.setBody(json.getBytes());
-        message.setTopic(ImCoreServerProviderTopicName.LIVE_IM_ACK_MSG_TOPIC);
+        message.setTopic(ImCoreServerProviderTopicName.AGENT_IM_ACK_MSG_TOPIC);
         //等级1 -> 1s，等级2 -> 5s
         message.setDelayTimeLevel(2);
         try {

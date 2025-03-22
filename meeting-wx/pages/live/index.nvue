@@ -37,20 +37,10 @@ export default {
 			// ws://127.0.0.1:8809/{token}/{userId}/{code}/{param}
 			// code固定1001 ，用来登录的时候和netty握手进行校验！
 			// param即roomId
-			this.connetImServer('ws://' + url + `/1/${this.$store.state.user.userId}/1001/200`);
+			this.connetImServer('ws://' + url + `/1/${this.$store.state.user.userId}/1002/200`);
 		});
 		
-		// 用户进入的时候先查询10条对话记录，显得不那么空
-		getHistoryChatList(params.id).then(resp => {
-			console.log('chat list history limit 10: ', resp)
-			if(resp.code === 200) {
-				const {data} = resp;
-				const chatHistory = data.map(item => {
-					return {"content": item.content, "avatarName": item.nickName};
-				});
-				this.chatList = chatHistory;
-			}
-		})
+		
 	},
 	data() {
 		return {

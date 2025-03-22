@@ -73,7 +73,7 @@ public class WsSharkHandler extends ChannelInboundHandlerAdapter {
         );
         //token的尾部就是appId
         //Integer appId = Integer.valueOf(token.substring(token.lastIndexOf("%") + 1));
-        Integer appId = AppIdEnum.LIVE_BIZ.getCode();
+        Integer appId = AppIdEnum.AGENT_BIZ.getCode();
         //建立ws的握手连接
         webSocketServerHandshaker = wsFactory.newHandshaker(msg);
 
@@ -87,7 +87,7 @@ public class WsSharkHandler extends ChannelInboundHandlerAdapter {
         if (channelFuture.isSuccess()) {
             Integer code = Integer.valueOf(paramArr[3]);
             Integer roomId = null;
-            if (code == ParamCodeEnum.LIVING_ROOM_LOGIN.getCode()) {
+            if (code == ParamCodeEnum.AGENT_ROOM_LOGIN.getCode()) {
                 roomId = Integer.valueOf(paramArr[4]);
             }
             loginMsgHandler.loginSuccessHandler(ctx, userId, appId, roomId);
@@ -96,7 +96,8 @@ public class WsSharkHandler extends ChannelInboundHandlerAdapter {
     }
 
     enum ParamCodeEnum {
-        LIVING_ROOM_LOGIN(1001, "直播间登录");
+        LIVING_ROOM_LOGIN(1001, "直播间登录"),
+        AGENT_ROOM_LOGIN(1002, "Agent对话房间登录");
 
         int code;
         String desc;

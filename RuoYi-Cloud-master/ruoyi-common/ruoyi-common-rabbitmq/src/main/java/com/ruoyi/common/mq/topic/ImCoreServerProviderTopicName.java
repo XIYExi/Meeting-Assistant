@@ -7,11 +7,14 @@ public class ImCoreServerProviderTopicName {
      */
     public static final String LIVE_IM_BIZ_MSG_TOPIC = "live_in_biz_msg_topic";
 
+    public static final String AGENT_IM_BIZ_MSG_TOPIC = "agent_in_biz_msg_topic";
+
 
     /**
      * 发送im的ack消息
      */
     public static final String LIVE_IM_ACK_MSG_TOPIC = "live_im_ack_msg_topic";
+    public static final String AGENT_IM_ACK_MSG_TOPIC = "agent_im_ack_msg_topic";
 
 
     /**

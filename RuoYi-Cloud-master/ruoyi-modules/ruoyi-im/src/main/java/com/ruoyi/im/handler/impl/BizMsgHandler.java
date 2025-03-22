@@ -40,7 +40,7 @@ public class BizMsgHandler implements SimpleHandler {
         }
         Message message = new Message();
         message.setBody(body);
-        message.setTopic(ImCoreServerProviderTopicName.LIVE_IM_BIZ_MSG_TOPIC);
+        message.setTopic(ImCoreServerProviderTopicName.AGENT_IM_BIZ_MSG_TOPIC);
         try {
             SendResult sendResult = mqProducer.send(message);
             logger.info("[BizMsgHandler消息投送结果]: {}", sendResult);

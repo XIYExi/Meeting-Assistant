@@ -1,10 +1,10 @@
-package com.ruoyi.live.consumer;
+package com.ruoyi.rag.consumer;
 
-import com.alibaba.fastjson2.JSON;
-import com.ruoyi.common.entity.im.ImMsgBody;
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.entity.im.ImOnlineDTO;
 import com.ruoyi.common.mq.properties.RocketMQConsumerProperties;
 import com.ruoyi.common.mq.topic.ImCoreServerProviderTopicName;
-import com.ruoyi.live.handler.MessageHandler;
+import com.ruoyi.rag.service.AgentRoomService;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
@@ -17,36 +17,36 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-@Component
-public class ImMsgConsumer implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImMsgConsumer.class);
+@Component
+public class AgentRoomOnlineConsumer implements InitializingBean {
+
+    private static final Logger logger = LoggerFactory.getLogger(AgentRoomOnlineConsumer.class);
 
     @Resource
     private RocketMQConsumerProperties rocketMQConsumerProperties;
-
     @Resource
-    private MessageHandler simpleMessageHandler;
+    private AgentRoomService agentRoomService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         DefaultMQPushConsumer mqPushConsumer = new DefaultMQPushConsumer();
         mqPushConsumer.setVipChannelEnabled(false);
         mqPushConsumer.setNamesrvAddr(rocketMQConsumerProperties.getNameSrv());
-        mqPushConsumer.setConsumerGroup(rocketMQConsumerProperties.getGroupName() + "_" + ImMsgConsumer.class.getSimpleName());
+        mqPushConsumer.setConsumerGroup(rocketMQConsumerProperties.getGroupName() + "_" + AgentRoomOnlineConsumer.class.getSimpleName());
         // 一次从broker中拉取10条消息到本地内存中进行处理
         mqPushConsumer.setConsumeMessageBatchMaxSize(10);
         mqPushConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         // 监听im发送过来的业务消息topic
-        mqPushConsumer.subscribe(ImCoreServerProviderTopicName.AGENT_IM_BIZ_MSG_TOPIC, "");
+        mqPushConsumer.subscribe(ImCoreServerProviderTopicName.IM_ONLINE_MSG_TOPIC, "");
         mqPushConsumer.setMessageListener((MessageListenerConcurrently) (msgs, context) -> {
             for (MessageExt msg : msgs) {
-                ImMsgBody imMsgBody = JSON.parseObject(new String(msg.getBody()), ImMsgBody.class);
-                simpleMessageHandler.onMsgReceiver(imMsgBody);
+                ImOnlineDTO imOnlineDTO = JSON.parseObject(new String(msg.getBody()), ImOnlineDTO.class);
+                agentRoomService.userOnlineHandler(imOnlineDTO);
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         });
         mqPushConsumer.start();
-        logger.info("mq消费者启动成功， namesrv is {}", rocketMQConsumerProperties.getNameSrv());
+        logger.info("mq im-online 消费者启动成功， namesrv is {}", rocketMQConsumerProperties.getNameSrv());
     }
 }
