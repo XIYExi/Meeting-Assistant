@@ -112,23 +112,14 @@
         "db": "meeting",
         "dependency": -1,
         "data_bindings": {},
-        "filters": [
-            {
-                "field": "meetingId",
-                "operator": "=",
-                "value": "${user.meetingId}"
-            }
-        ],
+        "filters": [],
+        "time_constraints": {},
         "auth_condition": {
-            "verify_mode": "password"
+            "required_level": "user"
         },
-        "input_fields": [],
-        "output_fields": [
-            "meeting_id"
-        ],
         "params": {
-            "path": "/pages/userCenter",
-            "query": "id=meeting_id"
+            "path": "/pages/user_center",
+            "query": "用户个人中心"
         }
     }
 ]

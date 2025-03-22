@@ -1,38 +1,19 @@
 [
     {
         "step": 1,
-        "intent": "query",
-        "subtype": "meeting",
+        "intent": "route",
+        "subtype": "page",
         "db": "meeting",
         "dependency": -1,
         "data_bindings": {},
-        "filters": [
-            {
-                "field": "title",
-                "operator": "LIKE",
-                "value": "教育系统数据安全专题会议"
-            }
-        ],
-        "output_fields": [
-            "meeting_id"
-        ]
-    },
-    {
-        "step": 2,
-        "intent": "query",
-        "subtype": "file",
-        "db": "meeting_clip",
-        "dependency": 1,
-        "data_bindings": {
-            "meeting_id": "step1.meeting_id"
+        "filters": [],
+        "time_constraints": {},
+        "auth_condition": {
+            "required_level": "user"
         },
-        "filters": [
-            {
-                "field": "meetingId",
-                "operator": "=",
-                "value": "step1.meeting_id"
-            }
-        ],
-        "output_fields": []
+        "params": {
+            "path": "/pages/user_center",
+            "query": "用户个人中心"
+        }
     }
 ]
