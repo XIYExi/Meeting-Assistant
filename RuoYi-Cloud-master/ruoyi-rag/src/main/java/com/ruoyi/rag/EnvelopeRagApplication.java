@@ -32,20 +32,19 @@ public class EnvelopeRagApplication {
         String str = "[\n" +
                 "    {\n" +
                 "        \"step\": 1,\n" +
-                "        \"intent\": \"query\",\n" +
-                "        \"subtype\": \"file\",\n" +
-                "        \"db\": \"meeting_clip\",\n" +
+                "        \"intent\": \"route\",\n" +
+                "        \"subtype\": \"page\",\n" +
+                "        \"db\": \"meeting\",\n" +
                 "        \"dependency\": -1,\n" +
                 "        \"data_bindings\": {},\n" +
-                "        \"filters\": [\n" +
-                "            {\n" +
-                "                \"field\": \"fileName\",\n" +
-                "                \"operator\": \"=\",\n" +
-                "                \"value\": \"锡流千里\"\n" +
-                "            }\n" +
-                "        ],\n" +
+                "        \"filters\": [],\n" +
+                "        \"time_constraints\": {},\n" +
                 "        \"auth_condition\": {\n" +
                 "            \"verify_mode\": \"password\"\n" +
+                "        },\n" +
+                "        \"params\": {\n" +
+                "            \"path\": \"/生态合作伙伴大会页面\",\n" +
+                "            \"query\": \"生态合作伙伴大会\"\n" +
                 "        }\n" +
                 "    }\n" +
                 "]";

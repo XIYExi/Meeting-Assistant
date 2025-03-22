@@ -125,6 +125,30 @@
 ]
 ```
 
+## 跳转到网络安全大会页面
+
+```json
+[
+    {
+        "step": 1,
+        "intent": "route",
+        "subtype": "page",
+        "db": "meeting",
+        "dependency": -1,
+        "data_bindings": {},
+        "filters": [],
+        "time_constraints": {},
+        "auth_condition": {
+            "verify_mode": "password"
+        },
+        "params": {
+            "path": "/网络安全大会页面",
+            "query": "网络安全大会"
+        }
+    }
+]
+```
+
 ## 开车导航到网络安全大会
 
 ```json

@@ -9,11 +9,11 @@
         "filters": [],
         "time_constraints": {},
         "auth_condition": {
-            "required_level": "user"
+            "verify_mode": "password"
         },
         "params": {
-            "path": "/pages/user_center",
-            "query": "用户个人中心"
+            "path": "/网络安全大会页面",
+            "query": "网络安全大会"
         }
     }
 ]
