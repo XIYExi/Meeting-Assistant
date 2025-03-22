@@ -1,6 +1,7 @@
 package com.ruoyi.rag.assistant.declare;
 
 import com.ruoyi.rag.assistant.entity.StepDefinition;
+import com.ruoyi.rag.assistant.utils.QueryContext;
 
 import java.util.List;
 
@@ -17,6 +18,6 @@ public interface EnhancedStepDispatchFactory {
      * @param uid 会话id，用来ws发消息回去
      * @return
      */
-    String dispatch(List<StepDefinition> steps, String uid);
+    QueryContext dispatch(List<StepDefinition> steps, String uid);
 
 }

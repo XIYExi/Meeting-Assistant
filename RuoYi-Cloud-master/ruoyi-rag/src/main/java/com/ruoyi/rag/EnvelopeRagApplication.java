@@ -6,6 +6,7 @@ import com.ruoyi.common.security.annotation.EnableCustomConfig;
 import com.ruoyi.common.security.annotation.EnableRyFeignClients;
 import com.ruoyi.rag.assistant.declare.EnhancedStepDispatchFactory;
 import com.ruoyi.rag.assistant.entity.StepDefinition;
+import com.ruoyi.rag.assistant.utils.QueryContext;
 import com.ruoyi.rag.assistant.utils.RequestContextHolder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
@@ -50,7 +51,7 @@ public class EnvelopeRagApplication {
                 "]";
         List<StepDefinition> stepDefinitions = JSONArray.parseArray(str, StepDefinition.class);
         RequestContextHolder.setRequestList(stepDefinitions);
-        String dispatch = dispatchFactory.dispatch(stepDefinitions, "1");
+        QueryContext dispatch = dispatchFactory.dispatch(stepDefinitions, "1");
 
     }
 }

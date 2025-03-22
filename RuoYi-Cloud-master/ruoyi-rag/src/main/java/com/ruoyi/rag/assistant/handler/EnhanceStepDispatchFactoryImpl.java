@@ -29,7 +29,7 @@ public class EnhanceStepDispatchFactoryImpl implements EnhancedStepDispatchFacto
 
 
     @Override
-    public String dispatch(List<StepDefinition> steps, String uid) {
+    public QueryContext dispatch(List<StepDefinition> steps, String uid) {
         QueryContext context = new QueryContext();
         Map<String, Object> resultMap = new HashMap<>();
         steps.sort(Comparator.comparingInt(StepDefinition::getStep));
