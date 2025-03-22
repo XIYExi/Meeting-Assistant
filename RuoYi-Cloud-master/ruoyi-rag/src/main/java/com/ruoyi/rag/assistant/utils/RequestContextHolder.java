@@ -4,6 +4,9 @@ import com.ruoyi.rag.assistant.entity.StepDefinition;
 
 import java.util.List;
 
+/**
+ * 请求缓存（把原始step全局缓存）
+ */
 public class RequestContextHolder {
     private static final ThreadLocal<List<StepDefinition>> requestList = new ThreadLocal<>();
 

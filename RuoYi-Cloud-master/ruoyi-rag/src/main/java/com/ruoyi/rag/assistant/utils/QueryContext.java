@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 核心上下文管理器
+ * 核心上下文管理器（存储每一个step的操作结果）
  */
 public class QueryContext {
     private final Map<String, Object> stepData = new ConcurrentHashMap<>();
