@@ -88,7 +88,7 @@ export default {
 				//console.log('wsData: ', JSON.parse(b64DecodeUnicode(wsData.body)))
 				let respData = JSON.parse(b64DecodeUnicode(wsData.body));
 				//console.log('decode', respData)
-				if(respData.bizCode==5555) {
+				if(respData.bizCode==5554) {
 					let respMsg = JSON.parse(respData.data);
 					let sendMsg = {"content": respMsg.content, "avatarName": respMsg.avatarName};
 					console.log('receive msg: ', sendMsg)
@@ -101,7 +101,7 @@ export default {
 			}
 		},
 		sendAckCode: function(respData) {
-			let jsonStr = {"userId": this.userId, "appId": 10001,"msgId":respData.msgId};
+			let jsonStr = {"userId": this.userId, "appId": 10002,"msgId":respData.msgId};
 			let bodyStr = JSON.stringify(jsonStr);
 			let ackMsgStr = {"magic": 19231, "code": 1005, "len": bodyStr.length, "body": bodyStr};
 			this.websocketSend(JSON.stringify(ackMsgStr));
@@ -113,7 +113,7 @@ export default {
 			console.log('首次登录成功');
 			let that = this;
 			//发送一个心跳包给到服务端
-			let jsonStr = {"userId": 1, "appId": 10001};
+			let jsonStr = {"userId": 1, "appId": 10002};
 			let bodyStr = JSON.stringify(jsonStr);
 			let heartBeatJsonStr = {"magic": 19231, "code": 1004, "len": bodyStr.length, "body": bodyStr};
 			setInterval(function () {
