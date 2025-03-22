@@ -11,6 +11,7 @@ import java.util.Map;
 public class EnhancedChatToolHandler implements EnhancedToolHandler {
     @Override
     public boolean handler(StepDefinition step, QueryContext context) {
-        return false;
+        // chat类型直接pass...
+        return true;
     }
 }
