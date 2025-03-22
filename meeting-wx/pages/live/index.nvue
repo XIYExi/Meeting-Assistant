@@ -59,7 +59,7 @@ export default {
 			// MessageDTO
 			let msgBody = {"roomId": 200,"type":1, "content": this.input,  "avatarName": this.avatarName};
 			// ImMsgBody 
-			let jsonStr = {"userId": this.userId, "appId": 10001, "bizCode":5555, "data":JSON.stringify(msgBody)};
+			let jsonStr = {"userId": this.userId, "appId": 10002, "bizCode":5554, "data":JSON.stringify(msgBody)};
 			let bodyStr = JSON.stringify(jsonStr);
 			// ImMsg
 			let reviewMsg = {"magic": 19231, "code": 1003, "len": bodyStr.length, "body": bodyStr};
