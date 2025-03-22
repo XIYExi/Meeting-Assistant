@@ -15,6 +15,15 @@ ruoyi:
 
 # Spring
 spring:
+  redis:
+    host: 192.168.31.76
+    port: 6379
+    password:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ry-cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
   application:
     # 应用名称
     name: ruoyi-router
@@ -25,10 +34,10 @@ spring:
     nacos:
       discovery:
         # 服务注册地址
-        server-addr: ruoyi-nacos:8848
+        server-addr: 127.0.0.1:8848
       config:
         # 配置中心地址
-        server-addr: ruoyi-nacos:8848
+        server-addr: 127.0.0.1:8848
         # 配置文件格式
         file-extension: yml
         # 共享配置
