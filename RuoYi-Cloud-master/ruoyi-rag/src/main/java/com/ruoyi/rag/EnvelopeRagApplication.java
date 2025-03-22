@@ -33,31 +33,20 @@ public class EnvelopeRagApplication {
                 "    {\n" +
                 "        \"step\": 1,\n" +
                 "        \"intent\": \"query\",\n" +
-                "        \"subtype\": \"rec\",\n" +
-                "        \"db\": \"meeting\",\n" +
+                "        \"subtype\": \"file\",\n" +
+                "        \"db\": \"meeting_clip\",\n" +
                 "        \"dependency\": -1,\n" +
                 "        \"data_bindings\": {},\n" +
-                "        \"filters\": [],\n" +
-                "        \"output_fields\": [\n" +
-                "            \"meeting_id\"\n" +
-                "        ]\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"step\": 2,\n" +
-                "        \"intent\": \"query\",\n" +
-                "        \"subtype\": \"rank\",\n" +
-                "        \"db\": \"meeting\",\n" +
-                "        \"dependency\": 1,\n" +
-                "        \"data_bindings\": {\n" +
-                "            \"meeting_id\": \"step1.meeting_id\"\n" +
-                "        },\n" +
-                "        \"filters\": [],\n" +
-                "        \"input_fields\": [\n" +
-                "            \"meeting_id\"\n" +
+                "        \"filters\": [\n" +
+                "            {\n" +
+                "                \"field\": \"fileName\",\n" +
+                "                \"operator\": \"=\",\n" +
+                "                \"value\": \"锡流千里\"\n" +
+                "            }\n" +
                 "        ],\n" +
-                "        \"output_fields\": [\n" +
-                "            \"meeting_id\"\n" +
-                "        ]\n" +
+                "        \"auth_condition\": {\n" +
+                "            \"verify_mode\": \"password\"\n" +
+                "        }\n" +
                 "    }\n" +
                 "]";
         List<StepDefinition> stepDefinitions = JSONArray.parseArray(str, StepDefinition.class);

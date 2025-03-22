@@ -49,7 +49,6 @@ public class EnhancedQueryToolHandler implements EnhancedToolHandler, Initializi
 
     private static final Map<String, QueryProcessor> queryToolMap = new ConcurrentHashMap<>();
 
-
     @Resource
     ApplicationContext applicationContext;
 

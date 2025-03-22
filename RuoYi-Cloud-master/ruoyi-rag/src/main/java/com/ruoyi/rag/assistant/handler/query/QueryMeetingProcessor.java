@@ -176,7 +176,7 @@ public class QueryMeetingProcessor implements QueryProcessor {
             }
             List<MeetingGeo> meetingGeos = meetingGeoMapper.selectList(queryWrapper);
 
-            System.err.println(meetingGeos.size());
+            // System.err.println(meetingGeos.size());
             MeetingGeo meetingGeo = meetingGeos.get(0);
             if (step.getStep() != totalSteps) {
                 Map<String, Object> resultItem = new HashMap<>();
