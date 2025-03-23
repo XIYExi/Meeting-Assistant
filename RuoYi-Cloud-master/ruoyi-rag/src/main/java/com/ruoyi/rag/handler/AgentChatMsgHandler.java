@@ -35,6 +35,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -215,8 +216,10 @@ public class AgentChatMsgHandler implements SimpleMsgHandler {
         respMsg.setAppId(imMsgBody.getAppId());
         respMsg.setBizCode(ImMsgBizCodeEnum.Agent_Chat_Code.getCode());
         respMsg.setData(com.alibaba.fastjson.JSON.toJSONString(msg));
-        AjaxResult ajaxResult = remoteRouterService.sendMsg(imMsgBody.getUserId(), JSONObject.toJSONString(respMsg));
-        logger.info("rpc send msg to router server result: {}", ajaxResult);
+        Mono<AjaxResult> ajaxResult = remoteRouterService.sendMsg(imMsgBody.getUserId(), JSONObject.toJSONString(respMsg));
+        ajaxResult.subscribe(res -> {
+            logger.info("rpc send msg to router server result: {}", res);
+        });
     }
 
 

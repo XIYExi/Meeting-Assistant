@@ -11,6 +11,7 @@ import com.ruoyi.rag.assistant.utils.RequestContextHolder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import reactivefeign.spring.config.EnableReactiveFeignClients;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @SpringBootApplication
 @EnableCustomConfig
+@EnableReactiveFeignClients(basePackages = "com.ruoyi.router.api")
 @EnableRyFeignClients
 public class EnvelopeRagApplication {
 
