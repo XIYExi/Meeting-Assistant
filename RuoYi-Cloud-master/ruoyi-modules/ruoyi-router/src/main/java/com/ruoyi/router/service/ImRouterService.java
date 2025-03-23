@@ -9,5 +9,5 @@ public interface ImRouterService {
 
     Mono<Boolean> sendMsg(Long objectId, String msgJson);
 
-    boolean sendBatchMsg(List<ImMsgBody> imMsgBodyList);
+    // boolean sendBatchMsg(List<ImMsgBody> imMsgBodyList);
 }

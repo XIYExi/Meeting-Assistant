@@ -32,10 +32,10 @@ public class RouterController {
                 });
     }
 
-    @PostMapping(value = "/batchSendMsg")
-    public AjaxResult batchSendMsg(@RequestBody List<ImMsgBody> imMsgBodyList) {
-        boolean b = routerService.sendBatchMsg(imMsgBodyList);
-        return b ? AjaxResult.success() : AjaxResult.error();
-    }
+//    @PostMapping(value = "/batchSendMsg")
+//    public AjaxResult batchSendMsg(@RequestBody List<ImMsgBody> imMsgBodyList) {
+//        boolean b = routerService.sendBatchMsg(imMsgBodyList);
+//        return b ? AjaxResult.success() : AjaxResult.error();
+//    }
 
 }

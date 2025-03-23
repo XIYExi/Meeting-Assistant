@@ -62,44 +62,44 @@ public class ImRouterServiceImpl implements ImRouterService {
         return Mono.just(true);
     }
 
-    @Override
-    public boolean sendBatchMsg(List<ImMsgBody> imMsgBodyList) {
-        List<Long> userIdList = imMsgBodyList.stream().map(ImMsgBody::getUserId).collect(Collectors.toList());
-        int appId = imMsgBodyList.get(0).getAppId();
-
-        Map<Long, ImMsgBody> userIdMsgMap = imMsgBodyList.stream().collect(Collectors.toMap(ImMsgBody::getUserId, x -> x));
-
-        List<String> cacheKeyList = new ArrayList<>();
-        userIdList.forEach(userId -> {
-            String cacheKey = ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId;
-            cacheKeyList.add(cacheKey);
-        });
-        //批量取出每个用户绑定的ip地址
-        List<String> ipList = stringRedisTemplate.opsForValue().multiGet(cacheKeyList).stream().filter(x -> x != null).collect(Collectors.toList());
-        Map<String, List<Long>> userIdMap = new HashMap<>();
-        ipList.forEach(ip -> {
-            String currentIp = ip.substring(0, ip.indexOf("%"));
-            Long userId = Long.valueOf(ip.substring(ip.indexOf("%") + 1));
-            List<Long> currentUserIdList = userIdMap.get(currentIp);
-            if (currentUserIdList == null) {
-                currentUserIdList = new ArrayList<>();
-            }
-            currentUserIdList.add(userId);
-            userIdMap.put(currentIp, currentUserIdList);
-        });
-
-
-        for (String currentIp : userIdMap.keySet()) {
-            // RpcContext.getContext().set("ip", currentIp);
-            List<ImMsgBody> batchSendMsgGroupByIpList = new ArrayList<>();
-            List<Long> ipBindUserIdList = userIdMap.get(currentIp);
-            for (Long userId : ipBindUserIdList) {
-                ImMsgBody imMsgBody = userIdMsgMap.get(userId);
-                batchSendMsgGroupByIpList.add(imMsgBody);
-            }
-            // routerHandlerRpc.batchSendMsg(batchSendMsgGroupByIpList);
-            remoteImService.batchRpc(batchSendMsgGroupByIpList);
-        }
-        return true;
-    }
+//    @Override
+//    public boolean sendBatchMsg(List<ImMsgBody> imMsgBodyList) {
+//        List<Long> userIdList = imMsgBodyList.stream().map(ImMsgBody::getUserId).collect(Collectors.toList());
+//        int appId = imMsgBodyList.get(0).getAppId();
+//
+//        Map<Long, ImMsgBody> userIdMsgMap = imMsgBodyList.stream().collect(Collectors.toMap(ImMsgBody::getUserId, x -> x));
+//
+//        List<String> cacheKeyList = new ArrayList<>();
+//        userIdList.forEach(userId -> {
+//            String cacheKey = ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId;
+//            cacheKeyList.add(cacheKey);
+//        });
+//        //批量取出每个用户绑定的ip地址
+//        List<String> ipList = stringRedisTemplate.opsForValue().multiGet(cacheKeyList).stream().filter(x -> x != null).collect(Collectors.toList());
+//        Map<String, List<Long>> userIdMap = new HashMap<>();
+//        ipList.forEach(ip -> {
+//            String currentIp = ip.substring(0, ip.indexOf("%"));
+//            Long userId = Long.valueOf(ip.substring(ip.indexOf("%") + 1));
+//            List<Long> currentUserIdList = userIdMap.get(currentIp);
+//            if (currentUserIdList == null) {
+//                currentUserIdList = new ArrayList<>();
+//            }
+//            currentUserIdList.add(userId);
+//            userIdMap.put(currentIp, currentUserIdList);
+//        });
+//
+//
+//        for (String currentIp : userIdMap.keySet()) {
+//            // RpcContext.getContext().set("ip", currentIp);
+//            List<ImMsgBody> batchSendMsgGroupByIpList = new ArrayList<>();
+//            List<Long> ipBindUserIdList = userIdMap.get(currentIp);
+//            for (Long userId : ipBindUserIdList) {
+//                ImMsgBody imMsgBody = userIdMsgMap.get(userId);
+//                batchSendMsgGroupByIpList.add(imMsgBody);
+//            }
+//            // routerHandlerRpc.batchSendMsg(batchSendMsgGroupByIpList);
+//            remoteImService.batchRpc(batchSendMsgGroupByIpList);
+//        }
+//        return true;
+//    }
 }
