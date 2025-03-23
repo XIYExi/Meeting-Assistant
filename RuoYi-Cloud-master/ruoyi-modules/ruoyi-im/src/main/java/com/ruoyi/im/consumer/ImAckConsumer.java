@@ -44,12 +44,14 @@ public class ImAckConsumer implements InitializingBean {
             String json = new String(msgs.get(0).getBody());
             ImMsgBody imMsgBody = JSON.parseObject(json, ImMsgBody.class);
             int retryTimes = msgAckCheckService.getMsgAckTimes(imMsgBody.getMsgId(), imMsgBody.getUserId(), imMsgBody.getAppId());
-            LOGGER.info("retryTimes is {},msgId is {}", retryTimes, imMsgBody.getMsgId());
+            // retryTimes 为 -1 表示发送成功，就不需要再打印了，屏幕太乱了
+            // LOGGER.info("retryTimes is {},msgId is {}", retryTimes, imMsgBody.getMsgId());
             if (retryTimes < 0) {
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
             //只支持一次重发
             if (retryTimes < 2) {
+                LOGGER.info("[消息ACK失败，重试] retryTimes is {},msgId is {}", retryTimes, imMsgBody.getMsgId());
                 msgAckCheckService.recordMsgAck(imMsgBody, retryTimes + 1);
                 msgAckCheckService.sendDelayMsg(imMsgBody);
                 // 这里才是真正的消息发送入口！

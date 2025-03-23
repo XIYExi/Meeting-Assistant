@@ -91,7 +91,7 @@ export default {
 				if(respData.bizCode==5554) {
 					let respMsg = JSON.parse(respData.data);
 					let sendMsg = {"content": respMsg.content, "avatarName": respMsg.avatarName};
-					console.log('receive msg: ', sendMsg)
+					console.log('receive msg: ', respMsg)
 					// todo 把消息添加到chatList中，聊天室可以查看历史消息
 					this.chatList[this.chatList.length-1] += sendMsg
 					// this.chatList.push(newMsg);
