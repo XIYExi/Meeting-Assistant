@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.ruoyi.common.entity.im.ImMsgBody;
 import com.ruoyi.im.service.IRouterHandlerService;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 
@@ -14,9 +15,10 @@ public class RouterHandleRpcImpl implements IRouterHandlerRpc{
     private IRouterHandlerService routerHandlerService;
 
     @Override
-    public void sendMsg(String msgJson) {
+    public Mono<Void> sendMsg(String msgJson) {
         System.out.println("this is im-core-server");
         ImMsgBody imMsgBody = JSON.parseObject(msgJson, ImMsgBody.class);
         routerHandlerService.onReceive(imMsgBody);
+        return Mono.empty();
     }
 }

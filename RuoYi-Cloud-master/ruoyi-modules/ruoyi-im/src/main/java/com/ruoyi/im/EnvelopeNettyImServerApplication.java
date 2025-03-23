@@ -5,8 +5,10 @@ import com.ruoyi.common.security.annotation.EnableRyFeignClients;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import reactivefeign.spring.config.EnableReactiveFeignClients;
 
 @EnableRyFeignClients
+@EnableReactiveFeignClients
 @SpringBootApplication
 @EnableCustomConfig
 public class EnvelopeNettyImServerApplication {

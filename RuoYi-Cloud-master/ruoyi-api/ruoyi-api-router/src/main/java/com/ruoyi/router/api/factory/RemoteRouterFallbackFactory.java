@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class RemoteRouterFallbackFactory implements FallbackFactory<RemoteRouter
         log.error("im router服务调用失败:{}", throwable.getMessage());
         return new RemoteRouterService() {
             @Override
-            public AjaxResult sendMsg(Long userId, String msgJson) {
-                return AjaxResult.error("im router send msg error");
+            public Mono<AjaxResult> sendMsg(Long userId, String msgJson) {
+                return Mono.just(AjaxResult.error("Reactive OpenFeign Rpc Error: " + throwable.getMessage()));
             }
 
             @Override

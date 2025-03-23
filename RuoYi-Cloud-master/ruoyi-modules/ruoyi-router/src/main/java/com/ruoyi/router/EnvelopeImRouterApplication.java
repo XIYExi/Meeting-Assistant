@@ -5,10 +5,12 @@ import com.ruoyi.common.security.annotation.EnableRyFeignClients;
 import com.ruoyi.router.service.ImRouterService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import reactivefeign.spring.config.EnableReactiveFeignClients;
 
 import javax.annotation.Resource;
 
 @SpringBootApplication
+@EnableReactiveFeignClients
 @EnableCustomConfig
 @EnableRyFeignClients
 public class EnvelopeImRouterApplication /*implements CommandLineRunner*/ {

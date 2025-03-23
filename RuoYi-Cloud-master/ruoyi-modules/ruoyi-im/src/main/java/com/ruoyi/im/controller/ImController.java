@@ -7,6 +7,7 @@ import com.ruoyi.im.entity.ImConfigVO;
 import com.ruoyi.im.rpc.IRouterHandlerRpc;
 import com.ruoyi.im.service.ImService;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,11 +21,15 @@ public class ImController {
     @Resource
     private IRouterHandlerRpc routerHandlerRpc;
 
+    /**
+     * 流式返回
+     * @param msgJson
+     * @return
+     */
     @GetMapping("/rpc")
-    public AjaxResult rpc(@RequestParam("msgJson") String msgJson) {
+    public Mono<AjaxResult> rpc(@RequestParam("msgJson") String msgJson) {
         System.err.println("!!");
-        routerHandlerRpc.sendMsg(msgJson);
-        return AjaxResult.success();
+        return routerHandlerRpc.sendMsg(msgJson).thenReturn(AjaxResult.success());
     }
 
     @PostMapping("/batchRpc")

@@ -1,6 +1,8 @@
 package com.ruoyi.im.rpc;
 
 
+import reactor.core.publisher.Mono;
+
 /**
  * 专门给router层的服务进行调用的接口
  */
@@ -11,6 +13,6 @@ public interface IRouterHandlerRpc {
      *
      * @param msgJson
      */
-    void sendMsg(String msgJson);
+    Mono<Void> sendMsg(String msgJson);
 
 }

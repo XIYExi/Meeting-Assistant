@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -18,9 +19,10 @@ public class RemoteImFallbackFactory  implements FallbackFactory<RemoteImService
     public RemoteImService create(Throwable throwable) {
         log.error("会议服务调用失败:{}", throwable.getMessage());
         return new RemoteImService() {
+
             @Override
-            public AjaxResult rpc(String msgJson) {
-                return AjaxResult.error("im rpc调用失败");
+            public Mono<AjaxResult> rpc(String msgJson) {
+                return Mono.just(AjaxResult.error("Reactive OpenFeign Rpc Error: " + throwable.getMessage()));
             }
 
             @Override
