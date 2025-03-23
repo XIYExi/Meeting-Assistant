@@ -23,13 +23,14 @@
 			<ChatBox :chat-msg="chatMsg" @scroll-to-bottom="scrollToBottom" />
 		</view>
 		
-		<InputBar v-model="value" @send-msg="handleSendMsg" />
+		<!-- <InputBar v-model="value" @send-msg="handleSendMsg" /> -->
+		<InputComponent v-model="value" @send-msg="handleSendMsg" />
 	</view>
 </template>
 
 <script>
 import ChatBox from '@/components/ChatBox';
-import InputBar from '@/components/InputBar';
+import InputComponent from '@/components/InputComponent';
 import { sendFlux } from '@/api/agent/agent.js';
 import {generateUUID} from '@/utils/uuid.js';
 
@@ -59,7 +60,7 @@ export default {
 	},
     components: {
 	    ChatBox, 
-	    InputBar, 
+	    InputComponent, 
     },
 	created() {
 		// this.getCode();
