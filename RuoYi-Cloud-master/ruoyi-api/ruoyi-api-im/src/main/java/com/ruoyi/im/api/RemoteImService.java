@@ -18,13 +18,14 @@ import java.util.List;
 /**
  * im远程调用服务
  */
-@ReactiveFeignClient(name = ServiceNameConstants.IM_SERVICE, fallbackFactory = RemoteImFallbackFactory.class)
+@ReactiveFeignClient(value = ServiceNameConstants.IM_SERVICE, fallbackFactory = RemoteImFallbackFactory.class)
 public interface RemoteImService {
 
     @GetMapping(value = "/im/rpc")
     public Mono<AjaxResult> rpc(@RequestParam("msgJson") String msgJson);
 
 
-    @PostMapping("/im/batchRpc")
-    public AjaxResult batchRpc(@RequestBody List<ImMsgBody> imMsgBodyList);
+
+//    @PostMapping("/im/batchRpc")
+//    public AjaxResult batchRpc(@RequestBody List<ImMsgBody> imMsgBodyList);
 }

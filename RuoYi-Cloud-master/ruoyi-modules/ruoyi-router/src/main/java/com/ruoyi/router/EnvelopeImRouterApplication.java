@@ -10,7 +10,7 @@ import reactivefeign.spring.config.EnableReactiveFeignClients;
 import javax.annotation.Resource;
 
 @SpringBootApplication
-@EnableReactiveFeignClients
+@EnableReactiveFeignClients(basePackages = "com.ruoyi.im.api")
 @EnableCustomConfig
 @EnableRyFeignClients
 public class EnvelopeImRouterApplication /*implements CommandLineRunner*/ {

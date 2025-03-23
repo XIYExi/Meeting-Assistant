@@ -17,13 +17,13 @@ import java.util.List;
 /**
  * im远程调用服务
  */
-@ReactiveFeignClient(name = ServiceNameConstants.ROUTER_SERVICE, fallbackFactory = RemoteRouterFallbackFactory.class)
+@ReactiveFeignClient(value = ServiceNameConstants.ROUTER_SERVICE, fallbackFactory = RemoteRouterFallbackFactory.class)
 public interface RemoteRouterService {
 
     @GetMapping(value = "/router/sendMsg")
     public Mono<AjaxResult> sendMsg(@RequestParam("userId") Long userId, @RequestParam("msgJson") String msgJson);
 
-    @GetMapping(value = "/router/batchSendMsg")
-    public AjaxResult batchSendMsg(@RequestBody List<ImMsgBody> imMsgBody);
+//    @GetMapping(value = "/router/batchSendMsg")
+//    public AjaxResult batchSendMsg(@RequestBody List<ImMsgBody> imMsgBody);
 
 }
