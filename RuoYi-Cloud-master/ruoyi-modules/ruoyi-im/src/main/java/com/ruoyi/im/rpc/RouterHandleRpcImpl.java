@@ -16,9 +16,9 @@ public class RouterHandleRpcImpl implements IRouterHandlerRpc{
 
     @Override
     public Mono<Void> sendMsg(String msgJson) {
-        System.out.println("this is im-core-server");
+        //System.out.println("this is im-core-server");
         ImMsgBody imMsgBody = JSON.parseObject(msgJson, ImMsgBody.class);
-        System.err.println(imMsgBody.getData());
+        //System.err.println(imMsgBody.getData());
         routerHandlerService.onReceive(imMsgBody);
         return Mono.empty();
     }

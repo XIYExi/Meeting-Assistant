@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
-@Component
+// @Component
 @Slf4j
 public class NettyClient {
 

@@ -177,15 +177,15 @@ public class AgentChatMsgHandler implements SimpleMsgHandler {
                 if (res != null) {
                     if (!agentResult.getFrom().equals("execute_result")){
                         basicLlmBuilder.append(res);
-                        System.err.println(res);
+                        // System.err.println(res);
                         // nettyServerHandler.sendMsg(null, uid + "&^llm" + basicLlmBuilder.toString());
-                        sendMsgByIm(imMsgBody, "&^llm" + res);
+                        sendMsgByIm(imMsgBody, "&^llm" + basicLlmBuilder.toString());
                     }
                     else {
                         // System.out.println(res);
                         resultBuilder.append(res);
                         // nettyServerHandler.sendMsg(null, uid + "&" + resultBuilder.toString());
-                        sendMsgByIm(imMsgBody, "&" + res);
+                        sendMsgByIm(imMsgBody, "&" + resultBuilder.toString());
                     }
                 }
 
@@ -206,6 +206,9 @@ public class AgentChatMsgHandler implements SimpleMsgHandler {
         messagesLogsSaveAnswer.setRole("assistant");
         messagesLogsSaveAnswer.setCreateTime(new Date());
         messageLogsMapper.insert(messagesLogsSaveAnswer);
+
+        // 这个地方单独发送一条消息，告诉前端over，这样可以进行下一段对话
+        sendMsgByIm(imMsgBody, "&^over");
 
         return ResMsg;
     }
