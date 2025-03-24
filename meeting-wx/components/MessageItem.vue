@@ -28,7 +28,8 @@
 					<view class="llm">{{item.llm}}</view>
 				</view>
 				<view class="msg_wrapper" :class="!show && 'closeMagin'">
-					<view class="msg" v-html="item.msg"></view>
+					<zero-markdown-view v-if="item.position==='left'" class="msg" :markdown="item.msg"></zero-markdown-view>
+					<view class="msg" v-else>{{item.msg}}</view>
 				</view>
 				
 			</text>
