@@ -2,6 +2,7 @@ from flask import Flask, request
 
 
 from getDistanceAndRouter import byAddressGetDistanceAndRouter
+from prohibitedWordDetection import get_prohibited_word_detection
 
 # from selenium import webdriver
 # from selenium.webdriver.edge.service import Service
@@ -49,6 +50,14 @@ def calDistance():
     distance_km, transits = byAddressGetDistanceAndRouter(address, origin)
     distance = distance_km
     return str(distance)
+
+@app.route("/prohibitedWord")
+def prohibitedWordDetection():
+    text = request.args['text']
+    result = get_prohibited_word_detection(text)
+    return 'True' if result else 'False'
+
+
 
 
 if __name__ == "__main__":
